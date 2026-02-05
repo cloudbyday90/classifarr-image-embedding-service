@@ -174,3 +174,9 @@ Response body:
 ```bash
 pytest
 ```
+
+## License
+Classifarr Image Embedding Service is licensed under GPL-3.0 (or later). See `LICENSE`.
+
+## Copyright Compliance
+All source files should include current copyright headers consistent with Classifarr standards.
