@@ -1,0 +1,11 @@
+services:
+  image-embedder:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      IMAGE_EMBEDDER_HOST: 0.0.0.0
+      IMAGE_EMBEDDER_PORT: 8000
+      DEFAULT_MODEL: ViT-L-14
+      DEVICE: auto

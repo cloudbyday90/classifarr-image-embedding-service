@@ -1,0 +1,8 @@
+fastapi>=0.110,<1
+uvicorn[standard]>=0.29,<1
+pydantic>=2.7,<3
+requests>=2.31
+pillow>=10.0
+numpy>=1.26
+torch>=2.2
+transformers>=4.41
