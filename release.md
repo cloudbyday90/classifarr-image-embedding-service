@@ -23,24 +23,27 @@
 3. Docker build:
    - `docker build -t classifarr-image-embedder:local .`
 
-## Preconditions
+## Prerequisites
 
 - [GitHub CLI (gh)](https://cli.github.com/) installed and authenticated (`gh auth login`).
 - Docker build pipeline configured to trigger on Release creation.
+- CI green (tests + docker build).
 
 ## Release Steps
 
 1. **Update Version**: Update version references:
    - `src/image_embedder/main.py` (FastAPI `version=...`)
+   - `src/image_embedder/__init__.py` (optional `__version__`)
    - `README.md` (if version displayed)
-2. **Commit**: Commit changes with message `release: vX.Y.Z`.
-3. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
+2. **Release Notes**: Update `RELEASE_NOTES.md` with the current release notes.
+3. **Commit**: Commit changes with message `release: vX.Y.Z`.
+4. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
 
 ```bash
 # Syntax: gh release create <tag> --title "<title>" --notes-file <file> --target <branch>
 
 # Example:
-gh release create v0.1.0 --title "v0.1.0" --notes-file RELEASE_NOTES.md --target main
+gh release create v0.1.0 --title "v0.1.0" --notes-file RELEASE_NOTES.md --target master
 ```
 
 > **Note**: Ensure `RELEASE_NOTES.md` contains ONLY the notes for the current release if using it as the source file, or copy the specific section to a temp file. Alternatively, use `--generate-notes` for auto-generated notes.
@@ -50,4 +53,5 @@ gh release create v0.1.0 --title "v0.1.0" --notes-file RELEASE_NOTES.md --target
 - Confirm container build completed and pushed.
 - Pull and smoke test: `docker run --rm -p 8000:8000 ghcr.io/cloudbyday90/classifarr-image-embedder:<tag>`
 - Validate `/health` and `/models` endpoints.
+- Confirm release tag matches the published container tag (e.g., `v0.1.0` -> `:0.1.0`).
 - Monitor logs and issue tracker for regressions.
