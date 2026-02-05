@@ -35,9 +35,10 @@
    - `src/image_embedder/main.py` (FastAPI `version=...`)
    - `src/image_embedder/__init__.py` (optional `__version__`)
    - `README.md` (if version displayed)
-2. **Release Notes**: Update `RELEASE_NOTES.md` with the current release notes.
-3. **Commit**: Commit changes with message `release: vX.Y.Z`.
-4. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
+2. **Release Notes (High-Level)**: Update `RELEASE_NOTES.md` with user-facing highlights (emojis/graphs ok).
+3. **Changelog (Technical)**: Update `CHANGELOG.md` with technical changes, breaking changes, and config tweaks.
+4. **Commit**: Commit changes with message `release: vX.Y.Z`.
+5. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
 
 ```bash
 # Syntax: gh release create <tag> --title "<title>" --notes-file <file> --target <branch>

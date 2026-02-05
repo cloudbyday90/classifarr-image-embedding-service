@@ -164,7 +164,8 @@ Response body:
 - `REQUEST_TIMEOUT_SECONDS` (default `15`)
 
 ## Release Workflow
-- Keep release notes in `RELEASE_NOTES.md` with an `Unreleased` section at the top.
+- Keep release notes in `RELEASE_NOTES.md` with an `Unreleased` section at the top (high-level, user-facing, emojis/graphs ok).
+- Keep technical changes in `CHANGELOG.md`.
 - When shipping a release, move `Unreleased` into a versioned section (e.g., `v0.1.1`).
 - Bump the version in `src/image_embedder/__init__.py` and `src/image_embedder/main.py`.
 - Follow `release.md` for the full checklist and tag creation.
