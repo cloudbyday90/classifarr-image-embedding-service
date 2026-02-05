@@ -23,10 +23,9 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ### Security
 - N/A
 
-## v0.1.0
+## v0.0.1.0-alpha
 
 ### Added
 - Initial FastAPI service with `/health`, `/models`, and `/embed-image`.
 - CLIP model support (ViT-L/14, ViT-B/16).
 - Docker build and runtime.
-

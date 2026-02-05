@@ -5,7 +5,7 @@
 ### Highlights
 - N/A
 
-### What’s New
+### What's New
 - N/A
 
 ### Improvements
@@ -14,12 +14,12 @@
 ### Fixes
 - N/A
 
-## v0.1.0
+## v0.0.1.0-alpha
 
 ### Highlights
-- 🚀 Initial image embedding service release
+- ?? Initial image embedding service release
 
-### What’s New
+### What's New
 - `/health`, `/models`, and `/embed-image` endpoints
 - Docker image build and container runtime support
 
