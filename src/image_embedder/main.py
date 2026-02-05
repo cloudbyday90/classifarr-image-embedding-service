@@ -2,12 +2,13 @@ from fastapi import FastAPI, HTTPException
 
 from .config import Settings
 from .embedder import ImageEmbedder
+from . import __version__
 from .models import EmbedImageRequest, EmbedImageResponse, HealthResponse, ModelInfo
 
 
 def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
     settings = Settings()
-    app = FastAPI(title="Classifarr Image Embedding Service", version="0.1.0")
+    app = FastAPI(title="Classifarr Image Embedding Service", version=__version__)
 
     app.state.embedder = embedder or ImageEmbedder(settings=settings)
 

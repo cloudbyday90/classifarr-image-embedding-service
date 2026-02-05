@@ -1,5 +1,16 @@
 # Release Notes
 
+## Unreleased
+
+### Added
+- N/A
+
+### Changed
+- N/A
+
+### Fixed
+- N/A
+
 ## v0.1.0
 
 ### Added
@@ -11,4 +22,3 @@
 
 ### Fixed
 - N/A
-
