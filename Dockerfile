@@ -20,8 +20,11 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 COPY requirements-dev.txt requirements-dev.txt
 
-RUN pip3 install --upgrade pip \
-    && pip3 install -r requirements.txt
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install -r requirements.txt
+
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY src ./src
 
