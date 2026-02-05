@@ -35,6 +35,11 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
     @app.post("/embed-image", response_model=EmbedImageResponse)
     def embed_image(payload: EmbedImageRequest):
         embedder_instance: ImageEmbedder = app.state.embedder
+        if not payload.image_url and not payload.image_base64:
+            raise HTTPException(
+                status_code=400,
+                detail="image_url or image_base64 is required"
+            )
         try:
             embedding, dims, provider, model_name, image_size = embedder_instance.embed(
                 image_url=payload.image_url,
