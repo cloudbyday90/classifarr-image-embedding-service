@@ -1,3 +1,7 @@
+# Classifarr Image Embedding Service - companion service for Classifarr
+# Copyright (C) 2024-2026 Classifarr Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
@@ -29,4 +33,3 @@ class HealthResponse(BaseModel):
     status: str
     provider: str
     default_model: str
-

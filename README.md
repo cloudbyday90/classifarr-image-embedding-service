@@ -180,3 +180,8 @@ Classifarr Image Embedding Service is licensed under GPL-3.0 (or later). See `LI
 
 ## Copyright Compliance
 All source files should include current copyright headers consistent with Classifarr standards.
+
+Check compliance:
+```bash
+python scripts/check_copyright.py
+```
