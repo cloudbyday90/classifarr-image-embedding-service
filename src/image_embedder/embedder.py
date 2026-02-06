@@ -3,9 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import base64
+import binascii
+import ipaddress
 import io
+import socket
+import threading
 from dataclasses import dataclass
+from contextlib import closing
 from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
 import numpy as np
 import requests
@@ -42,6 +48,8 @@ class ImageEmbedder:
     def __init__(self, settings: Optional[Settings] = None):
         self.settings = settings or Settings()
         self._models: Dict[str, Tuple[object, object, str]] = {}
+        self._model_locks: Dict[str, threading.Lock] = {}
+        self._model_locks_guard = threading.Lock()
 
     def list_models(self) -> List[ModelSpec]:
         return list(MODEL_CATALOG.values())
@@ -56,10 +64,16 @@ class ImageEmbedder:
     def _resolve_device(self):
         import torch
 
-        if self.settings.device.lower() == "cpu":
+        device_setting = (self.settings.device or "auto").strip().lower()
+        if device_setting == "cpu":
             return torch.device("cpu")
-        if self.settings.device.lower() == "cuda":
+        if device_setting == "cuda":
+            if not torch.cuda.is_available():
+                raise ValueError("CUDA requested but not available")
             return torch.device("cuda")
+        if device_setting != "auto":
+            raise ValueError(f"Unsupported DEVICE value: {self.settings.device}")
+
         if torch.cuda.is_available():
             return torch.device("cuda")
         return torch.device("cpu")
@@ -67,6 +81,16 @@ class ImageEmbedder:
     def _load_model(self, spec: ModelSpec):
         if spec.name in self._models:
             return self._models[spec.name]
+
+        with self._model_locks_guard:
+            lock = self._model_locks.get(spec.name)
+            if lock is None:
+                lock = threading.Lock()
+                self._model_locks[spec.name] = lock
+
+        with lock:
+            if spec.name in self._models:
+                return self._models[spec.name]
 
         from transformers import CLIPModel, CLIPProcessor
 
@@ -79,35 +103,97 @@ class ImageEmbedder:
         self._models[spec.name] = (model, processor, str(device))
         return self._models[spec.name]
 
+    def _is_public_ip(self, ip_str: str) -> bool:
+        ip = ipaddress.ip_address(ip_str)
+        return not (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_multicast
+            or ip.is_reserved
+            or ip.is_unspecified
+        )
+
+    def _validate_remote_url(self, image_url: str) -> None:
+        parsed = urlparse(image_url)
+        if parsed.scheme not in {"http", "https"}:
+            raise ValueError("Only http(s) image URLs are supported")
+        if not parsed.hostname:
+            raise ValueError("Invalid image URL")
+
+        host = parsed.hostname.lower()
+
+        if self.settings.allowed_remote_hosts:
+            allowed = {h.strip().lower() for h in self.settings.allowed_remote_hosts if h.strip()}
+            if host not in allowed:
+                raise ValueError("Remote image host is not allowlisted")
+
+        # Block obvious localhost aliases early.
+        if host in {"localhost"}:
+            raise ValueError("Remote image host resolves to a private address")
+
+        # If it's a literal IP, enforce public-only.
+        try:
+            ipaddress.ip_address(host)
+            if not self._is_public_ip(host):
+                raise ValueError("Remote image host resolves to a private address")
+            return
+        except ValueError:
+            pass
+
+        # Resolve DNS and block private/reserved ranges.
+        try:
+            infos = socket.getaddrinfo(host, parsed.port or 443, type=socket.SOCK_STREAM)
+        except socket.gaierror as exc:
+            raise ValueError("Unable to resolve remote image host") from exc
+
+        for info in infos:
+            sockaddr = info[4]
+            ip_str = sockaddr[0]
+            if not self._is_public_ip(ip_str):
+                raise ValueError("Remote image host resolves to a private address")
+
     def _fetch_image_bytes(self, image_url: str) -> bytes:
         if not self.settings.allow_remote_urls:
             raise ValueError("Remote image URLs are disabled")
 
+        self._validate_remote_url(image_url)
+
         response = requests.get(
             image_url,
             timeout=self.settings.request_timeout_seconds,
-            stream=True
+            stream=True,
         )
-        response.raise_for_status()
 
-        content_length = response.headers.get("content-length")
-        if content_length and int(content_length) > self.settings.max_image_bytes:
-            raise ValueError("Image payload exceeds maximum size")
+        with closing(response):
+            response.raise_for_status()
 
-        data = response.content
-        if len(data) > self.settings.max_image_bytes:
-            raise ValueError("Image payload exceeds maximum size")
+            content_length = response.headers.get("content-length")
+            if content_length and int(content_length) > self.settings.max_image_bytes:
+                raise ValueError("Image payload exceeds maximum size")
 
-        return data
+            buf = io.BytesIO()
+            total = 0
+            for chunk in response.iter_content(chunk_size=8192):
+                if not chunk:
+                    continue
+                total += len(chunk)
+                if total > self.settings.max_image_bytes:
+                    raise ValueError("Image payload exceeds maximum size")
+                buf.write(chunk)
+
+            return buf.getvalue()
 
     def _decode_base64(self, image_base64: str) -> bytes:
         try:
-            data = base64.b64decode(image_base64)
-            if len(data) > self.settings.max_image_bytes:
-                raise ValueError("Image payload exceeds maximum size")
-            return data
-        except Exception as exc:
+            # validate=True rejects non-base64 characters instead of silently ignoring them.
+            data = base64.b64decode(image_base64, validate=True)
+        except (binascii.Error, ValueError) as exc:
             raise ValueError("Invalid base64 image payload") from exc
+
+        if len(data) > self.settings.max_image_bytes:
+            raise ValueError("Image payload exceeds maximum size")
+        return data
 
     def _load_image(self, image_url: Optional[str], image_base64: Optional[str]) -> Image.Image:
         if image_base64:
@@ -131,10 +217,12 @@ class ImageEmbedder:
         image_size: Optional[int]
     ) -> Tuple[List[float], int, str, str, int]:
         spec = self.resolve_model(model)
-        model_obj, processor, device = self._load_model(spec)
+        target_size = spec.image_size if image_size is None else image_size
+        if target_size <= 0:
+            raise ValueError("image_size must be a positive integer")
 
+        model_obj, processor, device = self._load_model(spec)
         image = self._load_image(image_url, image_base64)
-        target_size = image_size or spec.image_size
 
         inputs = processor(
             images=image,

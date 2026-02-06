@@ -15,5 +15,6 @@ build/
 *.log
 coverage.xml
 htmlcov/
+.coverage
 *.sqlite
 *.db
