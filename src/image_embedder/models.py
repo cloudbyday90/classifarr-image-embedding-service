@@ -33,3 +33,4 @@ class HealthResponse(BaseModel):
     status: str
     provider: str
     default_model: str
+    queue: dict = Field(default_factory=dict, description="Queue status and concurrency hints")
