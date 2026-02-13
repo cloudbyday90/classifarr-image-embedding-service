@@ -31,7 +31,7 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.2
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.3
 
   release-scan:
     name: OSV Scan (Tag Release)
