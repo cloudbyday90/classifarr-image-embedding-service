@@ -10,7 +10,7 @@ import socket
 import threading
 from dataclasses import dataclass
 from contextlib import closing
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 from urllib.parse import urlparse
 
 import numpy as np
@@ -18,6 +18,12 @@ import requests
 from PIL import Image
 
 from .config import Settings
+
+if TYPE_CHECKING:
+    import torch
+    from transformers import CLIPModel, CLIPProcessor
+
+ModelTuple = Tuple[Any, Any, str]
 
 
 @dataclass
@@ -47,12 +53,58 @@ MODEL_CATALOG: Dict[str, ModelSpec] = {
 class ImageEmbedder:
     def __init__(self, settings: Optional[Settings] = None):
         self.settings = settings or Settings()
-        self._models: Dict[str, Tuple[object, object, str]] = {}
+        self._models: Dict[str, ModelTuple] = {}
         self._model_locks: Dict[str, threading.Lock] = {}
         self._model_locks_guard = threading.Lock()
 
     def list_models(self) -> List[ModelSpec]:
         return list(MODEL_CATALOG.values())
+
+    def get_device_info(self) -> dict:
+        try:
+            device = self._resolve_device()
+            info = {"type": str(device).split(":")[0]}
+            if str(device).startswith("cuda"):
+                try:
+                    import torch
+                    if torch.cuda.is_available():
+                        info["name"] = torch.cuda.get_device_name(device)
+                except Exception:
+                    pass
+            return info
+        except Exception:
+            return {"type": "unknown"}
+
+    def get_model_status(self) -> List[dict]:
+        result = []
+        for spec in MODEL_CATALOG.values():
+            result.append({
+                "name": spec.name,
+                "loaded": spec.name in self._models,
+            })
+        return result
+
+    def get_memory_info(self) -> Optional[dict]:
+        try:
+            import torch
+            device = self._resolve_device()
+            if str(device).startswith("cuda") and torch.cuda.is_available():
+                return {
+                    "allocated_mb": torch.cuda.memory_allocated(device) / (1024 * 1024),
+                    "reserved_mb": torch.cuda.memory_reserved(device) / (1024 * 1024),
+                }
+        except Exception:
+            pass
+        return None
+
+    def is_default_model_loaded(self) -> bool:
+        spec = self.resolve_model(None)
+        return spec.name in self._models
+
+    def warmup(self, model_name: Optional[str] = None) -> ModelSpec:
+        spec = self.resolve_model(model_name or self.settings.default_model)
+        self._load_model(spec)
+        return spec
 
     def resolve_model(self, model_name: Optional[str]) -> ModelSpec:
         candidate = model_name or self.settings.default_model
@@ -97,8 +149,8 @@ class ImageEmbedder:
         device = self._resolve_device()
         model = CLIPModel.from_pretrained(spec.hf_id)
         processor = CLIPProcessor.from_pretrained(spec.hf_id)
-        model.to(device)
-        model.eval()
+        model.to(device)  # type: ignore[arg-type]
+        model.eval()  # type: ignore[union-attr]
 
         self._models[spec.name] = (model, processor, str(device))
         return self._models[spec.name]
@@ -150,7 +202,7 @@ class ImageEmbedder:
         for info in infos:
             sockaddr = info[4]
             ip_str = sockaddr[0]
-            if not self._is_public_ip(ip_str):
+            if not self._is_public_ip(str(ip_str)):  # type: ignore[arg-type]
                 raise ValueError("Remote image host resolves to a private address")
 
     def _fetch_image_bytes(self, image_url: str) -> bytes:
@@ -224,7 +276,7 @@ class ImageEmbedder:
         model_obj, processor, device = self._load_model(spec)
         image = self._load_image(image_url, image_base64)
 
-        inputs = processor(
+        inputs = processor(  # type: ignore[operator]
             images=image,
             return_tensors="pt",
             size={"shortest_edge": target_size}
@@ -234,7 +286,7 @@ class ImageEmbedder:
         import torch
 
         with torch.no_grad():
-            features = model_obj.get_image_features(**inputs)
+            features = model_obj.get_image_features(**inputs)  # type: ignore[union-attr]
             if normalize:
                 features = torch.nn.functional.normalize(features, p=2, dim=-1)
 

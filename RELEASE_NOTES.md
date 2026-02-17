@@ -14,6 +14,27 @@
 ### Fixes
 - N/A
 
+## v0.0.1.2-alpha
+
+### Highlights
+- Production-ready robustness: structured logging, memory management, graceful shutdown, and Kubernetes-ready health probes.
+
+### What's New
+- `GET /ready` endpoint for Kubernetes readiness probes
+- `POST /admin/cleanup` endpoint for manual memory cleanup
+- Structured JSON logging support via `LOG_JSON_FORMAT=true`
+- Configurable log rotation (`LOG_MAX_BYTES`, `LOG_BACKUP_COUNT`)
+- Model warmup on startup via `WARMUP_ON_STARTUP=true`
+
+### Improvements
+- Enhanced `/health` endpoint with device, model status, memory info, and queue stats
+- Automatic periodic memory cleanup (GPU cache + garbage collection)
+- Graceful shutdown with configurable timeout and cleanup
+- Global exception handler for unhandled errors
+
+### Fixes
+- N/A
+
 ## v0.0.1.1-alpha
 
 ### Highlights

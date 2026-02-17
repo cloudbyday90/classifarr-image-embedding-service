@@ -1,0 +1,9 @@
+{
+  "typeCheckingMode": "basic",
+  "reportGeneralTypeIssues": false,
+  "reportOptionalMemberAccess": false,
+  "reportUnknownMemberType": false,
+  "exclude": [
+    "**/tests/**"
+  ]
+}

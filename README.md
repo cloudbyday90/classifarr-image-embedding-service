@@ -1,12 +1,18 @@
-﻿# Classifarr Image Embedding Service
+# Classifarr Image Embedding Service
 
 A lightweight image embedding microservice designed for Classifarr. It exposes a small HTTP API to generate image embeddings from poster URLs or base64 payloads, and to list supported models.
 
 ## Features
-- FastAPI service with `GET /health`, `GET /models`, and `POST /embed-image`
+- FastAPI service with `GET /health`, `GET /ready`, `GET /models`, `POST /embed-image`
 - CLIP-based image embeddings (ViT-L/14 and ViT-B/16)
 - Optional L2 normalization
 - Docker-ready with simple configuration
+- **Production-ready robustness:**
+  - Structured logging with rotation
+  - Automatic memory management (GPU + garbage collection)
+  - Graceful shutdown with cleanup
+  - Global error handling
+  - Kubernetes-ready health probes
 
 ## Quickstart (Docker)
 Build and run locally:
@@ -127,7 +133,35 @@ uvicorn image_embedder.main:app --host 0.0.0.0 --port 8000
 
 ## API
 ### GET /health
-Returns service health.
+Returns service health with device, model, and memory info.
+
+Response body:
+```json
+{
+  "status": "ok",
+  "provider": "local",
+  "default_model": "ViT-L-14",
+  "device": {"type": "cuda", "name": "NVIDIA GeForce RTX 3080"},
+  "models": [
+    {"name": "ViT-L-14", "loaded": true},
+    {"name": "ViT-B-16", "loaded": false}
+  ],
+  "memory": {"allocated_mb": 1024.5, "reserved_mb": 2048.0},
+  "queue": {"concurrency": 1, "in_flight": 0, "waiting": 0, ...}
+}
+```
+
+### GET /ready
+Returns readiness status for Kubernetes-style probes. Returns 200 when the default model is loaded.
+
+Response body:
+```json
+{
+  "ready": true,
+  "default_model_loaded": true,
+  "device": {"type": "cuda", "name": "NVIDIA GeForce RTX 3080"}
+}
+```
 
 ### GET /models
 Returns supported models and metadata.
@@ -154,14 +188,55 @@ Response body:
 }
 ```
 
+### POST /admin/cleanup
+Trigger manual memory cleanup (garbage collection + GPU cache clearing).
+
+Response body:
+```json
+{
+  "gc_collected": 150,
+  "gpu_freed_mb": 256.5,
+  "process_rss_mb": 1024.0,
+  "gpu_allocated_mb": 512.0,
+  "gpu_reserved_mb": 768.0
+}
+```
+
 ## Environment Variables
+
+### Core Settings
 - `IMAGE_EMBEDDER_PORT` (default `8000`)
 - `IMAGE_EMBEDDER_HOST` (default `0.0.0.0`)
 - `DEFAULT_MODEL` (default `ViT-L-14`)
 - `DEVICE` (default `auto` -> cuda if available, else cpu)
-- `ALLOW_REMOTE_IMAGE_URLS` (default `true`)
-- `MAX_IMAGE_BYTES` (default `10485760`)
+- `ALLOW_REMOTE_IMAGE_URLS` (default `false`)
+- `ALLOWED_REMOTE_IMAGE_HOSTS` (comma-separated host allowlist)
+- `MAX_IMAGE_BYTES` (default `10485760` - 10MB)
 - `REQUEST_TIMEOUT_SECONDS` (default `15`)
+
+### Concurrency & Queue
+- `IMAGE_EMBEDDER_CONCURRENCY` (default `1`)
+- `IMAGE_EMBEDDER_MAX_QUEUE` (default `100`)
+- `IMAGE_EMBEDDER_MAX_WAIT_SECONDS` (default `60`)
+
+### Startup
+- `WARMUP_ON_STARTUP` (default `true` - preload default model)
+
+### Logging
+- `LOG_LEVEL` (default `INFO` - DEBUG, INFO, WARNING, ERROR)
+- `LOG_FILE` (path to log file, optional)
+- `LOG_MAX_BYTES` (default `10485760` - 10MB before rotation)
+- `LOG_BACKUP_COUNT` (default `5` - number of rotated files)
+- `LOG_JSON_FORMAT` (default `false` - use JSON log format)
+
+### Memory Management
+- `MEMORY_CLEANUP_INTERVAL_SECONDS` (default `300` - periodic cleanup)
+- `MAX_PROCESS_MEMORY_MB` (threshold for health check, 0 to disable)
+- `MAX_GPU_MEMORY_MB` (threshold for health check, 0 to disable)
+- `CLEANUP_ON_SHUTDOWN` (default `true` - cleanup on graceful shutdown)
+
+### Graceful Shutdown
+- `SHUTDOWN_TIMEOUT_SECONDS` (default `30` - max time for graceful shutdown)
 
 ## Release Workflow
 - Keep release notes in `RELEASE_NOTES.md` with an `Unreleased` section at the top (high-level, user-facing, emojis/graphs ok).

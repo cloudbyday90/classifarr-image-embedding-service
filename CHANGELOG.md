@@ -23,6 +23,36 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ### Security
 - N/A
 
+## v0.0.1.2-alpha
+
+### Added
+- `logging_config.py` module with structured logging, JSON formatter, and file rotation support.
+- `memory.py` module for GPU memory management, garbage collection, and memory health checks.
+- `GET /ready` endpoint returning `ReadyResponse` with readiness status and device info.
+- `POST /admin/cleanup` endpoint returning `CleanupResponse` with GC and GPU cleanup stats.
+- Enhanced `/health` endpoint returning `HealthResponse` with device, models, memory, and queue stats.
+- Model warmup on startup via `WARMUP_ON_STARTUP` setting (default `true`).
+- Background memory cleanup loop running at `MEMORY_CLEANUP_INTERVAL_SECONDS`.
+- Graceful shutdown with signal handlers (`SIGTERM`, `SIGINT`) and configurable `SHUTDOWN_TIMEOUT_SECONDS`.
+- Global exception handler returning JSON 500 responses for unhandled errors.
+- New response models: `ReadyResponse`, `DeviceInfo`, `ModelStatus`, `MemoryInfo`, `CleanupResponse`.
+
+### Changed
+- `/health` response expanded with `device`, `models`, `memory`, and `queue` fields.
+- Startup now logs service version via `__version__` from `__init__.py`.
+
+### Deprecated
+- N/A
+
+### Removed
+- N/A
+
+### Fixed
+- N/A
+
+### Security
+- N/A
+
 ## v0.0.1.1-alpha
 
 ### Added

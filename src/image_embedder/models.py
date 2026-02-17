@@ -29,8 +29,40 @@ class EmbedImageResponse(BaseModel):
     image_size: int
 
 
+class ModelStatus(BaseModel):
+    name: str
+    loaded: bool
+
+
+class DeviceInfo(BaseModel):
+    type: str
+    name: Optional[str] = None
+
+
+class MemoryInfo(BaseModel):
+    allocated_mb: Optional[float] = None
+    reserved_mb: Optional[float] = None
+
+
 class HealthResponse(BaseModel):
     status: str
     provider: str
     default_model: str
+    device: Optional[DeviceInfo] = None
+    models: List[ModelStatus] = Field(default_factory=list)
+    memory: Optional[MemoryInfo] = None
     queue: dict = Field(default_factory=dict, description="Queue status and concurrency hints")
+
+
+class ReadyResponse(BaseModel):
+    ready: bool
+    default_model_loaded: bool
+    device: Optional[DeviceInfo] = None
+
+
+class CleanupResponse(BaseModel):
+    gc_collected: int
+    gpu_freed_mb: float
+    process_rss_mb: Optional[float] = None
+    gpu_allocated_mb: Optional[float] = None
+    gpu_reserved_mb: Optional[float] = None
