@@ -87,27 +87,25 @@ The embedding service uses a **shared API key** for service-to-service authentic
 
 ### Setup
 
-**Step 1 — Generate the key in Classifarr:**
-In the Classifarr UI go to **Settings → API Keys** and create a key with the `embed_service` permission tier. Copy the key value.
-
-**Step 2 — Create a `.env` file** (never commit this):
+**Step 1 — Generate your `.env` file:**
 ```bash
-# .env  (same directory as your docker-compose.yml)
-SERVICE_API_KEY=paste-your-key-here
+python scripts/generate_env.py
+```
+This creates a `.env` file with a cryptographically random `SERVICE_API_KEY` and prints the key for you to copy. The file is gitignored and will never be committed.
+
+To regenerate (e.g. to rotate the key):
+```bash
+python scripts/generate_env.py --force
 ```
 
-**Step 3 — Reference it in `docker-compose.yml`** (already done in the example above):
-```yaml
-environment:
-  - SERVICE_API_KEY=${SERVICE_API_KEY}   # embedding service validates this
-```
-And in the Classifarr service:
-```yaml
-environment:
-  - IMAGE_EMBEDDER_API_KEY=${SERVICE_API_KEY}   # Classifarr sends this as X-Api-Key
-```
+**Step 2 — Add the key to Classifarr:**
+Copy the printed `SERVICE_API_KEY` value and set it as `IMAGE_EMBEDDER_API_KEY` in Classifarr's environment (or via Classifarr Settings → API Keys with the `embed_service` tier).
 
-Docker Compose automatically reads `.env` from the same directory, so both containers receive the same value.
+**Step 3 — Start the stack:**
+```bash
+docker compose up -d
+```
+Docker Compose automatically reads `.env` from the same directory and injects `SERVICE_API_KEY` into both containers.
 
 ### How it works
 
