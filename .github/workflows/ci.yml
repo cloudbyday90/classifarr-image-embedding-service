@@ -49,6 +49,17 @@ jobs:
       - name: Run tests
         run: pytest
 
+      - name: Coverage ratchet check
+        run: python scripts/check_coverage_ratchet.py
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 30
+
   docker-release:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
