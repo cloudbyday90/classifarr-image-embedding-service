@@ -7,6 +7,8 @@ A lightweight image embedding microservice designed for Classifarr. It exposes a
 - CLIP-based image embeddings (ViT-L/14 and ViT-B/16)
 - Optional L2 normalization
 - Docker-ready with simple configuration
+- **API key authentication** with constant-time comparison (service-to-service)
+- **Per-key rate limiting** on `/embed-image` to prevent GPU resource exhaustion
 - **Production-ready robustness:**
   - Structured logging with rotation
   - Automatic memory management (GPU + garbage collection)
@@ -59,6 +61,7 @@ services:
       - DEVICE=auto
       - ALLOW_REMOTE_IMAGE_URLS=true
       - REQUEST_TIMEOUT_SECONDS=15
+      - SERVICE_API_KEY=${SERVICE_API_KEY}   # shared with Classifarr
     restart: unless-stopped
 
   classifarr:
@@ -70,12 +73,59 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - TZ=America/New_York
+      - IMAGE_EMBEDDER_API_KEY=${SERVICE_API_KEY}   # same key, sent as X-Api-Key header
     restart: unless-stopped
 ```
 
 In this example, Classifarr can reach the image embedder at:
 - Host: `image-embedder` (same compose network)
 - Port: `8000`
+
+## Authentication
+
+The embedding service uses a **shared API key** for service-to-service authentication. Classifarr generates and manages this key; you copy it into your environment once.
+
+### Setup
+
+**Step 1 — Generate the key in Classifarr:**
+In the Classifarr UI go to **Settings → API Keys** and create a key with the `embed_service` permission tier. Copy the key value.
+
+**Step 2 — Create a `.env` file** (never commit this):
+```bash
+# .env  (same directory as your docker-compose.yml)
+SERVICE_API_KEY=paste-your-key-here
+```
+
+**Step 3 — Reference it in `docker-compose.yml`** (already done in the example above):
+```yaml
+environment:
+  - SERVICE_API_KEY=${SERVICE_API_KEY}   # embedding service validates this
+```
+And in the Classifarr service:
+```yaml
+environment:
+  - IMAGE_EMBEDDER_API_KEY=${SERVICE_API_KEY}   # Classifarr sends this as X-Api-Key
+```
+
+Docker Compose automatically reads `.env` from the same directory, so both containers receive the same value.
+
+### How it works
+
+- Classifarr sends the key as an `X-Api-Key` header (or `Authorization: Bearer <key>`) on every request.
+- The embedding service validates it with a constant-time comparison (`hmac.compare_digest`) to prevent timing attacks.
+- `/health` and `/ready` are **always public** — Docker and orchestrators need these unauthenticated.
+- `/admin/cleanup` is **always protected**, even in development mode.
+
+### Modes
+
+| `REQUIRE_API_KEY` | `SERVICE_API_KEY` | Behaviour |
+|---|---|---|
+| `true` (default) | set | All endpoints except `/health`/`/ready` require the key |
+| `true` | _not set_ | Service returns `503` — fail-closed on misconfiguration |
+| `false` | set | Dev mode — non-admin endpoints are public; `/admin/cleanup` still requires key |
+| `false` | _not set_ | Dev mode — non-admin endpoints public; admin returns `503` |
+
+> **Tip:** set `REQUIRE_API_KEY=false` only for local development where the service is not network-accessible.
 
 ## GPU Examples
 These examples expose GPU devices to the container. Whether the service actually uses them depends on your PyTorch build and drivers.
@@ -237,6 +287,11 @@ Response body:
 
 ### Graceful Shutdown
 - `SHUTDOWN_TIMEOUT_SECONDS` (default `30` - max time for graceful shutdown)
+
+### Authentication
+- `SERVICE_API_KEY` — shared secret validated on every protected request; must match the key configured in Classifarr Settings
+- `REQUIRE_API_KEY` (default `true`) — set to `false` only for local development
+- `RATE_LIMIT_EMBED` (default `30/minute`) — rate limit for `POST /embed-image`, per API key (or IP if no key); format: `<count>/<period>` e.g. `10/minute`, `2/second`
 
 ## Release Workflow
 - Keep release notes in `RELEASE_NOTES.md` with an `Unreleased` section at the top (high-level, user-facing, emojis/graphs ok).
