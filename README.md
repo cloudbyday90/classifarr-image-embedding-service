@@ -91,29 +91,44 @@ The embedding service uses a **shared API key** for service-to-service authentic
 
 ### Setup
 
-**Step 1 — Run setup:**
-```bash
-python scripts/generate_env.py
-```
-This generates two files:
-- `.env` — contains only `SERVICE_API_KEY`, a cryptographically random secret. Gitignored; never committed.
-- `config.toml` — created with default settings if it doesn't already exist. Committed to the repo and mounted read-only into the container.
+The easiest way is the start script — it auto-generates `.env` on first run, prompts you to copy the key into Classifarr, then starts the stack.
 
-To rotate the key (existing `config.toml` is preserved):
-```bash
-python scripts/generate_env.py --force
+**Windows (PowerShell):**
+```powershell
+.\scripts\start.ps1
 ```
 
-To customise settings, edit `config.toml` before starting the stack.
+**Linux / macOS:**
+```bash
+bash scripts/start.sh
+```
 
-**Step 2 — Add the key to Classifarr:**
-Copy the printed `SERVICE_API_KEY` value and set it as `IMAGE_EMBEDDER_API_KEY` in Classifarr's environment (or via Classifarr Settings → API Keys with the `embed_service` tier).
+The script does three things:
+1. If `.env` doesn't exist yet, runs `generate_env.py` to create it with a fresh `SERVICE_API_KEY`.
+2. Prints the key and pauses so you can copy it into Classifarr before the service starts.
+3. Runs `docker compose up -d`.
 
-**Step 3 — Start the stack:**
+**`.env` persists across restarts.** Once it exists, `docker compose up -d` (or the start script) just works — no key generation or prompts. You only go through the first-time flow once per machine.
+
+---
+
+**Manual setup / key rotation:**
+
+```bash
+python scripts/generate_env.py           # first-time: creates .env + config.toml defaults
+python scripts/generate_env.py --force   # rotate key (config.toml is preserved)
+```
+
+This creates:
+- `.env` — contains only `SERVICE_API_KEY`. Gitignored; never committed.
+- `config.toml` — default settings, if not already present. Committed to the repo, mounted read-only into the container.
+
+Copy the printed `SERVICE_API_KEY` value into Classifarr as `IMAGE_EMBEDDER_API_KEY` (env var), or via Classifarr Settings → API Keys with the `embed_service` tier.
+
+Then start the stack:
 ```bash
 docker compose up -d
 ```
-Docker Compose reads `.env` for the secret and mounts `config.toml` read-only into the container.
 
 ### How it works
 
