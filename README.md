@@ -91,16 +91,20 @@ The embedding service uses a **shared API key** for service-to-service authentic
 
 ### Setup
 
-**Step 1 — Generate your API key:**
+**Step 1 — Run setup:**
 ```bash
 python scripts/generate_env.py
 ```
-This creates a `.env` file containing only `SERVICE_API_KEY` — a cryptographically random secret. All other settings live in `config.toml`, which is committed to the repo and mounted read-only into the container.
+This generates two files:
+- `.env` — contains only `SERVICE_API_KEY`, a cryptographically random secret. Gitignored; never committed.
+- `config.toml` — created with default settings if it doesn't already exist. Committed to the repo and mounted read-only into the container.
 
-To rotate the key:
+To rotate the key (existing `config.toml` is preserved):
 ```bash
 python scripts/generate_env.py --force
 ```
+
+To customise settings, edit `config.toml` before starting the stack.
 
 **Step 2 — Add the key to Classifarr:**
 Copy the printed `SERVICE_API_KEY` value and set it as `IMAGE_EMBEDDER_API_KEY` in Classifarr's environment (or via Classifarr Settings → API Keys with the `embed_service` tier).
