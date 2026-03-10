@@ -10,17 +10,21 @@
 ## Preconditions
 
 - Implementation plan complete and signed off.
-- Local tests pass.
+- Local tests pass and coverage ratchet is green (see below).
 - No failing CI or pending review tasks.
 - Docker build validates successfully.
 
 ## Local Testing (Required Before Release)
 
-1. Tests (local Python):
-   - `pytest`
-2. Tests (Docker fallback):
+1. Tests + coverage (local Python):
+   - `pytest` — runs tests and generates `coverage.xml`
+   - `python scripts/check_coverage_ratchet.py` — confirm no regression
+2. Update coverage baseline if it has improved (commit the result):
+   - `python scripts/update_coverage_baseline.py`
+   - `git add .coverage-baseline.json`
+3. Tests (Docker fallback):
    - `docker run --rm -v "$PWD:/app" -w /app python:3.12-slim bash -lc "python -m pip install -r requirements.txt -r requirements-dev.txt && pytest -q"`
-3. Docker build:
+4. Docker build:
    - `docker build -t classifarr-image-embedder:local .`
 
 ## Prerequisites
@@ -35,10 +39,15 @@
    - `src/image_embedder/main.py` (FastAPI `version=...`)
    - `src/image_embedder/__init__.py` (optional `__version__`)
    - `README.md` (if version displayed)
-2. **Release Notes (High-Level)**: Update `RELEASE_NOTES.md` with user-facing highlights (emojis/graphs ok).
-3. **Changelog (Technical)**: Update `CHANGELOG.md` with technical changes, breaking changes, and config tweaks.
-4. **Commit**: Commit changes with message `release: vX.Y.Z`.
-5. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
+2. **Coverage Baseline**: If coverage improved since last release, update and commit the baseline:
+   ```bash
+   python scripts/update_coverage_baseline.py
+   git add .coverage-baseline.json
+   ```
+3. **Release Notes (High-Level)**: Update `RELEASE_NOTES.md` with user-facing highlights (emojis/graphs ok).
+4. **Changelog (Technical)**: Update `CHANGELOG.md` with technical changes, breaking changes, and config tweaks.
+5. **Commit**: Commit changes with message `release: vX.Y.Z`.
+6. **Create GitHub Release & Tag**: Use GitHub CLI to create the **GitHub Release** and tag simultaneously. This should trigger the Docker build pipeline.
 
 ```bash
 # Syntax: gh release create <tag> --title "<title>" --notes-file <file> --target <branch>
