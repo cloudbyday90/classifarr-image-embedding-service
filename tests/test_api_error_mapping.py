@@ -36,5 +36,7 @@ def test_embed_image_generic_exception_maps_to_500():
     client = TestClient(app)
     response = client.post("/embed-image", json={"image_url": "https://example.com/poster.jpg"})
     assert response.status_code == 500
-    assert response.json()["detail"] == "boom"
+    # Internal exception details must NOT be leaked to the client (OWASP A05 / security hardening).
+    assert response.json()["detail"] == "Internal server error"
+    assert "boom" not in response.text
 

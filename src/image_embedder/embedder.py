@@ -144,16 +144,16 @@ class ImageEmbedder:
             if spec.name in self._models:
                 return self._models[spec.name]
 
-        from transformers import CLIPModel, CLIPProcessor
+            from transformers import CLIPModel, CLIPProcessor
 
-        device = self._resolve_device()
-        model = CLIPModel.from_pretrained(spec.hf_id)
-        processor = CLIPProcessor.from_pretrained(spec.hf_id)
-        model.to(device)  # type: ignore[arg-type]
-        model.eval()  # type: ignore[union-attr]
+            device = self._resolve_device()
+            model = CLIPModel.from_pretrained(spec.hf_id)
+            processor = CLIPProcessor.from_pretrained(spec.hf_id)
+            model.to(device)  # type: ignore[arg-type]
+            model.eval()  # type: ignore[union-attr]
 
-        self._models[spec.name] = (model, processor, str(device))
-        return self._models[spec.name]
+            self._models[spec.name] = (model, processor, str(device))
+            return self._models[spec.name]
 
     def _is_public_ip(self, ip_str: str) -> bool:
         ip = ipaddress.ip_address(ip_str)

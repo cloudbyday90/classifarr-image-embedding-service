@@ -248,7 +248,7 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
         except Exception as exc:
             logger.exception(f"Embedding error: {exc}")
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
+            raise HTTPException(status_code=500, detail="Internal server error") from exc
 
         for k, v in _queue_headers(queue).items():
             response.headers[k] = v
