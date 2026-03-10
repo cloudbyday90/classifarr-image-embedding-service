@@ -5,6 +5,16 @@
 from fastapi.testclient import TestClient
 
 from image_embedder.main import create_app
+from image_embedder.config import Settings
+
+
+def _no_auth_settings(**kwargs) -> Settings:
+    s = Settings()
+    s.require_api_key = False
+    s.warmup_on_startup = False
+    for k, v in kwargs.items():
+        setattr(s, k, v)
+    return s
 
 
 class FakeEmbedder:
@@ -47,7 +57,7 @@ class FakeEmbedder:
 
 
 def test_health():
-    app = create_app(embedder=FakeEmbedder())
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.get("/health")
     assert response.status_code == 200
@@ -60,7 +70,7 @@ def test_health():
 
 
 def test_models():
-    app = create_app(embedder=FakeEmbedder())
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.get("/models")
     assert response.status_code == 200
@@ -69,7 +79,7 @@ def test_models():
 
 
 def test_embed_image():
-    app = create_app(embedder=FakeEmbedder())
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.post("/embed-image", json={
         "image_url": "https://example.com/poster.jpg",
@@ -84,7 +94,7 @@ def test_embed_image():
 
 
 def test_embed_image_requires_payload():
-    app = create_app(embedder=FakeEmbedder())
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.post("/embed-image", json={
         "model": "ViT-L-14"
@@ -93,7 +103,7 @@ def test_embed_image_requires_payload():
 
 
 def test_ready():
-    app = create_app(embedder=FakeEmbedder())
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.get("/ready")
     assert response.status_code == 200

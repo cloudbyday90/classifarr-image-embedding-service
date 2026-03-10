@@ -159,14 +159,15 @@ def test_config_shutdown_settings():
 def test_cleanup_endpoint():
     embedder = FakeEmbedderWithCleanup()
     settings = Settings(warmup_on_startup=False)
-    with patch("image_embedder.main.Settings", return_value=settings):
-        app = create_app(embedder=embedder)
-        with TestClient(app) as client:
-            response = client.post("/admin/cleanup")
-            assert response.status_code == 200
-            data = response.json()
-            assert "gc_collected" in data
-            assert "gpu_freed_mb" in data
+    settings.require_api_key = False
+    settings.service_api_key = "test-key"
+    app = create_app(embedder=embedder, settings=settings)
+    with TestClient(app) as client:
+        response = client.post("/admin/cleanup", headers={"X-Api-Key": "test-key"})
+        assert response.status_code == 200
+        data = response.json()
+        assert "gc_collected" in data
+        assert "gpu_freed_mb" in data
 
 
 def test_global_exception_handler():
@@ -178,6 +179,7 @@ def test_global_exception_handler():
     embedder.embed = boom
     
     settings = Settings(warmup_on_startup=False)
+    settings.require_api_key = False
     with patch("image_embedder.main.Settings", return_value=settings):
         app = create_app(embedder=embedder)
         with TestClient(app) as client:

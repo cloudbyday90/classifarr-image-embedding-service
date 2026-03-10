@@ -5,6 +5,14 @@
 from fastapi.testclient import TestClient
 
 from image_embedder.main import create_app
+from image_embedder.config import Settings
+
+
+def _no_auth_settings() -> Settings:
+    s = Settings()
+    s.require_api_key = False
+    s.warmup_on_startup = False
+    return s
 
 
 class EmbedderValueError:
@@ -24,7 +32,7 @@ class EmbedderException:
 
 
 def test_embed_image_value_error_maps_to_400():
-    app = create_app(embedder=EmbedderValueError())
+    app = create_app(embedder=EmbedderValueError(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.post("/embed-image", json={"image_url": "https://example.com/poster.jpg"})
     assert response.status_code == 400
@@ -32,7 +40,7 @@ def test_embed_image_value_error_maps_to_400():
 
 
 def test_embed_image_generic_exception_maps_to_500():
-    app = create_app(embedder=EmbedderException())
+    app = create_app(embedder=EmbedderException(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.post("/embed-image", json={"image_url": "https://example.com/poster.jpg"})
     assert response.status_code == 500

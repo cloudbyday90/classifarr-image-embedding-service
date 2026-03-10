@@ -10,6 +10,16 @@ import httpx
 import pytest
 
 from image_embedder.main import create_app
+from image_embedder.config import Settings
+
+
+def _no_auth_settings(**kwargs) -> Settings:
+    s = Settings()
+    s.require_api_key = False
+    s.warmup_on_startup = False
+    for k, v in kwargs.items():
+        setattr(s, k, v)
+    return s
 
 
 class SlowEmbedder:
@@ -39,7 +49,9 @@ async def test_queue_serializes_when_waiting_allowed(monkeypatch):
     monkeypatch.setenv("IMAGE_EMBEDDER_MAX_QUEUE", "10")
     monkeypatch.setenv("IMAGE_EMBEDDER_MAX_WAIT_SECONDS", "2")
 
-    app = create_app(embedder=SlowEmbedder(delay_seconds=0.20))
+    app = create_app(embedder=SlowEmbedder(delay_seconds=0.20), settings=_no_auth_settings(
+        embed_concurrency=1, embed_max_queue=10, embed_max_wait_seconds=2
+    ))
     transport = httpx.ASGITransport(app=app)
 
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
@@ -64,7 +76,9 @@ async def test_queue_fail_fast_when_no_waiting(monkeypatch):
     monkeypatch.setenv("IMAGE_EMBEDDER_MAX_WAIT_SECONDS", "60")
 
     started = threading.Event()
-    app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started))
+    app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started), settings=_no_auth_settings(
+        embed_concurrency=1, embed_max_queue=0, embed_max_wait_seconds=60
+    ))
     transport = httpx.ASGITransport(app=app)
 
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
@@ -98,7 +112,9 @@ async def test_queue_wait_timeout_returns_504(monkeypatch):
     monkeypatch.setenv("IMAGE_EMBEDDER_MAX_WAIT_SECONDS", "0")
 
     started = threading.Event()
-    app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started))
+    app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started), settings=_no_auth_settings(
+        embed_concurrency=1, embed_max_queue=10, embed_max_wait_seconds=0
+    ))
     transport = httpx.ASGITransport(app=app)
 
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:

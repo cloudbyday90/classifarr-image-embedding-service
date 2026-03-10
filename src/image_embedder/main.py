@@ -7,8 +7,11 @@ import signal
 from contextlib import asynccontextmanager
 
 import anyio
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from .config import Settings
 from .embedder import ImageEmbedder
@@ -20,10 +23,11 @@ from .models import (
     ReadyResponse, DeviceInfo, ModelStatus, MemoryInfo, CleanupResponse,
 )
 from .queue import EmbedQueue, QueueFullError, QueueWaitTimeoutError
+from .security import make_auth_dependency, make_limiter
 
 
-def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
-    settings = Settings()
+def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None = None) -> FastAPI:
+    settings = settings or Settings()
     
     logger = setup_logging(
         level=settings.log_level,
@@ -112,16 +116,23 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
         
         logger.info("Shutdown complete")
 
+    limiter = make_limiter(settings)
+    auth = make_auth_dependency(settings)
+
     app = FastAPI(
         title="Classifarr Image Embedding Service",
         version=__version__,
         lifespan=lifespan,
     )
 
+    app.state.limiter = limiter
     app.state.embedder = embedder_instance
     app.state.queue = queue
     app.state.settings = settings
     app.state.logger = logger
+
+    app.add_middleware(SlowAPIMiddleware)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
@@ -176,7 +187,7 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
             device=DeviceInfo(**device_info) if device_info else None,
         )
 
-    @app.get("/models", response_model=list[ModelInfo])
+    @app.get("/models", response_model=list[ModelInfo], dependencies=[Depends(auth)])
     def list_models():
         embedder_instance: ImageEmbedder = app.state.embedder
         return [
@@ -189,7 +200,7 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
             for spec in embedder_instance.list_models()
         ]
 
-    @app.post("/admin/cleanup", response_model=CleanupResponse)
+    @app.post("/admin/cleanup", response_model=CleanupResponse, dependencies=[Depends(auth)])
     async def trigger_cleanup():
         logger = app.state.logger
         logger.info("Manual cleanup triggered")
@@ -203,8 +214,9 @@ def create_app(embedder: ImageEmbedder | None = None) -> FastAPI:
             gpu_reserved_mb=mem_usage["gpu_reserved_mb"],
         )
 
-    @app.post("/embed-image", response_model=EmbedImageResponse)
-    async def embed_image(payload: EmbedImageRequest, response: Response):
+    @app.post("/embed-image", response_model=EmbedImageResponse, dependencies=[Depends(auth)])
+    @limiter.limit(settings.rate_limit_embed)
+    async def embed_image(request: Request, payload: EmbedImageRequest, response: Response):
         logger = app.state.logger
         embedder_instance: ImageEmbedder = app.state.embedder
         queue: EmbedQueue = app.state.queue

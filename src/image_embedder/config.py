@@ -56,3 +56,14 @@ class Settings:
     shutdown_timeout_seconds: int = field(
         default_factory=lambda: int(os.getenv("SHUTDOWN_TIMEOUT_SECONDS", "30"))
     )
+
+    # Authentication
+    # SERVICE_API_KEY: shared secret passed by Classifarr as X-Api-Key header.
+    # Leave unset (or empty) only when REQUIRE_API_KEY=false (local dev).
+    service_api_key: str | None = field(default_factory=lambda: os.getenv("SERVICE_API_KEY") or None)
+    # REQUIRE_API_KEY defaults to true; set to false only in local development.
+    require_api_key: bool = field(default_factory=lambda: _get_bool(os.getenv("REQUIRE_API_KEY"), True))
+
+    # Rate limiting for /embed-image (slowapi token-bucket)
+    # Format: "<count>/<period>" e.g. "10/minute", "2/second"
+    rate_limit_embed: str = field(default_factory=lambda: os.getenv("RATE_LIMIT_EMBED", "30/minute"))

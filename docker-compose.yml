@@ -9,3 +9,9 @@ services:
       IMAGE_EMBEDDER_PORT: 8000
       DEFAULT_MODEL: ViT-L-14
       DEVICE: auto
+      # Shared API key — must match the key generated in Classifarr Settings.
+      # Set via a .env file (never commit the actual value).
+      SERVICE_API_KEY: ${SERVICE_API_KEY:-}
+      # Set REQUIRE_API_KEY=false only for local development.
+      REQUIRE_API_KEY: ${REQUIRE_API_KEY:-true}
+      RATE_LIMIT_EMBED: ${RATE_LIMIT_EMBED:-30/minute}
