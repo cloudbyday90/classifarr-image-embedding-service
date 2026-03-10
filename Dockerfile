@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     libgl1 \
     libglib2.0-0 \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
