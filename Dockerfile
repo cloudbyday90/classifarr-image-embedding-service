@@ -24,6 +24,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1
 ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONPATH="/app/src"
+# Store HuggingFace model cache inside the app dir where appuser has write access
+ENV HF_HOME="/app/.cache"
 
 # Runtime-only system libraries (Pillow needs libgl1 / libglib2.0-0)
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -39,7 +42,9 @@ COPY src ./src
 
 # CIS Docker Benchmark 4.1: do not run as root
 RUN groupadd --gid 1001 appgroup \
-    && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser
+    && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser \
+    && mkdir -p /app/.cache \
+    && chown -R appuser:appgroup /app/.cache
 USER appuser
 
 EXPOSE 8000

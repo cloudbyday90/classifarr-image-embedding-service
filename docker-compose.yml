@@ -12,7 +12,13 @@ services:
       - source: app_config
         target: /app/config.toml
         mode: 0444
+    volumes:
+      # Persist downloaded HuggingFace models across container restarts.
+      - model-cache:/app/.cache
 
 configs:
   app_config:
     file: ./config.toml
+
+volumes:
+  model-cache:
