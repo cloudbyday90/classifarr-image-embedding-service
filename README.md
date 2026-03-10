@@ -57,11 +57,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DEFAULT_MODEL=ViT-L-14
-      - DEVICE=auto
-      - ALLOW_REMOTE_IMAGE_URLS=true
-      - REQUEST_TIMEOUT_SECONDS=15
-      - SERVICE_API_KEY=${SERVICE_API_KEY}   # shared with Classifarr
+      - SERVICE_API_KEY=${SERVICE_API_KEY}   # shared with Classifarr; set via .env
+    configs:
+      - source: app_config
+        target: /app/config.toml
+        mode: 0444
     restart: unless-stopped
 
   classifarr:
@@ -75,6 +75,10 @@ services:
       - TZ=America/New_York
       - IMAGE_EMBEDDER_API_KEY=${SERVICE_API_KEY}   # same key, sent as X-Api-Key header
     restart: unless-stopped
+
+configs:
+  app_config:
+    file: ./config.toml
 ```
 
 In this example, Classifarr can reach the image embedder at:
@@ -91,7 +95,7 @@ The embedding service uses a **shared API key** for service-to-service authentic
 ```bash
 python scripts/generate_env.py
 ```
-This creates a `.env` file with a cryptographically random `SERVICE_API_KEY` and prints the key for you to copy. The file is gitignored and will never be committed.
+This creates a `.env` file containing only `SERVICE_API_KEY` — a cryptographically random secret. All other settings live in `config.toml`, which is committed to the repo and mounted read-only into the container.
 
 To regenerate (e.g. to rotate the key):
 ```bash
@@ -105,7 +109,7 @@ Copy the printed `SERVICE_API_KEY` value and set it as `IMAGE_EMBEDDER_API_KEY` 
 ```bash
 docker compose up -d
 ```
-Docker Compose automatically reads `.env` from the same directory and injects `SERVICE_API_KEY` into both containers.
+Docker Compose reads `.env` for the secret and mounts `config.toml` read-only into the container.
 
 ### How it works
 
@@ -116,14 +120,14 @@ Docker Compose automatically reads `.env` from the same directory and injects `S
 
 ### Modes
 
-| `REQUIRE_API_KEY` | `SERVICE_API_KEY` | Behaviour |
+| `require_api_key` in `config.toml` | `SERVICE_API_KEY` | Behaviour |
 |---|---|---|
 | `true` (default) | set | All endpoints except `/health`/`/ready` require the key |
 | `true` | _not set_ | Service returns `503` — fail-closed on misconfiguration |
 | `false` | set | Dev mode — non-admin endpoints are public; `/admin/cleanup` still requires key |
 | `false` | _not set_ | Dev mode — non-admin endpoints public; admin returns `503` |
 
-> **Tip:** set `REQUIRE_API_KEY=false` only for local development where the service is not network-accessible.
+> **Tip:** set `require_api_key = false` in `config.toml` only for local development where the service is not network-accessible. You can also override it temporarily with `REQUIRE_API_KEY=false` as an environment variable.
 
 ## GPU Examples
 These examples expose GPU devices to the container. Whether the service actually uses them depends on your PyTorch build and drivers.
@@ -287,9 +291,14 @@ Response body:
 - `SHUTDOWN_TIMEOUT_SECONDS` (default `30` - max time for graceful shutdown)
 
 ### Authentication
-- `SERVICE_API_KEY` — shared secret validated on every protected request; must match the key configured in Classifarr Settings
-- `REQUIRE_API_KEY` (default `true`) — set to `false` only for local development
-- `RATE_LIMIT_EMBED` (default `30/minute`) — rate limit for `POST /embed-image`, per API key (or IP if no key); format: `<count>/<period>` e.g. `10/minute`, `2/second`
+- `SERVICE_API_KEY` — shared secret validated on every protected request; must match the key configured in Classifarr Settings. Set via `.env`, never in `config.toml`.
+
+Auth mode and rate limiting are configured in `config.toml` under `[auth]` and can be overridden by environment variable:
+- `REQUIRE_API_KEY` — overrides `config.toml` `require_api_key` (default `true`)
+- `RATE_LIMIT_EMBED` — overrides `config.toml` `rate_limit_embed` (default `30/minute`); format: `<count>/<period>` e.g. `10/minute`, `2/second`
+
+### Configuration File
+Most settings are defined in `config.toml` (committed to the repo) and mounted read-only into the container at `/app/config.toml`. Environment variables always override config file values. Override the path with `CONFIG_FILE=/path/to/config.toml`.
 
 ## Release Workflow
 - Keep release notes in `RELEASE_NOTES.md` with an `Unreleased` section at the top (high-level, user-facing, emojis/graphs ok).

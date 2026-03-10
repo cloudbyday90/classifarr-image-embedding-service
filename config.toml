@@ -1,0 +1,42 @@
+# Classifarr Image Embedding Service — application configuration
+# This file is mounted read-only into the container (mode 0444 via Docker configs).
+# Environment variables always override values defined here — useful for CI overrides.
+# Secrets (SERVICE_API_KEY) must never appear in this file — use .env instead.
+
+[server]
+host = "0.0.0.0"
+port = 8000
+shutdown_timeout_seconds = 30
+
+[model]
+default_model = "ViT-L-14"
+device = "auto"             # "auto" selects cuda if available, else cpu
+warmup_on_startup = true
+
+[image]
+allow_remote_urls = false
+allowed_remote_hosts = []   # when allow_remote_urls = true, restrict to these hosts
+max_image_bytes = 10485760  # 10 MiB
+request_timeout_seconds = 15
+
+[queue]
+concurrency = 1
+max_queue = 100
+max_wait_seconds = 60
+
+[logging]
+level = "INFO"              # DEBUG, INFO, WARNING, ERROR
+json_format = false
+max_bytes = 10485760        # 10 MiB per log file before rotation
+backup_count = 5
+
+[memory]
+cleanup_interval_seconds = 300
+max_process_memory_mb = 0   # 0 = no limit
+max_gpu_memory_mb = 0       # 0 = no limit
+cleanup_on_shutdown = true
+
+[auth]
+require_api_key = true
+rate_limit_embed = "30/minute"  # format: "<count>/<period>" e.g. "10/minute", "2/second"
+# SERVICE_API_KEY is intentionally absent — set it via the .env file (see scripts/generate_env.py)
