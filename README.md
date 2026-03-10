@@ -91,13 +91,13 @@ The embedding service uses a **shared API key** for service-to-service authentic
 
 ### Setup
 
-**Step 1 — Generate your `.env` file:**
+**Step 1 — Generate your API key:**
 ```bash
 python scripts/generate_env.py
 ```
 This creates a `.env` file containing only `SERVICE_API_KEY` — a cryptographically random secret. All other settings live in `config.toml`, which is committed to the repo and mounted read-only into the container.
 
-To regenerate (e.g. to rotate the key):
+To rotate the key:
 ```bash
 python scripts/generate_env.py --force
 ```
