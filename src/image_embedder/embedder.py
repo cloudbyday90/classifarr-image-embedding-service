@@ -21,7 +21,7 @@ from .config import Settings
 
 if TYPE_CHECKING:
     import torch
-    from transformers import CLIPModel, CLIPProcessor
+    from transformers import CLIPVisionModelWithProjection, CLIPProcessor
 
 ModelTuple = Tuple[Any, Any, str]
 
@@ -144,10 +144,10 @@ class ImageEmbedder:
             if spec.name in self._models:
                 return self._models[spec.name]
 
-            from transformers import CLIPModel, CLIPProcessor
+            from transformers import CLIPVisionModelWithProjection, CLIPProcessor
 
             device = self._resolve_device()
-            model = CLIPModel.from_pretrained(spec.hf_id)
+            model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
             processor = CLIPProcessor.from_pretrained(spec.hf_id)
             model.to(device)  # type: ignore[arg-type]
             model.eval()  # type: ignore[union-attr]
@@ -286,7 +286,7 @@ class ImageEmbedder:
         import torch
 
         with torch.no_grad():
-            features = model_obj.get_image_features(**inputs)  # type: ignore[union-attr]
+            features = model_obj(**inputs).image_embeds  # type: ignore[operator]
             if normalize:
                 features = torch.nn.functional.normalize(features, p=2, dim=-1)
 

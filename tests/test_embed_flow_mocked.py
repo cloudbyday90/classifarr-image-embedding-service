@@ -56,9 +56,14 @@ class FakeTensor:
         return FakeNumpy(self._arr)
 
 
+class _FakeOutput:
+    def __init__(self):
+        self.image_embeds = [FakeTensor([1.0, 2.0, 3.0])]
+
+
 class FakeModel:
-    def get_image_features(self, **kwargs):
-        return [FakeTensor([1.0, 2.0, 3.0])]
+    def __call__(self, **kwargs):
+        return _FakeOutput()
 
 
 def _install_fake_torch(monkeypatch):

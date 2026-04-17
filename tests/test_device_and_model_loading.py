@@ -74,7 +74,7 @@ def test_load_model_is_cached(monkeypatch):
             calls["proc"] += 1
             return cls()
 
-    fake_transformers = types.SimpleNamespace(CLIPModel=FakeModel, CLIPProcessor=FakeProcessor)
+    fake_transformers = types.SimpleNamespace(CLIPVisionModelWithProjection=FakeModel, CLIPProcessor=FakeProcessor)
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
 
     spec = next(iter(MODEL_CATALOG.values()))
