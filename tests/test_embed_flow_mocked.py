@@ -56,9 +56,12 @@ class FakeTensor:
         return FakeNumpy(self._arr)
 
 
+_FAKE_EMBEDDING = [1.0, 2.0, 3.0] + [0.0] * 765  # 768 dims to match ViT-L-14
+
+
 class _FakeOutput:
     def __init__(self):
-        self.image_embeds = [FakeTensor([1.0, 2.0, 3.0])]
+        self.image_embeds = [FakeTensor(_FAKE_EMBEDDING)]
 
 
 class FakeModel:
@@ -106,8 +109,9 @@ def test_embed_flow_offline_with_mocked_torch_and_transformers(monkeypatch):
     assert provider == "local"
     assert model_name == "ViT-L-14"
     assert image_size == 224
-    assert dims == 3
-    assert embedding == [1.0, 2.0, 3.0]
+    assert dims == 768
+    assert embedding[:3] == [1.0, 2.0, 3.0]
+    assert len(embedding) == 768
     assert calls["normalize"] == 1
 
 

@@ -5,21 +5,15 @@
 from fastapi.testclient import TestClient
 
 from image_embedder.main import create_app
-from fakes import _no_auth_settings
+from fakes import _no_auth_settings, FakeEmbedder
 
 
-class EmbedderValueError:
-    def list_models(self):
-        return []
-
+class EmbedderValueError(FakeEmbedder):
     def embed(self, *args, **kwargs):
         raise ValueError("bad request")
 
 
-class EmbedderException:
-    def list_models(self):
-        return []
-
+class EmbedderException(FakeEmbedder):
     def embed(self, *args, **kwargs):
         raise RuntimeError("boom")
 

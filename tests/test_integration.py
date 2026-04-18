@@ -93,7 +93,7 @@ async def test_embed_success_through_full_lifespan():
 
     assert resp.status_code == 200
     body = resp.json()
-    assert body["dims"] == 3
+    assert body["dims"] == 768
     assert body["model"] == "ViT-L-14"
     # Queue telemetry headers must be present on every successful embed.
     for header in (
@@ -188,18 +188,38 @@ async def test_invalid_model_name_returns_422():
     assert resp.status_code == 422
 
 
-# ── 7. Missing image input returns 400 ───────────────────────────────────────
+# ── 7. Invalid image-source combinations return 422 ─────────────────────────
 
 @pytest.mark.anyio
-async def test_missing_image_input_returns_400():
-    """Neither image_url nor image_base64 provided → HTTP 400."""
+async def test_missing_image_input_returns_422():
+    """Neither image_url nor image_base64 provided → HTTP 422."""
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post("/embed-image", json={"model": "ViT-L-14"})
 
-    assert resp.status_code == 400
+    assert resp.status_code == 422
+
+
+@pytest.mark.anyio
+async def test_dual_image_input_returns_422():
+    """Both image_url and image_base64 provided → HTTP 422."""
+    png_b64 = base64.b64encode(_png_bytes()).decode()
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            resp = await client.post(
+                "/embed-image",
+                json={
+                    "image_url": "https://example.com/img.jpg",
+                    "image_base64": png_b64,
+                    "model": "ViT-L-14",
+                },
+            )
+
+    assert resp.status_code == 422
 
 
 # ── 8. base64 image path ──────────────────────────────────────────────────────

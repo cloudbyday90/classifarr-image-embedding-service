@@ -40,11 +40,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         queue: EmbedQueue = request.app.state.queue
         settings = request.app.state.settings
 
-        if not payload.image_url and not payload.image_base64:
-            raise HTTPException(
-                status_code=400,
-                detail="image_url or image_base64 is required",
-            )
+        # Resolve canonical spec/size at the route boundary so the response
+        # metadata is authoritative regardless of what the embedder returns.
+        canonical_spec = embedder_instance.resolve_model(payload.model)
+        canonical_model = canonical_spec.name
+        canonical_image_size = canonical_spec.image_size
 
         batch_window = getattr(request.app.state, "batch_window", None)
 
@@ -123,8 +123,8 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
             embedding=embedding,
             dims=dims,
             provider=provider,
-            model=model_name,
-            image_size=image_size,
+            model=canonical_model,
+            image_size=canonical_image_size,
         )
 
     return router

@@ -11,7 +11,7 @@ import pytest
 from asgi_lifespan import LifespanManager
 
 from image_embedder.main import create_app
-from tests.fakes import FakeEmbedder, _no_auth_settings, _png_bytes
+from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
 
 pytestmark = pytest.mark.anyio
 
@@ -44,7 +44,7 @@ async def test_embed_batch_all_succeed(client):
     assert data["succeeded"] == 2
     assert data["failed"] == 0
     assert all(r["status"] == "ok" for r in data["results"])
-    assert data["results"][0]["embedding"] == [0.1, 0.2, 0.3]
+    assert len(data["results"][0]["embedding"]) == 768
     assert data["model"] == "ViT-L-14"
 
 
@@ -63,7 +63,7 @@ async def test_embed_batch_result_indices_correct(client):
         json={
             "items": [
                 {"image_base64": _b64()},
-                {},                         # pre-validation error at index 1
+                {"image_base64": _b64()},
                 {"image_base64": _b64()},
             ]
         },
@@ -89,39 +89,52 @@ async def test_embed_batch_explicit_model(client):
 async def test_embed_batch_image_size_propagated(client):
     resp = await client.post(
         "/embed-batch",
-        json={"items": [{"image_base64": _b64()}], "image_size": 336},
+        json={"items": [{"image_base64": _b64()}], "image_size": 224},
     )
     assert resp.status_code == 200
     data = resp.json()
-    assert data["image_size"] == 336
-    assert data["results"][0]["image_size"] == 336
+    assert data["image_size"] == 224
+    assert data["results"][0]["image_size"] == 224
+
+
+async def test_embed_batch_non_default_image_size_rejected(client):
+    resp = await client.post(
+        "/embed-batch",
+        json={"items": [{"image_base64": _b64()}], "image_size": 336},
+    )
+    assert resp.status_code == 422
 
 
 # ---------------------------------------------------------------------------
-# Partial and full pre-validation failures
+# Payload validation errors (Pydantic / FastAPI)
 # ---------------------------------------------------------------------------
 
-async def test_embed_batch_partial_failure_missing_image(client):
+async def test_embed_batch_missing_image_item_422(client):
     resp = await client.post(
         "/embed-batch",
         json={"items": [{"image_base64": _b64()}, {}]},
     )
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data["succeeded"] == 1
-    assert data["failed"] == 1
-    assert data["results"][0]["status"] == "ok"
-    assert data["results"][1]["status"] == "error"
-    assert "image_url or image_base64 is required" in data["results"][1]["error"]
+    assert resp.status_code == 422
 
 
-async def test_embed_batch_all_pre_validation_errors(client):
+async def test_embed_batch_dual_image_source_item_422(client):
+    resp = await client.post(
+        "/embed-batch",
+        json={
+            "items": [
+                {
+                    "image_url": "https://example.com/poster.jpg",
+                    "image_base64": _b64(),
+                }
+            ]
+        },
+    )
+    assert resp.status_code == 422
+
+
+async def test_embed_batch_all_missing_image_items_422(client):
     resp = await client.post("/embed-batch", json={"items": [{}, {}]})
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data["succeeded"] == 0
-    assert data["failed"] == 2
-    assert all(r["status"] == "error" for r in data["results"])
+    assert resp.status_code == 422
 
 
 # ---------------------------------------------------------------------------
@@ -158,9 +171,6 @@ async def test_embed_batch_per_item_exception_is_error_result():
 
 
 # ---------------------------------------------------------------------------
-# Payload validation errors (Pydantic / FastAPI)
-# ---------------------------------------------------------------------------
-
 async def test_embed_batch_empty_items_422(client):
     resp = await client.post("/embed-batch", json={"items": []})
     assert resp.status_code == 422
@@ -252,3 +262,21 @@ async def test_embed_batch_valid_api_key_accepted():
                 headers={"X-Api-Key": "test-key-123"},
             )
     assert resp.status_code == 200
+
+
+class _ShortBatchResultEmbedder(FakeEmbedder):
+    def embed_batch(self, spec, target_size, items):
+        return [([0.1, 0.2, 0.3], 3, "local", spec.name, target_size)]
+
+
+async def test_embed_batch_returns_500_when_embedder_result_count_is_wrong():
+    app = create_app(embedder=_ShortBatchResultEmbedder(), settings=_no_auth_settings())
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app, raise_app_exceptions=False)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+            resp = await c.post(
+                "/embed-batch",
+                json={"items": [{"image_base64": _b64()}, {"image_base64": _b64()}]},
+            )
+    assert resp.status_code == 500
+    assert resp.json() == {"detail": "Internal server error"}

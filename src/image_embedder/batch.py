@@ -183,6 +183,11 @@ class BatchWindow:
                     per_item = await anyio.to_thread.run_sync(
                         self._embedder.embed_batch, spec, image_size, batch_items
                     )
+                    if len(per_item) != len(jobs):
+                        raise RuntimeError(
+                            "embed_batch returned "
+                            f"{len(per_item)} results for {len(jobs)} jobs"
+                        )
                     for job, outcome in zip(jobs, per_item):
                         if not job._future.done():
                             if isinstance(outcome, Exception):

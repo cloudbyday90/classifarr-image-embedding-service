@@ -39,31 +39,28 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
             )
 
         spec = embedder_instance.resolve_model(payload.model)
-        target_size = spec.image_size if payload.image_size is None else payload.image_size
+        if payload.image_size is not None and payload.image_size != spec.image_size:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    f"image_size={payload.image_size} is not supported for {spec.name}; "
+                    f"this model only accepts image_size={spec.image_size}"
+                ),
+            )
+        target_size = spec.image_size
 
-        # Pre-validate each item: must supply image_url or image_base64.
-        # Invalid items are recorded as per-item errors; they never reach the embedder.
-        batch_items: list[BatchItem | None] = []
-        pre_errors: list[str | None] = []
-        for item in payload.items:
-            if not item.image_url and not item.image_base64:
-                batch_items.append(None)
-                pre_errors.append("image_url or image_base64 is required")
-            else:
-                batch_items.append(
-                    BatchItem(
-                        image_url=item.image_url,
-                        image_base64=item.image_base64,
-                        normalize=payload.normalize,
-                    )
-                )
-                pre_errors.append(None)
-
-        valid_items = [b for b in batch_items if b is not None]
+        batch_items = [
+            BatchItem(
+                image_url=item.image_url,
+                image_base64=item.image_base64,
+                normalize=payload.normalize,
+            )
+            for item in payload.items
+        ]
 
         # Only hit the embedder + queue when there is something to embed.
         embed_results: list = []
-        if valid_items:
+        if batch_items:
             acquired = False
             shared = False
 
@@ -79,7 +76,7 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                             embedder_instance.embed_batch,
                             spec,
                             target_size,
-                            valid_items,
+                            batch_items,
                         )
                     )
                 finally:
@@ -93,6 +90,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                     _do_embed(),
                     timeout=settings.request_timeout_seconds,
                 )
+                if len(embed_results) != len(batch_items):
+                    raise RuntimeError(
+                        "embed_batch returned "
+                        f"{len(embed_results)} results for {len(batch_items)} items"
+                    )
             except QueueFullError as exc:
                 logger.warning(f"Batch queue full: {exc}")
                 raise HTTPException(
@@ -120,30 +122,23 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                 logger.exception(f"Batch embedding error: {exc}")
                 raise HTTPException(status_code=500, detail="Internal server error") from exc
 
-        # Merge pre-validation errors and embed results into the final ordered result list.
+        # Map embed results into the final ordered result list.
         results: list[EmbedBatchItemResult] = []
-        valid_iter = iter(embed_results)
-        for i in range(len(payload.items)):
-            if pre_errors[i] is not None:
-                results.append(EmbedBatchItemResult(index=i, status="error", error=pre_errors[i]))
+        for i, outcome in enumerate(embed_results):
+            if isinstance(outcome, Exception):
+                results.append(EmbedBatchItemResult(index=i, status="error", error=str(outcome)))
             else:
-                outcome = next(valid_iter)
-                if isinstance(outcome, Exception):
-                    results.append(
-                        EmbedBatchItemResult(index=i, status="error", error=str(outcome))
+                embedding, dims, _provider, _model_name, _img_size = outcome
+                results.append(
+                    EmbedBatchItemResult(
+                        index=i,
+                        status="ok",
+                        embedding=embedding,
+                        dims=dims,
+                        model=spec.name,
+                        image_size=target_size,
                     )
-                else:
-                    embedding, dims, _provider, model_name, img_size = outcome
-                    results.append(
-                        EmbedBatchItemResult(
-                            index=i,
-                            status="ok",
-                            embedding=embedding,
-                            dims=dims,
-                            model=model_name,
-                            image_size=img_size,
-                        )
-                    )
+                )
 
         succeeded = sum(1 for r in results if r.status == "ok")
         failed = len(results) - succeeded

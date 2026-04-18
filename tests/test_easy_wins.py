@@ -243,3 +243,40 @@ async def test_batch_dispatch_sets_exception_on_each_future_when_embed_batch_fai
     assert queue.acquire_shared_calls == 1
     assert queue.release_shared_calls == 1
     assert queue.release_calls == 1
+
+
+class _EmbedderThatReturnsShortBatch:
+    def resolve_model(self, model):
+        return SimpleNamespace(name=model or "ViT-L-14", image_size=224)
+
+    def embed(self, image_url, image_base64, model, normalize, image_size):
+        return [0.1], 1, "local", model or "ViT-L-14", image_size or 224
+
+    def embed_batch(self, spec, target_size, items):
+        return [([0.1], 1, "local", spec.name, target_size)]
+
+
+@pytest.mark.anyio
+async def test_batch_dispatch_sets_exception_on_each_future_when_batch_result_count_is_wrong():
+    queue = _QueueNoop()
+    embedder = _EmbedderThatReturnsShortBatch()
+    batch = BatchWindow(embedder, queue, batch_window_ms=10, batch_max_size=8)
+
+    loop = asyncio.get_running_loop()
+    j1 = EmbedJob(None, "AA==", "ViT-L-14", True, 224)
+    j2 = EmbedJob(None, "AA==", "ViT-L-14", False, 224)
+    f1 = j1.bind(loop)
+    f2 = j2.bind(loop)
+
+    await batch._dispatch([j1, j2])
+
+    assert f1.done() and f2.done()
+    with pytest.raises(RuntimeError, match="returned 1 results for 2 jobs"):
+        f1.result()
+    with pytest.raises(RuntimeError, match="returned 1 results for 2 jobs"):
+        f2.result()
+
+    assert queue.acquire_calls == 1
+    assert queue.acquire_shared_calls == 1
+    assert queue.release_shared_calls == 1
+    assert queue.release_calls == 1

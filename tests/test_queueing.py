@@ -28,11 +28,21 @@ class SlowEmbedder:
 
         return [Spec("ViT-L-14", 768, 224)]
 
+    def resolve_model(self, model_name=None):
+        class Spec:
+            def __init__(self, name, dims, image_size):
+                self.name = name
+                self.dims = dims
+                self.image_size = image_size
+
+        return Spec(model_name or "ViT-L-14", 768, 224)
+
     def embed(self, image_url, image_base64, model, normalize, image_size):
         if self._started_event is not None:
             self._started_event.set()
         time.sleep(self._delay_seconds)
-        return [0.1, 0.2], 2, "local", model or "ViT-L-14", image_size or 224
+        embedding = [0.1] * 768
+        return embedding, 768, "local", model or "ViT-L-14", 224
 
 
 class _Spec:

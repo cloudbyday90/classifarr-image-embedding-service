@@ -37,21 +37,31 @@ def test_embed_image():
         "image_url": "https://example.com/poster.jpg",
         "model": "ViT-L-14",
         "normalize": True,
-        "image_size": 512
     })
     assert response.status_code == 200
     data = response.json()
-    assert data["dims"] == 3
+    assert data["dims"] == 768
     assert data["model"] == "ViT-L-14"
 
 
-def test_embed_image_requires_payload():
+def test_embed_image_requires_exactly_one_image_source():
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     client = TestClient(app)
     response = client.post("/embed-image", json={
         "model": "ViT-L-14"
     })
-    assert response.status_code == 400
+    assert response.status_code == 422
+
+
+def test_embed_image_rejects_dual_image_sources():
+    app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
+    client = TestClient(app)
+    response = client.post("/embed-image", json={
+        "image_url": "https://example.com/poster.jpg",
+        "image_base64": "AA==",
+        "model": "ViT-L-14",
+    })
+    assert response.status_code == 422
 
 
 def test_ready():

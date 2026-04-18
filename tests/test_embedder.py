@@ -87,23 +87,23 @@ def test_load_image_prefers_base64_over_url(monkeypatch):
     assert img.size == (1, 1)
 
 
-def test_embed_rejects_non_positive_image_size(monkeypatch):
+def test_embed_rejects_non_default_image_size(monkeypatch):
     settings = Settings()
     embedder = ImageEmbedder(settings=settings)
 
     def _boom(*args, **kwargs):
-        raise AssertionError("Model/image loading should not happen for invalid image_size")
+        raise AssertionError("Model/image loading should not happen for unsupported image_size")
 
     monkeypatch.setattr(embedder, "_load_model", _boom)
     monkeypatch.setattr(embedder, "_load_image", _boom)
 
-    with pytest.raises(ValueError, match="image_size must be a positive integer"):
+    with pytest.raises(ValueError, match="image_size=336 is not supported for ViT-L-14"):
         embedder.embed(
             image_url="https://example.com/poster.jpg",
             image_base64=None,
             model="ViT-L-14",
             normalize=True,
-            image_size=0,
+            image_size=336,
         )
 
 

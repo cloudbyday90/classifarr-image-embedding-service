@@ -2,8 +2,8 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import List, Optional
-from pydantic import BaseModel, Field
+from typing import List, Optional, Self
+from pydantic import BaseModel, Field, model_validator
 
 
 class ModelInfo(BaseModel):
@@ -24,6 +24,12 @@ class EmbedImageRequest(BaseModel):
     normalize: bool = Field(default=True, description="L2 normalize embeddings")
     image_size: Optional[int] = Field(default=None, gt=0, description="Resize shortest edge before embed")
 
+    @model_validator(mode="after")
+    def validate_single_image_source(self) -> Self:
+        if (self.image_url is None) == (self.image_base64 is None):
+            raise ValueError("Exactly one of image_url or image_base64 is required")
+        return self
+
 
 class EmbedImageResponse(BaseModel):
     embedding: List[float]
@@ -36,6 +42,12 @@ class EmbedImageResponse(BaseModel):
 class EmbedBatchItem(BaseModel):
     image_url: Optional[str] = Field(default=None, description="Remote image URL")
     image_base64: Optional[str] = Field(default=None, description="Base64-encoded image bytes")
+
+    @model_validator(mode="after")
+    def validate_single_image_source(self) -> Self:
+        if (self.image_url is None) == (self.image_base64 is None):
+            raise ValueError("Exactly one of image_url or image_base64 is required")
+        return self
 
 
 class EmbedBatchRequest(BaseModel):

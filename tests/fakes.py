@@ -49,7 +49,10 @@ class FakeEmbedder:
         return [Spec(m["name"], m["dims"], m["image_size"]) for m in self.models]
 
     def embed(self, image_url, image_base64, model, normalize, image_size):
-        return [0.1, 0.2, 0.3], 3, "local", model or "ViT-L-14", image_size or 224
+        name = model or "ViT-L-14"
+        dims = 512 if name == "ViT-B-16" else 768
+        embedding = [0.1] * dims
+        return embedding, dims, "local", name, image_size or 224
 
     def resolve_model(self, model_name=None):
         class Spec:
@@ -63,7 +66,8 @@ class FakeEmbedder:
         return Spec(name, dims, 224)
 
     def embed_batch(self, spec, target_size, items):
-        return [([0.1, 0.2, 0.3], 3, "local", spec.name, target_size) for _ in items]
+        embedding = [0.1] * spec.dims
+        return [(embedding, spec.dims, "local", spec.name, target_size) for _ in items]
 
     def warmup(self, model_name=None):
         pass

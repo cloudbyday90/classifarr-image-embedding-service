@@ -7,6 +7,7 @@ import binascii
 import hashlib
 import ipaddress
 import io
+import math
 import socket
 import sys
 import threading
@@ -27,14 +28,34 @@ if TYPE_CHECKING:
     from transformers import CLIPVisionModelWithProjection, CLIPProcessor
 
 ModelTuple = Tuple[Any, Any, str]
+EmbedResult = Tuple[List[float], int, str, str, int]
+
+
+@dataclass(frozen=True, slots=True)
+class CachedEmbedding:
+    """Immutable cache payload for one embedding result."""
+
+    embedding: Tuple[float, ...]
+    dims: int
+    source: str
+    model: str
+    image_size: int
+
+    @classmethod
+    def from_result(cls, value: EmbedResult) -> "CachedEmbedding":
+        embedding, dims, source, model, image_size = value
+        return cls(tuple(embedding), dims, source, model, image_size)
+
+    def to_result(self) -> EmbedResult:
+        return (list(self.embedding), self.dims, self.source, self.model, self.image_size)
 
 
 class EmbeddingLRUCache:
     """Thread-safe in-memory LRU cache for computed embeddings.
 
     Cache keys encode all axes that affect the output:
-    ``sha256(content) | model_name | image_size | normalize``
-    where *content* is the URL string or the raw base64 string.
+    ``sha256(image_bytes) | model_name | image_size | normalize``
+    where *image_bytes* is the effective image content embedded by the service.
     """
 
     def __init__(self, maxsize: int) -> None:
@@ -47,27 +68,25 @@ class EmbeddingLRUCache:
 
     @staticmethod
     def make_key(
-        image_url: Optional[str],
-        image_base64: Optional[str],
+        image_bytes: bytes,
         model_name: str,
         image_size: int,
         normalize: bool,
     ) -> str:
         """Return a deterministic, hashable cache key for the given request."""
-        content = image_url if image_url else (image_base64 or "")
-        content_hash = hashlib.sha256(content.encode(), usedforsecurity=False).hexdigest()
+        content_hash = hashlib.sha256(image_bytes, usedforsecurity=False).hexdigest()
         return f"{content_hash}|{model_name}|{image_size}|{normalize}"
 
-    def get(self, key: str) -> Optional[Any]:
+    def get(self, key: str) -> Optional[EmbedResult]:
         with self._lock:
             if key in self._cache:
                 self._cache.move_to_end(key)
                 self._hits += 1
-                return self._cache[key]
+                return self._cache[key].to_result()
             self._misses += 1
             return None
 
-    def put(self, key: str, value: Any) -> None:
+    def put(self, key: str, value: Union[CachedEmbedding, EmbedResult]) -> None:
         with self._lock:
             if key in self._cache:
                 self._cache.move_to_end(key)
@@ -75,7 +94,10 @@ class EmbeddingLRUCache:
                 if len(self._cache) >= self._maxsize:
                     self._cache.popitem(last=False)
                     self._evictions += 1
-            self._cache[key] = value
+            if isinstance(value, CachedEmbedding):
+                self._cache[key] = value
+            else:
+                self._cache[key] = CachedEmbedding.from_result(value)
 
     def info(self) -> dict:
         with self._lock:
@@ -437,18 +459,64 @@ class ImageEmbedder:
             raise ValueError("Image payload exceeds maximum size")
         return data
 
-    def _load_image(self, image_url: Optional[str], image_base64: Optional[str]) -> Image.Image:
+    def _resolve_image_bytes(self, image_url: Optional[str], image_base64: Optional[str]) -> bytes:
         if image_base64:
-            data = self._decode_base64(image_base64)
-        elif image_url:
-            data = self._fetch_image_bytes(image_url)
-        else:
-            raise ValueError("image_url or image_base64 is required")
+            return self._decode_base64(image_base64)
+        if image_url:
+            return self._fetch_image_bytes(image_url)
+        raise ValueError("image_url or image_base64 is required")
 
+    def _image_from_bytes(self, data: bytes) -> Image.Image:
         try:
             return Image.open(io.BytesIO(data)).convert("RGB")
         except Exception as exc:
             raise ValueError("Unable to decode image bytes") from exc
+
+    def _load_image(self, image_url: Optional[str], image_base64: Optional[str]) -> Image.Image:
+        data = self._resolve_image_bytes(image_url, image_base64)
+        return self._image_from_bytes(data)
+
+    @staticmethod
+    def _normalize_embedding_np(feat: "np.ndarray", eps: float = 1e-12) -> "np.ndarray":
+        """Normalize *feat* along the last axis, matching PyTorch's F.normalize semantics.
+
+        Raises ``ValueError`` for non-finite inputs or outputs.
+        Divides by ``max(||v||_2, eps)`` to avoid division by zero.
+        """
+        if not np.all(np.isfinite(feat)):
+            raise ValueError("Embedding contains non-finite values before normalization")
+        norm = np.linalg.norm(feat, axis=-1, keepdims=True)
+        normalized = feat / np.maximum(norm, eps)
+        if not np.all(np.isfinite(normalized)):
+            raise ValueError("Normalization produced non-finite values")
+        return normalized
+
+    def _validate_embedding_result(
+        self,
+        spec: "ModelSpec",
+        embedding: List[float],
+        dims: int,
+    ) -> None:
+        """Assert invariants that every successful embedding result must satisfy.
+
+        Raises ``ValueError`` with a descriptive message if any invariant is broken.
+        """
+        if any(isinstance(v, (list, np.ndarray)) for v in embedding):
+            raise ValueError(
+                f"Embedding must be a 1-D vector but contains nested values (model={spec.name})"
+            )
+        if len(embedding) != dims:
+            raise ValueError(
+                f"dims={dims} does not match len(embedding)={len(embedding)} (model={spec.name})"
+            )
+        if dims != spec.dims:
+            raise ValueError(
+                f"dims={dims} does not match spec.dims={spec.dims} for model={spec.name}"
+            )
+        if not all(math.isfinite(v) for v in embedding):
+            raise ValueError(
+                f"Embedding for model={spec.name} contains non-finite values (NaN or Inf)"
+            )
 
     def embed(
         self,
@@ -459,14 +527,21 @@ class ImageEmbedder:
         image_size: Optional[int]
     ) -> Tuple[List[float], int, str, str, int]:
         spec = self.resolve_model(model)
-        target_size = spec.image_size if image_size is None else image_size
+        if image_size is not None and image_size != spec.image_size:
+            raise ValueError(
+                f"image_size={image_size} is not supported for {spec.name}; "
+                f"this model only accepts image_size={spec.image_size}"
+            )
+        target_size = spec.image_size
         if target_size <= 0:
             raise ValueError("image_size must be a positive integer")
+
+        image_bytes = self._resolve_image_bytes(image_url, image_base64)
 
         # Cache check — skip inference entirely on a hit.
         if self._embedding_cache is not None:
             cache_key = EmbeddingLRUCache.make_key(
-                image_url, image_base64, spec.name, target_size, normalize
+                image_bytes, spec.name, target_size, normalize
             )
             cached = self._embedding_cache.get(cache_key)
             if cached is not None:
@@ -475,7 +550,7 @@ class ImageEmbedder:
             cache_key = ""
 
         model_obj, processor, device = self._load_model(spec)
-        image = self._load_image(image_url, image_base64)
+        image = self._image_from_bytes(image_bytes)
 
         if device.startswith("ov:"):
             # OpenVINO path: processor returns numpy tensors; compiled model
@@ -485,12 +560,16 @@ class ImageEmbedder:
                 return_tensors="np",
                 size={"shortest_edge": target_size},
             )
-            result = model_obj(dict(inputs))  # type: ignore[operator]
-            feat = result[0][0].astype(np.float32)  # shape (dims,)
+            raw_result = model_obj(dict(inputs))  # type: ignore[operator]
+            raw_output = raw_result[0].astype(np.float32)  # expected shape (1, dims)
+            if raw_output.ndim != 2 or raw_output.shape[0] != 1 or raw_output.shape[1] != spec.dims:
+                raise ValueError(
+                    f"OpenVINO model returned unexpected output shape {raw_output.shape!r} "
+                    f"(expected (1, {spec.dims})) for model={spec.name}"
+                )
+            feat = raw_output[0]  # shape (dims,)
             if normalize:
-                norm = np.linalg.norm(feat)
-                if norm > 0:
-                    feat = feat / norm
+                feat = self._normalize_embedding_np(feat)
             embedding = feat.tolist()
         else:
             inputs = processor(  # type: ignore[operator]
@@ -510,6 +589,7 @@ class ImageEmbedder:
             embedding = features[0].detach().cpu().numpy().astype(np.float32).tolist()
 
         dims = len(embedding)
+        self._validate_embedding_result(spec, embedding, dims)
 
         if self.settings.embed_cleanup_every_n > 0:
             with self._embed_count_lock:
@@ -543,33 +623,50 @@ class ImageEmbedder:
         # Pre-check cache: items already computed don't need model inference.
         outcomes: List[Any] = [None] * len(items)
         uncached_indices: List[int] = []
+        uncached_payloads: List[Tuple[BatchItem, bytes]] = []
+        uncached_cache_keys: List[str] = []
         if self._embedding_cache is not None:
             for i, item in enumerate(items):
+                try:
+                    image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                except Exception as exc:
+                    outcomes[i] = exc
+                    continue
+
                 key = EmbeddingLRUCache.make_key(
-                    item.image_url, item.image_base64, spec.name, target_size, item.normalize
+                    image_bytes, spec.name, target_size, item.normalize
                 )
                 cached = self._embedding_cache.get(key)
                 if cached is not None:
                     outcomes[i] = cached
                 else:
                     uncached_indices.append(i)
+                    uncached_payloads.append((item, image_bytes))
+                    uncached_cache_keys.append(key)
         else:
-            uncached_indices = list(range(len(items)))
+            for i, item in enumerate(items):
+                try:
+                    image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                except Exception as exc:
+                    outcomes[i] = exc
+                    continue
+                uncached_indices.append(i)
+                uncached_payloads.append((item, image_bytes))
 
         # If everything was cached, skip model loading entirely.
         if not uncached_indices:
             return outcomes
 
-        uncached_items = [items[i] for i in uncached_indices]
+        uncached_items = [payload[0] for payload in uncached_payloads]
         model_obj, processor, device = self._load_model(spec)
 
-        # Load images, capturing per-item errors so one bad image
+        # Decode images, capturing per-item errors so one bad image
         # doesn't abort the whole batch.
         pil_images: List[Optional[Image.Image]] = []
         load_errors: List[Optional[Exception]] = []
-        for item in uncached_items:
+        for _item, image_bytes in uncached_payloads:
             try:
-                pil_images.append(self._load_image(item.image_url, item.image_base64))
+                pil_images.append(self._image_from_bytes(image_bytes))
                 load_errors.append(None)
             except Exception as exc:
                 pil_images.append(None)
@@ -589,16 +686,27 @@ class ImageEmbedder:
                     return_tensors="np",
                     size={"shortest_edge": target_size},
                 )
-                result = model_obj(dict(inputs))  # type: ignore[operator]
-                features_np = result[0].astype(np.float32)  # shape (N, dims)
+                raw_result = model_obj(dict(inputs))  # type: ignore[operator]
+                n_valid = len(valid_images)
+                raw_output = raw_result[0].astype(np.float32)  # expected shape (N, dims)
+                if raw_output.ndim != 2 or raw_output.shape[0] != n_valid or raw_output.shape[1] != spec.dims:
+                    raise ValueError(
+                        f"OpenVINO model returned unexpected output shape {raw_output.shape!r} "
+                        f"(expected ({n_valid}, {spec.dims})) for model={spec.name}"
+                    )
+                features_np = raw_output
 
                 for batch_pos, sub_idx in enumerate(valid_sub_idx):
                     feat = features_np[batch_pos]
-                    if uncached_items[sub_idx].normalize:
-                        norm = np.linalg.norm(feat)
-                        if norm > 0:
-                            feat = feat / norm
-                    uncached_outcomes[sub_idx] = (feat.tolist(), len(feat), "local", spec.name, target_size)
+                    try:
+                        if uncached_items[sub_idx].normalize:
+                            feat = self._normalize_embedding_np(feat)
+                        embedding_list = feat.tolist()
+                        dims = len(embedding_list)
+                        self._validate_embedding_result(spec, embedding_list, dims)
+                        uncached_outcomes[sub_idx] = (embedding_list, dims, "local", spec.name, target_size)
+                    except ValueError as exc:
+                        uncached_outcomes[sub_idx] = exc
             else:
                 import torch
 
@@ -619,7 +727,11 @@ class ImageEmbedder:
                             feat.unsqueeze(0), p=2, dim=-1
                         ).squeeze(0)
                     embedding = feat.detach().cpu().numpy().astype(np.float32).tolist()
-                    uncached_outcomes[sub_idx] = (embedding, len(embedding), "local", spec.name, target_size)
+                    try:
+                        self._validate_embedding_result(spec, embedding, len(embedding))
+                        uncached_outcomes[sub_idx] = (embedding, len(embedding), "local", spec.name, target_size)
+                    except ValueError as exc:
+                        uncached_outcomes[sub_idx] = exc
 
         # Merge uncached results back into the full outcomes list.
         for sub_idx, orig_idx in enumerate(uncached_indices):
@@ -627,17 +739,10 @@ class ImageEmbedder:
 
         # Populate cache with new successful results.
         if self._embedding_cache is not None:
-            for i, outcome in enumerate(outcomes):
+            for sub_idx, key in enumerate(uncached_cache_keys):
+                outcome = uncached_outcomes[sub_idx]
                 if not isinstance(outcome, Exception) and outcome is not None:
-                    key = EmbeddingLRUCache.make_key(
-                        items[i].image_url,
-                        items[i].image_base64,
-                        spec.name,
-                        target_size,
-                        items[i].normalize,
-                    )
-                    if key:
-                        self._embedding_cache.put(key, outcome)
+                    self._embedding_cache.put(key, outcome)
 
         # Cleanup tracking — count successful embeds.
         n_success = sum(1 for o in outcomes if not isinstance(o, Exception) and o is not None)
