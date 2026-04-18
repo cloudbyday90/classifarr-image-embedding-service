@@ -110,3 +110,56 @@ def test_embed_flow_offline_with_mocked_torch_and_transformers(monkeypatch):
     assert embedding == [1.0, 2.0, 3.0]
     assert calls["normalize"] == 1
 
+
+def test_embed_cleanup_runs_on_configured_cadence(monkeypatch):
+    _install_fake_torch(monkeypatch)
+
+    cleanup_calls = []
+
+    def _cleanup(device):
+        cleanup_calls.append(device)
+        return {"gc_collected": 0, "gpu_freed_mb": 0.0}
+
+    embedder = ImageEmbedder(
+        settings=Settings(allow_remote_urls=False, embed_cleanup_every_n=2, embed_cache_size=0)
+    )
+
+    monkeypatch.setattr(embedder, "_load_model", lambda _spec: (FakeModel(), FakeProcessor(), "cpu"))
+    monkeypatch.setattr("image_embedder.memory.cleanup_gpu_memory", _cleanup)
+
+    for _ in range(3):
+        embedder.embed(
+            image_url=None,
+            image_base64=_png_base64(),
+            model="ViT-L-14",
+            normalize=False,
+            image_size=224,
+        )
+
+    assert cleanup_calls == ["cpu"]
+
+
+def test_embed_cleanup_disabled_by_default(monkeypatch):
+    _install_fake_torch(monkeypatch)
+
+    cleanup_calls = []
+
+    def _cleanup(device):
+        cleanup_calls.append(device)
+        return {"gc_collected": 0, "gpu_freed_mb": 0.0}
+
+    embedder = ImageEmbedder(settings=Settings(allow_remote_urls=False))
+
+    monkeypatch.setattr(embedder, "_load_model", lambda _spec: (FakeModel(), FakeProcessor(), "cpu"))
+    monkeypatch.setattr("image_embedder.memory.cleanup_gpu_memory", _cleanup)
+
+    embedder.embed(
+        image_url=None,
+        image_base64=_png_base64(),
+        model="ViT-L-14",
+        normalize=False,
+        image_size=224,
+    )
+
+    assert cleanup_calls == []
+

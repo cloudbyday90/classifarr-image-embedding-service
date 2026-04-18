@@ -11,10 +11,11 @@ from image_embedder.config import Settings
 from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
 
 
-def _install_fake_torch(monkeypatch, cuda_available: bool):
+def _install_fake_torch(monkeypatch, cuda_available: bool, hip_version=None):
     fake_torch = types.SimpleNamespace()
     fake_torch.cuda = types.SimpleNamespace(is_available=lambda: cuda_available)
     fake_torch.device = lambda name: f"dev:{name}"
+    fake_torch.version = types.SimpleNamespace(hip=hip_version)
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     return fake_torch
 
@@ -48,6 +49,31 @@ def test_resolve_device_unknown_raises(monkeypatch):
     embedder = ImageEmbedder(settings=Settings(device="bogus"))
     with pytest.raises(ValueError, match="Unsupported DEVICE value"):
         embedder._resolve_device()
+
+
+def test_resolve_device_rocm_on_windows_raises(monkeypatch):
+    """ROCm must be rejected immediately on Windows."""
+    monkeypatch.setattr(sys, "platform", "win32")
+    embedder = ImageEmbedder(settings=Settings(device="rocm"))
+    with pytest.raises(ValueError, match="ROCm.*not supported on Windows"):
+        embedder._resolve_device()
+
+
+def test_resolve_device_rocm_on_linux_unavailable_raises(monkeypatch):
+    """ROCm on Linux should raise if no GPU is detected."""
+    monkeypatch.setattr(sys, "platform", "linux")
+    _install_fake_torch(monkeypatch, cuda_available=False)
+    embedder = ImageEmbedder(settings=Settings(device="rocm"))
+    with pytest.raises(ValueError, match="ROCm requested but no ROCm-capable AMD GPU"):
+        embedder._resolve_device()
+
+
+def test_resolve_device_rocm_on_linux_available(monkeypatch):
+    """ROCm on Linux with a visible GPU maps to the cuda device string."""
+    monkeypatch.setattr(sys, "platform", "linux")
+    _install_fake_torch(monkeypatch, cuda_available=True)
+    embedder = ImageEmbedder(settings=Settings(device="rocm"))
+    assert embedder._resolve_device() == "dev:cuda"
 
 
 def test_load_model_is_cached(monkeypatch):

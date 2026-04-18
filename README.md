@@ -3,10 +3,11 @@
 A lightweight image embedding microservice designed for Classifarr. It exposes a small HTTP API to generate image embeddings from poster URLs or base64 payloads, and to list supported models.
 
 ## Features
-- FastAPI service with `GET /health`, `GET /ready`, `GET /models`, `POST /embed-image`
+- FastAPI service with `GET /health`, `GET /ready`, `GET /models`, `POST /embed-image`, `POST /embed-batch`
 - CLIP-based image embeddings (ViT-L/14 and ViT-B/16)
 - Optional L2 normalization
 - Docker-ready with simple configuration
+- **CUDA GPU build** (`Dockerfile.cuda` + `docker-compose.cuda.yml`) for NVIDIA GPU inference
 - **API key authentication** with constant-time comparison (service-to-service)
 - **Per-key rate limiting** on `/embed-image` to prevent GPU resource exhaustion
 - **Production-ready robustness:**
@@ -148,8 +149,123 @@ docker compose up -d
 
 > **Tip:** set `require_api_key = false` in `config.toml` only for local development where the service is not network-accessible. You can also override it temporarily with `REQUIRE_API_KEY=false` as an environment variable.
 
+## GPU / CUDA Build
+
+A dedicated `Dockerfile.cuda` ships PyTorch with **CUDA 12.4 wheels** and uses `nvidia/cuda:12.4.1-cudnn-runtime-ubuntu24.04` as the runtime base, so no extra CUDA toolkit installation is needed inside the container.
+
+**Prerequisites:** [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/) installed on the Docker host.
+
+**Build and run (Compose override — recommended):**
+```bash
+docker compose -f docker-compose.yml -f docker-compose.cuda.yml up -d
+```
+The override sets `DEVICE=cuda`, adds the GPU device reservation, and points the build at `Dockerfile.cuda`. All other settings (API key, config mount, model cache volume) are inherited from `docker-compose.yml`.
+
+**Build standalone:**
+```bash
+docker build -f Dockerfile.cuda -t classifarr-image-embedder:cuda .
+docker run --rm --gpus all -p 8000:8000 -e DEVICE=cuda classifarr-image-embedder:cuda
+```
+
+**Verify GPU is in use:**
+```bash
+curl http://localhost:8000/health | python -m json.tool
+# "device": {"type": "cuda", "name": "NVIDIA GeForce RTX ..."}
+```
+
+> The default `Dockerfile` / `docker-compose.yml` remain CPU-only. `DEVICE=auto` in `config.toml` will fall back to CPU automatically if CUDA is unavailable at runtime.
+
+---
+
+## AMD ROCm Build
+
+> **Windows is not supported.** Setting `DEVICE=rocm` on a Windows host raises an error at startup. ROCm requires a Linux host. Windows ROCm support is tracked upstream and will be re-evaluated when it reaches production status.
+
+A dedicated `Dockerfile.rocm` ships PyTorch with **ROCm 6.4 wheels** targeting AMD discrete GPUs and Ryzen APUs on Linux. Because ROCm exposes the same `torch.cuda.*` API as CUDA, the entire inference code path is shared — no code changes are needed relative to the CUDA build; only the base image and wheel index differ.
+
+**Supported hardware (Linux only):**
+- AMD Instinct MI300X / MI350X and other datacenter GPUs (fully supported)
+- AMD Radeon RX 7000 (RDNA3) and RX 9000 (RDNA4) discrete GPUs
+- AMD Ryzen AI Max / Ryzen AI 300 iGPU (preview support via ROCm 6.4.4+)
+
+**Host prerequisites (Linux):**
+- ROCm 6.4+ installed on the host *or* use the official `rocm/pytorch` Docker image
+- Add your user to the `render` and `video` groups: `sudo usermod -aG render,video $USER`
+- Verify ROCm sees the GPU: `rocm-smi`
+
+**`DEVICE` setting:** Use `DEVICE=rocm` in `config.toml` or as an environment variable. On Linux with a visible AMD GPU this resolves to `torch.device("cuda")` internally. Setting it on Windows raises:
+```
+ValueError: ROCm (AMD GPU) is not supported on Windows. ROCm requires a Linux host.
+```
+
+**Verify ROCm is in use** (returns `"type": "rocm"` instead of `"type": "cuda"` when torch was built with HIP):
+```bash
+curl http://localhost:8000/health | python -m json.tool
+# "device": {"type": "rocm", "hip_version": "6.4.43482-...", "name": "AMD Radeon RX 7900 XTX"}
+```
+
+> ROCm on Windows via WSL2 reached beta in ROCm 6.1 but is **not yet production-ready** as of April 2026. This service will add a `Dockerfile.rocm` and Compose override once Windows ROCm stabilises.
+
+---
+
+## Intel OpenVINO Build
+
+A dedicated `Dockerfile.openvino` targets Intel hardware via **OpenVINO 2026.1.0**, using `openvino/ubuntu24_runtime` as the runtime base.
+
+**Supported hardware (all via a single `DEVICE=openvino:AUTO`):**
+- Intel integrated GPU: 12th-gen Core (UHD 770) and newer, including Core Ultra series
+- Intel Arc discrete GPU: A-series, B-series (Battlemage), and future Arc generations
+- Intel CPU: all modern Intel CPUs via the OpenVINO CPU plugin (AVX-512 / VNNI optimized)
+
+**How it works:** On first startup the service exports the HuggingFace CLIP model to OpenVINO IR format (`.xml` + `.bin`) and caches it in the model volume. Subsequent restarts load the cached IR directly — no re-export, no PyTorch on the hot path.
+
+**Host prerequisites (Linux):**
+- Intel GPU kernel driver (`xe` for 12th-gen+, or `i915`); kernel 6.2+ recommended
+- DRI device nodes present: `ls /dev/dri/renderD*`
+- Add your user to the `render` and `video` groups: `sudo usermod -aG render,video $USER`
+- Export host group IDs (recommended to avoid `/dev/dri` permission mismatches):
+  - `export VIDEO_GID="$(getent group video | cut -d: -f3)"`
+  - `export RENDER_GID="$(stat -c '%g' /dev/dri/renderD128)"`
+
+**Optimum-Intel status:** Latest release is `1.27.0` (Dec 23, 2025), but this service intentionally does **not** depend on it for image embeddings. We use `openvino.convert_model()` directly to preserve CLIP `image_embeds` output.
+
+**Build and run (Compose override — recommended):**
+```bash
+docker compose -f docker-compose.yml -f docker-compose.openvino.yml up -d
+```
+The override sets `DEVICE=openvino:AUTO`, mounts `/dev/dri`, adds the `render` and `video` groups, and points the build at `Dockerfile.openvino`.
+
+**Build standalone:**
+```bash
+docker build -f Dockerfile.openvino -t classifarr-image-embedder:openvino .
+docker run --rm --device /dev/dri:/dev/dri --group-add "${VIDEO_GID:-44}" --group-add "${RENDER_GID:-109}" \
+  -p 8000:8000 -e DEVICE=openvino:AUTO classifarr-image-embedder:openvino
+```
+
+**Force a specific device:**
+```bash
+# CPU-only (no GPU required):
+DEVICE=openvino:CPU
+
+# Intel GPU only (iGPU or Arc):
+DEVICE=openvino:GPU
+
+# Specific discrete GPU when multiple are present:
+DEVICE=openvino:GPU.0
+```
+
+**Verify OpenVINO is in use:**
+```bash
+curl http://localhost:8000/health | python -m json.tool
+# "device": {"type": "openvino", "ov_device": "AUTO", "available_devices": ["CPU", "GPU"]}
+```
+
+**WSL2 (Windows):** Replace the `devices` block with `/dev/dxg` and mount `/usr/lib/wsl`. See the comments in `docker-compose.openvino.yml` for details.
+
+---
+
 ## GPU Examples
-These examples expose GPU devices to the container. Whether the service actually uses them depends on your PyTorch build and drivers.
+These examples expose GPU devices to the container using the pre-built image. Whether the service actually uses them depends on your PyTorch build — use the `Dockerfile.cuda` build above if you need GPU inference.
 
 ### NVIDIA (CUDA / NVENC)
 ```yaml
@@ -178,20 +294,45 @@ If your Docker setup ignores `deploy`, use `device_requests` instead:
         capabilities: [gpu]
 ```
 
-### Intel iGPU (VAAPI / OpenVINO)
+### Intel iGPU / Arc GPU (VAAPI / OpenVINO)
 ```yaml
 services:
   image-embedder:
-    image: ghcr.io/cloudbyday90/classifarr-image-embedder:latest
+    image: ghcr.io/cloudbyday90/classifarr-image-embedder:openvino
     ports:
       - "8000:8000"
+    environment:
+      - DEVICE=openvino:AUTO
     devices:
       - /dev/dri:/dev/dri
+    device_cgroup_rules:
+      - "c 226:* rmw"
     group_add:
-      - "video"
+      - "${VIDEO_GID:-44}"
+      - "${RENDER_GID:-109}"
 ```
 
-Note: Intel iGPU acceleration requires compatible drivers and an image that supports that runtime. This base image is CPU/CUDA focused; use iGPU-specific builds if needed.
+Use `DEVICE=openvino:AUTO` and the OpenVINO build (see [Intel OpenVINO Build](#intel-openvino-build)) for hardware-accelerated inference on Intel GPUs and CPUs.
+
+### AMD GPU (ROCm) — Linux only
+
+> **Not supported on Windows.** See [AMD ROCm Build](#amd-rocm-build) for details.
+
+```yaml
+services:
+  image-embedder:
+    image: ghcr.io/cloudbyday90/classifarr-image-embedder:rocm
+    ports:
+      - "8000:8000"
+    environment:
+      - DEVICE=rocm
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+      - render
+```
 
 ## Local Development (No Docker)
 

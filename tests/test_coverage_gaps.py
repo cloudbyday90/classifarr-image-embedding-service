@@ -3,23 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import base64
-import io
 import socket
 import sys
 import types
 
 import pytest
-from PIL import Image
 
 from image_embedder.config import _get_csv_list, Settings
 from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
-
-
-def _png_bytes() -> bytes:
-    img = Image.new("RGB", (1, 1), (0, 0, 255))
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return buf.getvalue()
+from fakes import _png_bytes
 
 
 def test_get_csv_list_splits_and_strips():

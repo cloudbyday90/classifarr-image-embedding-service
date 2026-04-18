@@ -10,8 +10,18 @@ shutdown_timeout_seconds = 30
 
 [model]
 default_model = "ViT-L-14"
-device = "auto"             # "auto" selects cuda if available, else cpu
+device = "auto"             # "auto"            — selects cuda if available, else cpu
+                            # "cpu"             — force CPU (torch)
+                            # "cuda"            — force NVIDIA GPU (torch + CUDA)
+                            # "rocm"            — AMD GPU (ROCm/HIP); Linux only — raises an
+                            #                     error on Windows (Windows ROCm is unsupported)
+                            # "openvino"        — Intel AUTO (OpenVINO picks best: GPU > CPU)
+                            # "openvino:AUTO"   — same as above, explicit
+                            # "openvino:CPU"    — Intel CPU via OpenVINO (AVX-512/VNNI)
+                            # "openvino:GPU"    — Intel iGPU (12th-gen+) or Arc GPU
+                            # "openvino:GPU.0"  — first discrete Arc GPU only
 warmup_on_startup = true
+embed_cache_size = 1000     # max number of (image, model, size, normalize) tuples to cache in memory; 0 = disabled
 
 [image]
 allow_remote_urls = false
@@ -23,6 +33,9 @@ request_timeout_seconds = 15
 concurrency = 1
 max_queue = 100
 max_wait_seconds = 60
+batch_window_ms = 0   # ms to wait for more requests before flushing a batch; 0 = disabled
+batch_max_size = 8    # maximum images per internal batch flush
+batch_api_max_items = 32  # maximum items per POST /embed-batch request (hard limit; 413 if exceeded)
 
 [logging]
 level = "INFO"              # DEBUG, INFO, WARNING, ERROR
@@ -35,8 +48,10 @@ cleanup_interval_seconds = 300
 max_process_memory_mb = 0   # 0 = no limit
 max_gpu_memory_mb = 0       # 0 = no limit
 cleanup_on_shutdown = true
+embed_cleanup_every_n = 0   # call cleanup_gpu_memory() every N embeds; 0 = disabled (recommended for CPU)
 
 [auth]
 require_api_key = true
-rate_limit_embed = "30/minute"  # format: "<count>/<period>" e.g. "10/minute", "2/second"
+rate_limit_embed = "30/minute"   # format: "<count>/<period>" e.g. "10/minute", "2/second"
+rate_limit_health = "120/minute" # unauthenticated endpoints — higher limit, still bounded
 # SERVICE_API_KEY is intentionally absent — set it via the .env file (see scripts/generate_env.py)

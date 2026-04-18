@@ -1,0 +1,28 @@
+# Core service dependencies (same as requirements.txt minus torch)
+fastapi>=0.135,<1
+uvicorn[standard]>=0.41,<1
+pydantic>=2.11,<3
+requests>=2.31
+pillow>=12.1
+numpy>=2.4
+slowapi>=0.1.9
+
+# Transformers for CLIPVisionModelWithProjection / CLIPProcessor
+transformers>=5.3
+
+# CPU-only torch — needed once at startup to load and export the HuggingFace
+# model to OpenVINO IR format.  Subsequent restarts load the cached IR files
+# directly via openvino.Core, so torch is not on the hot path.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.10
+
+# OpenVINO Runtime (inference + model conversion)
+# Note: openvino is also pre-installed in the openvino/ubuntu24_runtime base image;
+# including it here ensures the correct version is present in the venv.
+openvino>=2026.1.0
+
+# optimum-intel is intentionally NOT included.  Our _load_model_openvino() uses
+# openvino.convert_model() directly on CLIPVisionModelWithProjection, which
+# preserves the visual projection head (image_embeds output).  OVModelForFeatureExtraction
+# from optimum-intel returns only last_hidden_state — unsuitable for CLIP image embeddings.
+# The [openvino] extras bracket syntax is deprecated upstream anyway.

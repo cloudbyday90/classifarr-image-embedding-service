@@ -1,0 +1,62 @@
+# OpenVINO Compose override — merges with docker-compose.yml for Intel GPU/CPU acceleration.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.openvino.yml up -d
+#
+# Supported hardware (all handled by the single "GPU" or "AUTO" device string):
+#   • Intel integrated GPU: 12th-gen Core (UHD 770) and newer
+#   • Intel Arc discrete GPU: A-series, B-series (Battlemage), and future Arc generations
+#   • Intel CPU fallback: full OpenVINO CPU plugin path (AVX-512 / VNNI optimized)
+#
+# Host prerequisites (Linux):
+#   1. Intel GPU kernel driver — xe (kernel 6.2+) or i915
+#      Ubuntu/Debian:  sudo apt install intel-gpu-tools
+#      Verify:         ls /dev/dri/renderD*
+#   2. Add your user to the render and video groups:
+#      sudo usermod -aG render,video $USER
+#   3. Ensure /dev/dri nodes exist before starting the container.
+#   4. Export host group IDs so group_add matches host permissions exactly:
+#      export VIDEO_GID="$(getent group video | cut -d: -f3)"
+#      export RENDER_GID="$(stat -c '%g' /dev/dri/renderD128)"
+#
+# WSL2 (Windows Subsystem for Linux) — GPU access requires the Intel NPU/GPU
+# driver installed on the Windows host.  Replace the `devices` block with:
+#   devices:
+#     - /dev/dxg
+#   volumes:
+#     - /usr/lib/wsl:/usr/lib/wsl
+# and set DEVICE to openvino:GPU.
+#
+# What this file changes relative to docker-compose.yml:
+#   - Builds from Dockerfile.openvino (CPU-only torch + OpenVINO 2026.1.0 runtime base)
+#   - Sets DEVICE=openvino:AUTO so OpenVINO selects the best available device at startup
+#     (GPU preferred over CPU when /dev/dri is accessible)
+#   - Mounts /dev/dri into the container for Intel GPU access
+#   - Adds supplemental numeric group IDs (`VIDEO_GID` / `RENDER_GID`) so
+#     /dev/dri permissions match host groups even when container group names/GIDs differ
+#   - Sets OV_MODEL_CACHE so exported IR files persist in the named volume across restarts
+
+services:
+  image-embedder:
+    build:
+      context: .
+      dockerfile: Dockerfile.openvino
+    environment:
+      # openvino:AUTO — OpenVINO picks the best device (GPU > CPU) automatically.
+      # Override with openvino:CPU, openvino:GPU, or openvino:GPU.0 as needed.
+      DEVICE: openvino:AUTO
+      OV_MODEL_CACHE: /app/.cache/ov_ir
+    devices:
+      # Mount all DRI nodes (/dev/dri/card*, /dev/dri/renderD*) for Intel GPU access.
+      - /dev/dri:/dev/dri
+    device_cgroup_rules:
+      # DRM major number is 226. This keeps access explicit for runtimes that enforce
+      # device cgroup filters more strictly.
+      - "c 226:* rmw"
+    group_add:
+      # Numeric group IDs avoid host/container mismatch issues with /dev/dri permissions.
+      # Override at runtime, e.g.:
+      #   VIDEO_GID=$(getent group video | cut -d: -f3)
+      #   RENDER_GID=$(stat -c '%g' /dev/dri/renderD128)
+      - "${VIDEO_GID:-44}"
+      - "${RENDER_GID:-109}"

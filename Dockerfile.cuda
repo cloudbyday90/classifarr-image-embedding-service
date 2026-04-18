@@ -1,0 +1,85 @@
+# Classifarr Image Embedding Service - companion service for Classifarr
+# Copyright (C) 2024-2026 Classifarr Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# CUDA variant — installs PyTorch with CUDA 12.4 wheels and uses the official
+# NVIDIA CUDA 12.4 + cuDNN runtime image so GPU inference works out of the box.
+#
+# Prerequisites on the Docker host:
+#   NVIDIA Container Toolkit — https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/
+#
+# Build standalone:
+#   docker build -f Dockerfile.cuda -t classifarr-image-embedder:cuda .
+#
+# Run with GPU via Compose override (recommended):
+#   docker compose -f docker-compose.yml -f docker-compose.cuda.yml up -d
+
+# ── Build stage: install wheels (no CUDA toolkit needed — we use pre-built wheels) ──
+FROM ubuntu:24.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /tmp/requirements.txt
+
+# Install torch from the CUDA 12.4 wheel index first so pip picks the GPU-enabled
+# wheel rather than the CPU-only wheel on PyPI.  All other packages come from PyPI
+# in the second pass; pip sees torch already satisfied and skips reinstalling it.
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install torch \
+        --index-url https://download.pytorch.org/whl/cu124 \
+    && /opt/venv/bin/pip install -r /tmp/requirements.txt
+
+# ── Runtime stage: CUDA 12.4 + cuDNN runtime, no build tools ────────────────
+# nvidia/cuda runtime images ship libcuda, libcudart, and cuDNN — everything
+# PyTorch needs for GPU inference; the 'devel' variant (full toolkit) is not required.
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=1
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONPATH="/app/src"
+# Store HuggingFace model cache inside the app dir where appuser has write access
+ENV HF_HOME="/app/.cache"
+# Tell the NVIDIA Container Toolkit which driver capabilities are needed.
+# 'compute' = CUDA compute; 'utility' = nvidia-smi / device enumeration.
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+# Runtime-only system libraries.
+# libgl1 / libglib2.0-0 are required by Pillow for image I/O.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    libgl1 \
+    libglib2.0-0 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+COPY src ./src
+
+# CIS Docker Benchmark 4.1: do not run as root
+RUN groupadd --gid 1001 appgroup \
+    && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser \
+    && mkdir -p /app/.cache \
+    && chown -R appuser:appgroup /app/.cache
+USER appuser
+
+EXPOSE 8000
+
+# Model load at startup can take longer on first run (download + GPU warm-up).
+# start-period is extended to 90 s relative to the CPU Dockerfile's 60 s.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+
+CMD ["uvicorn", "image_embedder.main:app", "--host", "0.0.0.0", "--port", "8000"]

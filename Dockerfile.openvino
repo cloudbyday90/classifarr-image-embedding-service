@@ -1,0 +1,112 @@
+# Classifarr Image Embedding Service - companion service for Classifarr
+# Copyright (C) 2024-2026 Classifarr Contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# OpenVINO variant — accelerates inference on Intel CPUs, integrated GPUs
+# (12th-gen UHD 770+), and discrete Arc GPUs (A/B/C series) via Intel OpenVINO.
+#
+# At first startup the service exports the HuggingFace model to OpenVINO IR
+# format and caches the .xml/.bin files in HF_HOME.  Subsequent restarts load
+# the cached IR directly — no re-export, no torch on the hot path.
+#
+# Supported DEVICE values (set via env or config.toml):
+#   openvino          — OpenVINO AUTO (selects best available: GPU > CPU)
+#   openvino:AUTO     — same as above, explicit
+#   openvino:CPU      — OpenVINO CPU plugin (AVX-512, all modern Intel CPUs)
+#   openvino:GPU      — OpenVINO GPU plugin (iGPU 12th-gen+, Arc A/B/C series)
+#   openvino:GPU.0    — first discrete GPU only
+#
+# Linux iGPU / Arc GPU requirements on the host:
+#   • Intel GPU kernel driver (xe or i915) — kernel 6.2+ recommended
+#   • DRI device nodes: /dev/dri/card*, /dev/dri/renderD*
+#   Use docker-compose.openvino.yml which adds the required device mounts and
+#   supplemental groups automatically.
+#
+# Build standalone:
+#   docker build -f Dockerfile.openvino -t classifarr-image-embedder:openvino .
+#
+# Run with Intel GPU via Compose override (recommended):
+#   docker compose -f docker-compose.yml -f docker-compose.openvino.yml up -d
+
+# ── Build stage: install Python wheels ──────────────────────────────────────
+# Use plain Ubuntu 24.04 for the build stage to keep the builder lean.
+# The openvino/ubuntu24_runtime base already ships the OpenVINO C++ runtime
+# libraries and the openvino Python bindings, so we don't need to pip-install
+# openvino itself — only the Python packages that sit on top of it.
+FROM ubuntu:24.04 AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-openvino.txt /tmp/requirements-openvino.txt
+
+# Build the venv with all Python-level dependencies.
+# CPU-only torch is pulled via --extra-index-url in requirements-openvino.txt;
+# it is needed at runtime only for the first-startup model export step.
+# optimum-intel is intentionally NOT installed — we use openvino.convert_model()
+# directly, which preserves CLIPVisionModelWithProjection's projection head.
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install -r /tmp/requirements-openvino.txt
+
+# ── Runtime stage: official Intel OpenVINO Ubuntu 24.04 runtime image ───────
+# openvino/ubuntu24_runtime ships:
+#   • OpenVINO Runtime (IE core + plugins for CPU, GPU, AUTO)
+#   • openvino Python bindings pre-installed in the system Python
+#   • Intel GPU firmware packages and required udev rules
+# We copy our venv on top and configure Python to prefer it.
+FROM openvino/ubuntu24_runtime:2026.1.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV PIP_NO_CACHE_DIR=1
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONPATH="/app/src"
+# Store HuggingFace model cache and OpenVINO IR cache inside the app dir.
+ENV HF_HOME="/app/.cache"
+# OV IR model cache directory (used by _load_model_openvino to persist .xml/.bin)
+ENV OV_MODEL_CACHE="/app/.cache/ov_ir"
+
+# Additional runtime libraries.
+# libgl1 / libglib2.0-0 are required by Pillow for image I/O.
+# The OV base image is non-root by convention; we need root briefly to install.
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+COPY src ./src
+
+# CIS Docker Benchmark 4.1: do not run as root.
+# Use gid 44 (video) and 109 (render) to grant access to /dev/dri/* nodes
+# for Intel GPU inference.  Group IDs match typical Debian/Ubuntu defaults;
+# docker-compose.openvino.yml passes group_add to cover host variations.
+RUN groupadd --gid 1001 appgroup \
+    && (getent group video >/dev/null || groupadd --gid 44 video) \
+    && (getent group render >/dev/null || groupadd --gid 109 render) \
+    && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser \
+    && usermod -aG video appuser \
+    && usermod -aG render appuser \
+    && mkdir -p /app/.cache/ov_ir \
+    && chown -R appuser:appgroup /app/.cache
+USER appuser
+
+EXPOSE 8000
+
+# First startup includes model export to OV IR — allow up to 120 s.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+
+CMD ["uvicorn", "image_embedder.main:app", "--host", "0.0.0.0", "--port", "8000"]

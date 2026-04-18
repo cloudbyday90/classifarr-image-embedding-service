@@ -1,0 +1,30 @@
+# CUDA Compose override — merges with docker-compose.yml to produce a GPU-enabled stack.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.cuda.yml up -d
+#
+# Prerequisites on the Docker host:
+#   NVIDIA Container Toolkit — https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/
+#
+# What this file changes relative to docker-compose.yml:
+#   - Builds from Dockerfile.cuda (PyTorch with CUDA 12.4 wheels + nvidia/cuda runtime base)
+#   - Sets DEVICE=cuda so the service selects the GPU instead of auto-detecting
+#   - Reserves one NVIDIA GPU device via the Docker Compose GPU resource spec
+#   - Sets NVIDIA_DRIVER_CAPABILITIES so the NVIDIA Container Toolkit exposes
+#     the correct driver libs inside the container
+
+services:
+  image-embedder:
+    build:
+      context: .
+      dockerfile: Dockerfile.cuda
+    environment:
+      DEVICE: cuda
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

@@ -84,6 +84,10 @@ class Settings:
     embed_concurrency: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_CONCURRENCY", "queue", "concurrency", 1))
     embed_max_queue: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_MAX_QUEUE", "queue", "max_queue", 100))
     embed_max_wait_seconds: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_MAX_WAIT_SECONDS", "queue", "max_wait_seconds", 60))
+    embed_batch_window_ms: int = field(default_factory=lambda: _int("EMBED_BATCH_WINDOW_MS", "queue", "batch_window_ms", 0))
+    embed_batch_max_size: int = field(default_factory=lambda: _int("EMBED_BATCH_MAX_SIZE", "queue", "batch_max_size", 8))
+    embed_batch_api_max_items: int = field(default_factory=lambda: _int("EMBED_BATCH_API_MAX_ITEMS", "queue", "batch_api_max_items", 32))
+    embed_cache_size: int = field(default_factory=lambda: _int("EMBED_CACHE_SIZE", "model", "embed_cache_size", 1000))
     warmup_on_startup: bool = field(default_factory=lambda: _bool("WARMUP_ON_STARTUP", "model", "warmup_on_startup", True))
 
     log_level: str = field(default_factory=lambda: _str("LOG_LEVEL", "logging", "level", "INFO"))
@@ -102,6 +106,9 @@ class Settings:
         default_factory=lambda: _int("MAX_GPU_MEMORY_MB", "memory", "max_gpu_memory_mb", 0) or None
     )
     cleanup_on_shutdown: bool = field(default_factory=lambda: _bool("CLEANUP_ON_SHUTDOWN", "memory", "cleanup_on_shutdown", True))
+    embed_cleanup_every_n: int = field(
+        default_factory=lambda: _int("EMBED_CLEANUP_EVERY_N", "memory", "embed_cleanup_every_n", 0)
+    )
 
     shutdown_timeout_seconds: int = field(
         default_factory=lambda: _int("SHUTDOWN_TIMEOUT_SECONDS", "server", "shutdown_timeout_seconds", 30)
@@ -113,3 +120,4 @@ class Settings:
     service_api_key: str | None = field(default_factory=lambda: os.getenv("SERVICE_API_KEY") or None)
     require_api_key: bool = field(default_factory=lambda: _bool("REQUIRE_API_KEY", "auth", "require_api_key", True))
     rate_limit_embed: str = field(default_factory=lambda: _str("RATE_LIMIT_EMBED", "auth", "rate_limit_embed", "30/minute"))
+    rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))

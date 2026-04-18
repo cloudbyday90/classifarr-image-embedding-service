@@ -8,18 +8,10 @@ import threading
 
 import httpx
 import pytest
+from asgi_lifespan import LifespanManager
 
 from image_embedder.main import create_app
-from image_embedder.config import Settings
-
-
-def _no_auth_settings(**kwargs) -> Settings:
-    s = Settings()
-    s.require_api_key = False
-    s.warmup_on_startup = False
-    for k, v in kwargs.items():
-        setattr(s, k, v)
-    return s
+from fakes import _no_auth_settings
 
 
 class SlowEmbedder:
@@ -41,6 +33,37 @@ class SlowEmbedder:
             self._started_event.set()
         time.sleep(self._delay_seconds)
         return [0.1, 0.2], 2, "local", model or "ViT-L-14", image_size or 224
+
+
+class _Spec:
+    def __init__(self, name: str, dims: int = 768, image_size: int = 224):
+        self.name = name
+        self.dims = dims
+        self.image_size = image_size
+
+
+class BatchAwareEmbedder:
+    def __init__(self):
+        self.embed_calls = 0
+        self.embed_batch_calls = 0
+        self._spec = _Spec("ViT-L-14")
+
+    def list_models(self):
+        return [self._spec]
+
+    def resolve_model(self, _model):
+        return self._spec
+
+    def embed(self, image_url, image_base64, model, normalize, image_size):
+        self.embed_calls += 1
+        return [0.1, 0.2], 2, "local", model or "ViT-L-14", image_size or 224
+
+    def embed_batch(self, spec, target_size, items):
+        self.embed_batch_calls += 1
+        out = []
+        for _ in items:
+            out.append(([0.1, 0.2], 2, "local", spec.name, target_size))
+        return out
 
 
 @pytest.mark.anyio
@@ -132,3 +155,63 @@ async def test_queue_wait_timeout_returns_504(monkeypatch):
 
     assert r1.status_code == 200
     assert r2.status_code == 504
+
+
+@pytest.mark.anyio
+async def test_batch_window_coalesces_parallel_requests():
+    embedder = BatchAwareEmbedder()
+    app = create_app(
+        embedder=embedder,
+        settings=_no_auth_settings(
+            embed_concurrency=1,
+            embed_max_queue=10,
+            embed_max_wait_seconds=2,
+            embed_batch_window_ms=30,
+            embed_batch_max_size=8,
+        ),
+    )
+    assert app.state.batch_window is not None
+
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            async def call():
+                return await client.post(
+                    "/embed-image",
+                    json={"image_base64": "AA==", "model": "ViT-L-14"},
+                )
+
+            r1, r2 = await asyncio.gather(call(), call())
+
+    assert r1.status_code == 200
+    assert r2.status_code == 200
+    assert embedder.embed_batch_calls == 1
+    assert embedder.embed_calls == 0
+
+
+@pytest.mark.anyio
+async def test_batch_window_disabled_uses_single_request_path():
+    embedder = BatchAwareEmbedder()
+    app = create_app(
+        embedder=embedder,
+        settings=_no_auth_settings(
+            embed_concurrency=1,
+            embed_max_queue=10,
+            embed_max_wait_seconds=2,
+            embed_batch_window_ms=0,
+            embed_batch_max_size=8,
+        ),
+    )
+    assert app.state.batch_window is None
+
+    async with LifespanManager(app):
+        transport = httpx.ASGITransport(app=app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+            r = await client.post(
+                "/embed-image",
+                json={"image_base64": "AA==", "model": "ViT-L-14"},
+            )
+
+    assert r.status_code == 200
+    assert embedder.embed_batch_calls == 0
+    assert embedder.embed_calls == 1

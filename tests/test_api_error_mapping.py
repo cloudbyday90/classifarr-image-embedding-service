@@ -5,14 +5,7 @@
 from fastapi.testclient import TestClient
 
 from image_embedder.main import create_app
-from image_embedder.config import Settings
-
-
-def _no_auth_settings() -> Settings:
-    s = Settings()
-    s.require_api_key = False
-    s.warmup_on_startup = False
-    return s
+from fakes import _no_auth_settings
 
 
 class EmbedderValueError:

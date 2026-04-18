@@ -3,20 +3,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import base64
-import io
 
 import pytest
-from PIL import Image
 
 from image_embedder.config import Settings, _get_bool
 from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
-
-
-def _png_bytes() -> bytes:
-    img = Image.new("RGB", (1, 1), (255, 0, 0))
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return buf.getvalue()
+from fakes import _png_bytes
 
 
 def test_get_bool_parses_truthy_values():

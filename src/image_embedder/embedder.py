@@ -4,13 +4,16 @@
 
 import base64
 import binascii
+import hashlib
 import ipaddress
 import io
 import socket
+import sys
 import threading
+from collections import OrderedDict
 from dataclasses import dataclass
 from contextlib import closing
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING
 from urllib.parse import urlparse
 
 import numpy as np
@@ -24,6 +27,83 @@ if TYPE_CHECKING:
     from transformers import CLIPVisionModelWithProjection, CLIPProcessor
 
 ModelTuple = Tuple[Any, Any, str]
+
+
+class EmbeddingLRUCache:
+    """Thread-safe in-memory LRU cache for computed embeddings.
+
+    Cache keys encode all axes that affect the output:
+    ``sha256(content) | model_name | image_size | normalize``
+    where *content* is the URL string or the raw base64 string.
+    """
+
+    def __init__(self, maxsize: int) -> None:
+        self._maxsize = maxsize
+        self._cache: OrderedDict = OrderedDict()
+        self._lock = threading.Lock()
+        self._hits = 0
+        self._misses = 0
+        self._evictions = 0
+
+    @staticmethod
+    def make_key(
+        image_url: Optional[str],
+        image_base64: Optional[str],
+        model_name: str,
+        image_size: int,
+        normalize: bool,
+    ) -> str:
+        """Return a deterministic, hashable cache key for the given request."""
+        content = image_url if image_url else (image_base64 or "")
+        content_hash = hashlib.sha256(content.encode(), usedforsecurity=False).hexdigest()
+        return f"{content_hash}|{model_name}|{image_size}|{normalize}"
+
+    def get(self, key: str) -> Optional[Any]:
+        with self._lock:
+            if key in self._cache:
+                self._cache.move_to_end(key)
+                self._hits += 1
+                return self._cache[key]
+            self._misses += 1
+            return None
+
+    def put(self, key: str, value: Any) -> None:
+        with self._lock:
+            if key in self._cache:
+                self._cache.move_to_end(key)
+            else:
+                if len(self._cache) >= self._maxsize:
+                    self._cache.popitem(last=False)
+                    self._evictions += 1
+            self._cache[key] = value
+
+    def info(self) -> dict:
+        with self._lock:
+            total = self._hits + self._misses
+            return {
+                "size": len(self._cache),
+                "maxsize": self._maxsize,
+                "hits": self._hits,
+                "misses": self._misses,
+                "evictions": self._evictions,
+                "hit_rate": round(self._hits / total, 4) if total > 0 else 0.0,
+            }
+
+    def clear(self) -> None:
+        with self._lock:
+            self._cache.clear()
+            self._hits = 0
+            self._misses = 0
+            self._evictions = 0
+
+
+@dataclass
+class BatchItem:
+    """Descriptor for a single image within a batch embed call."""
+
+    image_url: Optional[str]
+    image_base64: Optional[str]
+    normalize: bool
 
 
 @dataclass
@@ -56,6 +136,13 @@ class ImageEmbedder:
         self._models: Dict[str, ModelTuple] = {}
         self._model_locks: Dict[str, threading.Lock] = {}
         self._model_locks_guard = threading.Lock()
+        self._embed_count = 0
+        self._embed_count_lock = threading.Lock()
+        self._embedding_cache: Optional[EmbeddingLRUCache] = (
+            EmbeddingLRUCache(self.settings.embed_cache_size)
+            if self.settings.embed_cache_size > 0
+            else None
+        )
 
     def list_models(self) -> List[ModelSpec]:
         return list(MODEL_CATALOG.values())
@@ -63,12 +150,27 @@ class ImageEmbedder:
     def get_device_info(self) -> dict:
         try:
             device = self._resolve_device()
-            info = {"type": str(device).split(":")[0]}
-            if str(device).startswith("cuda"):
+            device_str = str(device)
+            if device_str.startswith("ov:"):
+                ov_device = device_str[len("ov:"):]
+                info: dict = {"type": "openvino", "ov_device": ov_device}
+                try:
+                    import openvino as ov
+                    core = ov.Core()
+                    available = core.available_devices
+                    info["available_devices"] = available
+                except Exception:
+                    pass
+                return info
+            info = {"type": device_str.split(":")[0]}
+            if device_str.startswith("cuda"):
                 try:
                     import torch
                     if torch.cuda.is_available():
                         info["name"] = torch.cuda.get_device_name(device)
+                        if getattr(torch.version, "hip", None) is not None:
+                            info["type"] = "rocm"
+                            info["hip_version"] = torch.version.hip
                 except Exception:
                     pass
             return info
@@ -86,9 +188,13 @@ class ImageEmbedder:
 
     def get_memory_info(self) -> Optional[dict]:
         try:
-            import torch
             device = self._resolve_device()
-            if str(device).startswith("cuda") and torch.cuda.is_available():
+            device_str = str(device)
+            if device_str.startswith("ov:"):
+                # OpenVINO does not expose a Python API for GPU memory stats.
+                return None
+            import torch
+            if device_str.startswith("cuda") and torch.cuda.is_available():
                 return {
                     "allocated_mb": torch.cuda.memory_allocated(device) / (1024 * 1024),
                     "reserved_mb": torch.cuda.memory_reserved(device) / (1024 * 1024),
@@ -96,6 +202,12 @@ class ImageEmbedder:
         except Exception:
             pass
         return None
+
+    def get_cache_info(self) -> Optional[dict]:
+        """Return cache statistics, or None when caching is disabled."""
+        if self._embedding_cache is None:
+            return None
+        return self._embedding_cache.info()
 
     def is_default_model_loaded(self) -> bool:
         spec = self.resolve_model(None)
@@ -114,9 +226,33 @@ class ImageEmbedder:
         return MODEL_CATALOG.get(candidate, default_spec)
 
     def _resolve_device(self):
+        device_setting = (self.settings.device or "auto").strip().lower()
+
+        # OpenVINO device family: "openvino", "openvino:CPU", "openvino:GPU",
+        # "openvino:AUTO", "openvino:GPU.0", …
+        # Return a plain string prefixed with "ov:" so the rest of the code can
+        # distinguish OV paths from torch device objects without importing torch.
+        if device_setting == "openvino" or device_setting.startswith("openvino:"):
+            if device_setting == "openvino":
+                ov_device = "AUTO"
+            else:
+                ov_device = self.settings.device.split(":", 1)[1].upper()  # type: ignore[union-attr]
+            return f"ov:{ov_device}"
+
+        if device_setting == "rocm":
+            if sys.platform == "win32":
+                raise ValueError(
+                    "ROCm (AMD GPU) is not supported on Windows. "
+                    "ROCm requires a Linux host. "
+                    "See the README for AMD GPU setup instructions."
+                )
+            import torch
+            if not torch.cuda.is_available():
+                raise ValueError("ROCm requested but no ROCm-capable AMD GPU is available")
+            return torch.device("cuda")
+
         import torch
 
-        device_setting = (self.settings.device or "auto").strip().lower()
         if device_setting == "cpu":
             return torch.device("cpu")
         if device_setting == "cuda":
@@ -144,9 +280,13 @@ class ImageEmbedder:
             if spec.name in self._models:
                 return self._models[spec.name]
 
+            device = self._resolve_device()
+
+            if isinstance(device, str) and device.startswith("ov:"):
+                return self._load_model_openvino(spec, device)
+
             from transformers import CLIPVisionModelWithProjection, CLIPProcessor
 
-            device = self._resolve_device()
             model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
             processor = CLIPProcessor.from_pretrained(spec.hf_id)
             model.to(device)  # type: ignore[arg-type]
@@ -154,6 +294,56 @@ class ImageEmbedder:
 
             self._models[spec.name] = (model, processor, str(device))
             return self._models[spec.name]
+
+    def _load_model_openvino(self, spec: ModelSpec, ov_device_str: str):
+        """Load (or export-then-cache) a CLIP model for OpenVINO inference.
+
+        On the first call the HuggingFace model is loaded via PyTorch, converted
+        to OpenVINO IR format (.xml + .bin) with ``openvino.convert_model()``,
+        saved to *OV_MODEL_CACHE*, and compiled for the requested device.
+        Subsequent calls find the cached IR on disk and skip the export step,
+        so torch is not needed on the hot path after the first startup.
+
+        The stored tuple is ``(compiled_model, processor, ov_device_str)`` where
+        ``compiled_model`` is an ``openvino.CompiledModel``.  The rest of the
+        inference code detects the OV path by checking whether the device string
+        starts with ``"ov:"``.
+        """
+        import os
+        import pathlib
+        import openvino as ov
+        from transformers import CLIPProcessor
+
+        ov_device = ov_device_str[len("ov:"):]
+
+        cache_dir = pathlib.Path(
+            os.environ.get("OV_MODEL_CACHE", "/app/.cache/ov_ir")
+        ) / spec.name.replace("/", "_")
+        xml_path = cache_dir / "model.xml"
+
+        if not xml_path.exists():
+            # Export: load PyTorch model, trace + convert to OV IR, save to disk.
+            import torch
+            from transformers import CLIPVisionModelWithProjection
+
+            torch_model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
+            torch_model.eval()
+
+            dummy_input = {"pixel_values": torch.zeros(1, 3, spec.image_size, spec.image_size)}
+            ov_model = ov.convert_model(torch_model, example_input=dummy_input)
+
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            ov.save_model(ov_model, str(xml_path))
+        else:
+            core_tmp = ov.Core()
+            ov_model = core_tmp.read_model(str(xml_path))
+
+        core = ov.Core()
+        compiled = core.compile_model(ov_model, ov_device)
+
+        processor = CLIPProcessor.from_pretrained(spec.hf_id)
+        self._models[spec.name] = (compiled, processor, ov_device_str)
+        return self._models[spec.name]
 
     def _is_public_ip(self, ip_str: str) -> bool:
         ip = ipaddress.ip_address(ip_str)
@@ -273,23 +463,192 @@ class ImageEmbedder:
         if target_size <= 0:
             raise ValueError("image_size must be a positive integer")
 
+        # Cache check — skip inference entirely on a hit.
+        if self._embedding_cache is not None:
+            cache_key = EmbeddingLRUCache.make_key(
+                image_url, image_base64, spec.name, target_size, normalize
+            )
+            cached = self._embedding_cache.get(cache_key)
+            if cached is not None:
+                return cached
+        else:
+            cache_key = ""
+
         model_obj, processor, device = self._load_model(spec)
         image = self._load_image(image_url, image_base64)
 
-        inputs = processor(  # type: ignore[operator]
-            images=image,
-            return_tensors="pt",
-            size={"shortest_edge": target_size}
-        )
-        inputs = {k: v.to(device) for k, v in inputs.items()}
-
-        import torch
-
-        with torch.no_grad():
-            features = model_obj(**inputs).image_embeds  # type: ignore[operator]
+        if device.startswith("ov:"):
+            # OpenVINO path: processor returns numpy tensors; compiled model
+            # returns output[0] which is image_embeds from CLIPVisionModelWithProjection.
+            inputs = processor(  # type: ignore[operator]
+                images=image,
+                return_tensors="np",
+                size={"shortest_edge": target_size},
+            )
+            result = model_obj(dict(inputs))  # type: ignore[operator]
+            feat = result[0][0].astype(np.float32)  # shape (dims,)
             if normalize:
-                features = torch.nn.functional.normalize(features, p=2, dim=-1)
+                norm = np.linalg.norm(feat)
+                if norm > 0:
+                    feat = feat / norm
+            embedding = feat.tolist()
+        else:
+            inputs = processor(  # type: ignore[operator]
+                images=image,
+                return_tensors="pt",
+                size={"shortest_edge": target_size},
+            )
+            inputs = {k: v.to(device) for k, v in inputs.items()}
 
-        embedding = features[0].detach().cpu().numpy().astype(np.float32).tolist()
+            import torch
+
+            with torch.no_grad():
+                features = model_obj(**inputs).image_embeds  # type: ignore[operator]
+                if normalize:
+                    features = torch.nn.functional.normalize(features, p=2, dim=-1)
+
+            embedding = features[0].detach().cpu().numpy().astype(np.float32).tolist()
+
         dims = len(embedding)
-        return embedding, dims, "local", spec.name, target_size
+
+        if self.settings.embed_cleanup_every_n > 0:
+            with self._embed_count_lock:
+                self._embed_count += 1
+                trigger = (self._embed_count % self.settings.embed_cleanup_every_n == 0)
+            if trigger:
+                from .memory import cleanup_gpu_memory
+                cleanup_gpu_memory(device)
+
+        result = (embedding, dims, "local", spec.name, target_size)
+        if self._embedding_cache is not None and cache_key:
+            self._embedding_cache.put(cache_key, result)
+        return result
+
+    def embed_batch(
+        self,
+        spec: ModelSpec,
+        target_size: int,
+        items: List[BatchItem],
+    ) -> List[Union[Tuple[List[float], int, str, str, int], Exception]]:
+        """Run a batch of images through the model in one forward pass.
+
+        All items share the same resolved *spec* and *target_size*.
+        Returns one result (or ``Exception``) per item, in the same order.
+        Per-item image-load errors are returned as exceptions rather than
+        aborting the whole batch.
+        """
+        if not items:
+            return []
+
+        # Pre-check cache: items already computed don't need model inference.
+        outcomes: List[Any] = [None] * len(items)
+        uncached_indices: List[int] = []
+        if self._embedding_cache is not None:
+            for i, item in enumerate(items):
+                key = EmbeddingLRUCache.make_key(
+                    item.image_url, item.image_base64, spec.name, target_size, item.normalize
+                )
+                cached = self._embedding_cache.get(key)
+                if cached is not None:
+                    outcomes[i] = cached
+                else:
+                    uncached_indices.append(i)
+        else:
+            uncached_indices = list(range(len(items)))
+
+        # If everything was cached, skip model loading entirely.
+        if not uncached_indices:
+            return outcomes
+
+        uncached_items = [items[i] for i in uncached_indices]
+        model_obj, processor, device = self._load_model(spec)
+
+        # Load images, capturing per-item errors so one bad image
+        # doesn't abort the whole batch.
+        pil_images: List[Optional[Image.Image]] = []
+        load_errors: List[Optional[Exception]] = []
+        for item in uncached_items:
+            try:
+                pil_images.append(self._load_image(item.image_url, item.image_base64))
+                load_errors.append(None)
+            except Exception as exc:
+                pil_images.append(None)
+                load_errors.append(exc)
+
+        valid_sub_idx = [i for i, img in enumerate(pil_images) if img is not None]
+        valid_images = [pil_images[i] for i in valid_sub_idx]
+
+        # Partial outcomes for uncached items (index within uncached_items).
+        uncached_outcomes: List[Any] = list(load_errors)
+
+        if valid_images:
+            if device.startswith("ov:"):
+                # OpenVINO path: batch all valid images in one compiled model call.
+                inputs = processor(  # type: ignore[operator]
+                    images=valid_images,
+                    return_tensors="np",
+                    size={"shortest_edge": target_size},
+                )
+                result = model_obj(dict(inputs))  # type: ignore[operator]
+                features_np = result[0].astype(np.float32)  # shape (N, dims)
+
+                for batch_pos, sub_idx in enumerate(valid_sub_idx):
+                    feat = features_np[batch_pos]
+                    if uncached_items[sub_idx].normalize:
+                        norm = np.linalg.norm(feat)
+                        if norm > 0:
+                            feat = feat / norm
+                    uncached_outcomes[sub_idx] = (feat.tolist(), len(feat), "local", spec.name, target_size)
+            else:
+                import torch
+
+                inputs = processor(  # type: ignore[operator]
+                    images=valid_images,
+                    return_tensors="pt",
+                    size={"shortest_edge": target_size},
+                )
+                inputs = {k: v.to(device) for k, v in inputs.items()}
+
+                with torch.no_grad():
+                    features = model_obj(**inputs).image_embeds  # type: ignore[operator]
+
+                for batch_pos, sub_idx in enumerate(valid_sub_idx):
+                    feat = features[batch_pos]
+                    if uncached_items[sub_idx].normalize:
+                        feat = torch.nn.functional.normalize(
+                            feat.unsqueeze(0), p=2, dim=-1
+                        ).squeeze(0)
+                    embedding = feat.detach().cpu().numpy().astype(np.float32).tolist()
+                    uncached_outcomes[sub_idx] = (embedding, len(embedding), "local", spec.name, target_size)
+
+        # Merge uncached results back into the full outcomes list.
+        for sub_idx, orig_idx in enumerate(uncached_indices):
+            outcomes[orig_idx] = uncached_outcomes[sub_idx]
+
+        # Populate cache with new successful results.
+        if self._embedding_cache is not None:
+            for i, outcome in enumerate(outcomes):
+                if not isinstance(outcome, Exception) and outcome is not None:
+                    key = EmbeddingLRUCache.make_key(
+                        items[i].image_url,
+                        items[i].image_base64,
+                        spec.name,
+                        target_size,
+                        items[i].normalize,
+                    )
+                    if key:
+                        self._embedding_cache.put(key, outcome)
+
+        # Cleanup tracking — count successful embeds.
+        n_success = sum(1 for o in outcomes if not isinstance(o, Exception) and o is not None)
+        if self.settings.embed_cleanup_every_n > 0 and n_success > 0:
+            n = self.settings.embed_cleanup_every_n
+            with self._embed_count_lock:
+                before = self._embed_count
+                self._embed_count += n_success
+                after = self._embed_count
+            if (after // n) > (before // n):
+                from .memory import cleanup_gpu_memory
+                cleanup_gpu_memory(device)
+
+        return outcomes

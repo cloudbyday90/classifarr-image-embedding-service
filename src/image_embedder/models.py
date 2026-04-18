@@ -16,7 +16,11 @@ class ModelInfo(BaseModel):
 class EmbedImageRequest(BaseModel):
     image_url: Optional[str] = Field(default=None, description="Remote image URL")
     image_base64: Optional[str] = Field(default=None, description="Base64-encoded image bytes")
-    model: Optional[str] = Field(default=None, description="Model name, e.g., ViT-L-14")
+    model: Optional[str] = Field(
+        default=None,
+        pattern=r"^[a-zA-Z0-9][a-zA-Z0-9\-_\.]*$",
+        description="Model name, e.g., ViT-L-14",
+    )
     normalize: bool = Field(default=True, description="L2 normalize embeddings")
     image_size: Optional[int] = Field(default=None, gt=0, description="Resize shortest edge before embed")
 
@@ -27,6 +31,41 @@ class EmbedImageResponse(BaseModel):
     provider: str
     model: str
     image_size: int
+
+
+class EmbedBatchItem(BaseModel):
+    image_url: Optional[str] = Field(default=None, description="Remote image URL")
+    image_base64: Optional[str] = Field(default=None, description="Base64-encoded image bytes")
+
+
+class EmbedBatchRequest(BaseModel):
+    items: List[EmbedBatchItem] = Field(..., min_length=1, description="Images to embed (up to the configured limit)")
+    model: Optional[str] = Field(
+        default=None,
+        pattern=r"^[a-zA-Z0-9][a-zA-Z0-9\-_\.]*$",
+        description="Model to use for all items, e.g., ViT-L-14",
+    )
+    normalize: bool = Field(default=True, description="L2 normalize all embeddings")
+    image_size: Optional[int] = Field(default=None, gt=0, description="Resize shortest edge for all items")
+
+
+class EmbedBatchItemResult(BaseModel):
+    index: int = Field(description="Zero-based position in the request items array")
+    status: str = Field(description='"ok" or "error"')
+    embedding: Optional[List[float]] = None
+    dims: Optional[int] = None
+    model: Optional[str] = None
+    image_size: Optional[int] = None
+    error: Optional[str] = Field(default=None, description="Error message when status is 'error'")
+
+
+class EmbedBatchResponse(BaseModel):
+    model: str
+    image_size: int
+    total: int
+    succeeded: int
+    failed: int
+    results: List[EmbedBatchItemResult]
 
 
 class ModelStatus(BaseModel):
@@ -52,6 +91,7 @@ class HealthResponse(BaseModel):
     models: List[ModelStatus] = Field(default_factory=list)
     memory: Optional[MemoryInfo] = None
     queue: dict = Field(default_factory=dict, description="Queue status and concurrency hints")
+    cache: Optional[dict] = Field(default=None, description="Embedding cache statistics; null when caching is disabled")
 
 
 class ReadyResponse(BaseModel):
