@@ -1,7 +1,7 @@
 # Core service dependencies (same as requirements.txt minus torch)
 fastapi>=0.135,<1
 uvicorn[standard]>=0.41,<1
-pydantic>=2.11,<3
+pydantic>=2.13.3,<3
 requests>=2.33.0
 pillow>=12.2.0
 numpy>=2.4
