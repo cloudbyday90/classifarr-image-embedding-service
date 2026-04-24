@@ -1,5 +1,5 @@
 pytest>=9.0
 pytest-cov>=7.0
-httpx>=0.28
+httpx>=0.28.1
 asgi-lifespan>=2.1
 pygments>=2.20.0
