@@ -14,7 +14,7 @@ transformers>=5.3
 # model to OpenVINO IR format.  Subsequent restarts load the cached IR files
 # directly via openvino.Core, so torch is not on the hot path.
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch>=2.10
+torch>=2.11.0+cpu
 
 # OpenVINO Runtime (inference + model conversion)
 # Note: openvino is also pre-installed in the openvino/ubuntu24_runtime base image;
