@@ -34,7 +34,7 @@ jobs:
 
       # SARIF pass: upload all HIGH/CRITICAL findings to the Security tab
       - name: Run Trivy (SARIF upload)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -55,7 +55,7 @@ jobs:
 
       # Table pass: gate the PR/push on exit code (fail on HIGH/CRITICAL)
       - name: Run Trivy (PR gate)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -82,7 +82,7 @@ jobs:
 
       # Scans Dockerfile and docker-compose*.yml against CIS Docker Benchmark
       - name: Run Trivy (IaC misconfig)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: config
           scan-ref: .
