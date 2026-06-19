@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # SARIF pass: upload all HIGH/CRITICAL findings to the Security tab
       - name: Run Trivy (SARIF upload)
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Scans Dockerfile and docker-compose*.yml against CIS Docker Benchmark
       - name: Run Trivy (IaC misconfig)
