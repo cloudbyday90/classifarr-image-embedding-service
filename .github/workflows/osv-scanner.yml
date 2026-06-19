@@ -19,7 +19,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: OSV scan (no SARIF upload for Dependabot)
         uses: google/osv-scanner-action/osv-scanner-action@v2.3.5
         with:

@@ -29,7 +29,7 @@ jobs:
       pull-requests: write  # Required for gitleaks to post PR review comments on leaks
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0  # Full history required to scan all commits
 
