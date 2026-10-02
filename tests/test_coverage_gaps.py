@@ -2,16 +2,15 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import base64
 import socket
 import sys
 import types
 
 import pytest
+from fakes import _png_bytes, install_remote_response
 
-from image_embedder.config import _get_csv_list, Settings
-from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
-from fakes import _png_bytes
+from image_embedder.config import Settings, _get_csv_list
+from image_embedder.embedder import MODEL_CATALOG, ImageEmbedder
 
 
 def test_get_csv_list_splits_and_strips():
@@ -72,26 +71,24 @@ def test_validate_remote_url_dns_failure(monkeypatch):
 def test_fetch_image_bytes_skips_empty_chunks(monkeypatch):
     settings = Settings(allow_remote_urls=True, max_image_bytes=10)
     embedder = ImageEmbedder(settings=settings)
-    monkeypatch.setattr(embedder, "_validate_remote_url", lambda *_a, **_k: None)
 
     class FakeResponse:
+        status = 200
         headers = {"content-length": "2"}
         closed = False
 
         def raise_for_status(self):
             return None
 
-        def iter_content(self, chunk_size=8192):
+        def stream(self, amt=8192, decode_content=True):
             yield b""
             yield b"ab"
 
         def close(self):
             self.closed = True
 
-    import requests
-
     fake = FakeResponse()
-    monkeypatch.setattr(requests, "get", lambda *a, **k: fake)
+    install_remote_response(monkeypatch, fake)
 
     data = embedder._fetch_image_bytes("https://image.tmdb.org/t/p/w500/x.png")
     assert data == b"ab"

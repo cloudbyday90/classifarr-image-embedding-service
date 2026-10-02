@@ -2,9 +2,8 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import types
-
 import pytest
+from fakes import install_remote_response
 
 from image_embedder.config import Settings
 from image_embedder.embedder import ImageEmbedder
@@ -62,27 +61,23 @@ def test_fetch_image_bytes_streaming_enforces_max_size(monkeypatch):
     settings = Settings(allow_remote_urls=True, max_image_bytes=3)
     embedder = ImageEmbedder(settings=settings)
 
-    # Avoid DNS and allow validation to pass.
-    monkeypatch.setattr(embedder, "_validate_remote_url", lambda *_a, **_k: None)
-
     class FakeResponse:
+        status = 200
         headers = {}
         closed = False
 
         def raise_for_status(self):
             return None
 
-        def iter_content(self, chunk_size=8192):
+        def stream(self, amt=8192, decode_content=True):
             yield b"ab"
             yield b"cd"
 
         def close(self):
             self.closed = True
 
-    import requests
-
     fake = FakeResponse()
-    monkeypatch.setattr(requests, "get", lambda *a, **k: fake)
+    install_remote_response(monkeypatch, fake)
 
     with pytest.raises(ValueError, match="Image payload exceeds maximum size"):
         embedder._fetch_image_bytes("https://image.tmdb.org/t/p/w500/x.png")
@@ -94,26 +89,23 @@ def test_fetch_image_bytes_returns_bytes_when_under_limit(monkeypatch):
     settings = Settings(allow_remote_urls=True, max_image_bytes=10)
     embedder = ImageEmbedder(settings=settings)
 
-    monkeypatch.setattr(embedder, "_validate_remote_url", lambda *_a, **_k: None)
-
     class FakeResponse:
+        status = 200
         headers = {"content-length": "4"}
         closed = False
 
         def raise_for_status(self):
             return None
 
-        def iter_content(self, chunk_size=8192):
+        def stream(self, amt=8192, decode_content=True):
             yield b"ab"
             yield b"cd"
 
         def close(self):
             self.closed = True
 
-    import requests
-
     fake = FakeResponse()
-    monkeypatch.setattr(requests, "get", lambda *a, **k: fake)
+    install_remote_response(monkeypatch, fake)
 
     data = embedder._fetch_image_bytes("https://image.tmdb.org/t/p/w500/x.png")
     assert data == b"abcd"

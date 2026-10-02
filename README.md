@@ -461,6 +461,12 @@ Each compressed image remains limited to 10 MiB. Source and projected CLIP pre-c
 
 All ceilings must be positive integers. Configure them in `[image]` or the environment variables below. The default raw body ceiling permits one near-10-MiB base64 image, but large inline batches may need smaller images or a deliberately raised ceiling. These limits do not impose an exact RSS quota: size model/tensor memory and configure server/proxy concurrency and container memory limits, especially with multiple workers. See the [input budget design and outcome](docs/input-memory-budgets.md).
 
+## Remote Image URLs
+
+Remote fetching remains disabled by default. When enabled, each HTTP/HTTPS hop must resolve exclusively to public addresses and match `ALLOWED_REMOTE_IMAGE_HOSTS` when configured. Use exact canonical ASCII/punycode hosts in the allowlist; redirects must also match it. Fetching connects to the validated numeric addresses while preserving the URL's Host and verified TLS hostname. Before a connection succeeds it can try up to four approved addresses, alternating IPv4/IPv6 when both are available.
+
+At most three redirects are followed. Credentialed URLs, raw controls/backslashes, unsafe DNS results and HTTPS-to-HTTP redirects are refused. Fetching uses the installed certificate bundle and direct connections; ambient proxy, netrc, cookie and Requests CA-bundle overrides are ignored. Final decoded response bytes are bounded by `MAX_IMAGE_BYTES`; response/pool resources close on every exit. Policy refusals return 400, oversized images 413, and HTTP/network failures retain 500 with sanitized details. Explicit batches retain ordered per-item errors. The socket timeout is not a total DNS/download deadline. See the [design and validation](docs/remote-image-destinations.md).
+
 ## Environment Variables
 
 ### Core Settings
@@ -528,6 +534,9 @@ pytest
 
 ## Engineering Decisions
 
+- [Remote image destination design and validation](docs/remote-image-destinations.md)
+- [Open PR 49 local implementation and validation](docs/pr-49-local-validation.md)
+- [Python/Rust platform decision and evaluation gates](docs/language-platform-decision.md)
 - [Input body and image allocation design and validation](docs/input-memory-budgets.md)
 - [Open PR 33 local implementation and validation](docs/pr-33-local-validation.md)
 - [Inference execution design and validation](docs/inference-execution.md)

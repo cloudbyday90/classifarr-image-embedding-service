@@ -5,10 +5,10 @@
 import base64
 
 import pytest
+from fakes import _png_bytes, install_remote_response
 
 from image_embedder.config import Settings, _get_bool
-from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
-from fakes import _png_bytes
+from image_embedder.embedder import MODEL_CATALOG, ImageEmbedder
 
 
 def test_get_bool_parses_truthy_values():
@@ -128,21 +128,19 @@ def test_fetch_image_bytes_enforces_max_size_via_content_length(monkeypatch):
     embedder = ImageEmbedder(settings=settings)
 
     class FakeResponse:
+        status = 200
         headers = {"content-length": "4"}
 
         def raise_for_status(self):
             return None
 
-        def iter_content(self, chunk_size=8192):
+        def stream(self, amt=8192, decode_content=True):
             yield b"abcd"
 
         def close(self):
             return None
 
-    import requests
-
-    monkeypatch.setattr(requests, "get", lambda *a, **k: FakeResponse())
-    monkeypatch.setattr(embedder, "_validate_remote_url", lambda *_a, **_k: None)
+    install_remote_response(monkeypatch, FakeResponse())
 
     with pytest.raises(ValueError, match="Image payload exceeds maximum size"):
         embedder._fetch_image_bytes("https://example.com/poster.jpg")
@@ -153,22 +151,20 @@ def test_fetch_image_bytes_enforces_max_size_via_actual_bytes(monkeypatch):
     embedder = ImageEmbedder(settings=settings)
 
     class FakeResponse:
+        status = 200
         headers = {}
 
         def raise_for_status(self):
             return None
 
-        def iter_content(self, chunk_size=8192):
+        def stream(self, amt=8192, decode_content=True):
             yield b"ab"
             yield b"cd"
 
         def close(self):
             return None
 
-    import requests
-
-    monkeypatch.setattr(requests, "get", lambda *a, **k: FakeResponse())
-    monkeypatch.setattr(embedder, "_validate_remote_url", lambda *_a, **_k: None)
+    install_remote_response(monkeypatch, FakeResponse())
 
     with pytest.raises(ValueError, match="Image payload exceeds maximum size"):
         embedder._fetch_image_bytes("https://example.com/poster.jpg")

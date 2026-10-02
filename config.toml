@@ -25,7 +25,7 @@ embed_cache_size = 1000     # max number of (image, model, size, normalize) tupl
 
 [image]
 allow_remote_urls = false
-allowed_remote_hosts = []   # when allow_remote_urls = true, restrict to these hosts
+allowed_remote_hosts = []   # exact ASCII/punycode hosts; applies to every redirect when enabled
 max_image_bytes = 10485760  # 10 MiB
 max_request_body_bytes = 16777216  # 16 MiB raw HTTP body including JSON/base64 overhead
 max_image_pixels = 16000000       # source and pre-crop resize ceilings, independently

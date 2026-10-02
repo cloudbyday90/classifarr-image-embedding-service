@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Modular remote URL/transport services, destination/TLS regressions, and separate security, PR 49, and Python/Rust design records.
 - Configurable HTTP body, image pixel, and aggregate batch input budgets, with pre-admission inline checks and allocation/resource-lifetime regressions.
 - Offline backend build/smoke CI for CPU, modern CUDA, legacy CUDA, and OpenVINO, including tiny CLIP projection and OpenVINO IR export/reload checks.
 - Backend compatibility, dependency-selection, and local PR 40 design/validation records.
@@ -14,6 +15,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Apply open PR #49 locally by upgrading setup-python to verified ESM v7.0.0, pinned to an immutable commit in both Python workflows.
 - Require Starlette's supported streaming body limiter and apply open PR #33 locally by raising the pytest-cov minimum to 7.1.0.
 - Container builds use exact backend-specific Torch profiles, constrained shared dependencies, and verified base-image digests; CPU and OpenVINO use CPU-only wheels.
 - Default CUDA builds support CUDA 13.0 and Blackwell, with an explicit CUDA 12.6 legacy profile; OpenVINO bindings and base now match 2026.4.0.
@@ -31,6 +33,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Validate every remote-image redirect and connect only to approved public numeric addresses, preserving verified TLS identity, bounded streaming, and existing download-error status contracts.
+- Refuse ambiguous/credentialed URLs, unsafe DNS answers and HTTPS downgrades; isolate remote fetching from ambient proxy/netrc/CA overrides and sanitize download failures.
 - Refuse oversized streamed bodies and inline payloads before queue retention; bound batch compressed data and source/resize pixel work without weakening Pillow's global safety policy.
 - Raised Pillow, Transformers, Torch, and packaged setuptools minimums to published patched versions; strict OSV audits cover the installed environment and each validated runtime image.
 - Applied open PR #40 locally by upgrading the direct OSV scanner to 2.3.8 and pinning its actual container digest.

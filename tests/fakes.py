@@ -5,10 +5,31 @@
 """Shared fake/stub classes and helper functions used across the test suite."""
 
 import io
+import socket
 
 from PIL import Image
 
 from image_embedder.config import Settings
+
+
+def install_remote_response(monkeypatch, response):
+    """Exercise real destination validation while replacing outbound transport."""
+    from image_embedder import remote_fetch
+
+    monkeypatch.setattr(
+        socket, "getaddrinfo", lambda host, port, **_kwargs: [
+            (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", ("8.8.8.8", port))
+        ]
+    )
+
+    class Pool:
+        def urlopen(self, *_args, **_kwargs):
+            return response
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(remote_fetch, "_pool", lambda *_args: Pool())
 
 
 def _no_auth_settings(**kwargs) -> Settings:

@@ -3,29 +3,22 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import hashlib
-import ipaddress
-import io
 import math
-import socket
 import sys
 import threading
 from collections import OrderedDict
+from contextlib import ExitStack
 from dataclasses import dataclass
-from contextlib import ExitStack, closing
-from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING
-from urllib.parse import urlparse
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
-import requests
 from PIL import Image
 
 from .config import Settings
 from .image_input import decode_base64, load_rgb
-from .input_limits import BatchInputBudget, InputLimitExceeded
-
-if TYPE_CHECKING:
-    import torch
-    from transformers import CLIPVisionModelWithProjection, CLIPProcessor
+from .input_limits import BatchInputBudget
+from .remote_fetch import fetch_remote_image
+from .remote_url import is_public_address, resolve_remote_url
 
 ModelTuple = Tuple[Any, Any, str]
 EmbedResult = Tuple[List[float], int, str, str, int]
@@ -307,7 +300,7 @@ class ImageEmbedder:
             if isinstance(device, str) and device.startswith("ov:"):
                 return self._load_model_openvino(spec, device)
 
-            from transformers import CLIPVisionModelWithProjection, CLIPProcessor
+            from transformers import CLIPProcessor, CLIPVisionModelWithProjection
 
             model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
             processor = CLIPProcessor.from_pretrained(spec.hf_id)
@@ -333,6 +326,7 @@ class ImageEmbedder:
         """
         import os
         import pathlib
+
         import openvino as ov
         from transformers import CLIPProcessor
 
@@ -368,85 +362,13 @@ class ImageEmbedder:
         return self._models[spec.name]
 
     def _is_public_ip(self, ip_str: str) -> bool:
-        ip = ipaddress.ip_address(ip_str)
-        return not (
-            ip.is_private
-            or ip.is_loopback
-            or ip.is_link_local
-            or ip.is_multicast
-            or ip.is_reserved
-            or ip.is_unspecified
-        )
+        return is_public_address(ip_str)
 
     def _validate_remote_url(self, image_url: str) -> None:
-        parsed = urlparse(image_url)
-        if parsed.scheme not in {"http", "https"}:
-            raise ValueError("Only http(s) image URLs are supported")
-        if not parsed.hostname:
-            raise ValueError("Invalid image URL")
-
-        host = parsed.hostname.lower()
-
-        if self.settings.allowed_remote_hosts:
-            allowed = {h.strip().lower() for h in self.settings.allowed_remote_hosts if h.strip()}
-            if host not in allowed:
-                raise ValueError("Remote image host is not allowlisted")
-
-        # Block obvious localhost aliases early.
-        if host in {"localhost"}:
-            raise ValueError("Remote image host resolves to a private address")
-
-        # If it's a literal IP, enforce public-only.
-        try:
-            ipaddress.ip_address(host)
-            if not self._is_public_ip(host):
-                raise ValueError("Remote image host resolves to a private address")
-            return
-        except ValueError:
-            pass
-
-        # Resolve DNS and block private/reserved ranges.
-        try:
-            infos = socket.getaddrinfo(host, parsed.port or 443, type=socket.SOCK_STREAM)
-        except socket.gaierror as exc:
-            raise ValueError("Unable to resolve remote image host") from exc
-
-        for info in infos:
-            sockaddr = info[4]
-            ip_str = sockaddr[0]
-            if not self._is_public_ip(str(ip_str)):  # type: ignore[arg-type]
-                raise ValueError("Remote image host resolves to a private address")
+        resolve_remote_url(image_url, self.settings.allowed_remote_hosts)
 
     def _fetch_image_bytes(self, image_url: str) -> bytes:
-        if not self.settings.allow_remote_urls:
-            raise ValueError("Remote image URLs are disabled")
-
-        self._validate_remote_url(image_url)
-
-        response = requests.get(
-            image_url,
-            timeout=self.settings.request_timeout_seconds,
-            stream=True,
-        )
-
-        with closing(response):
-            response.raise_for_status()
-
-            content_length = response.headers.get("content-length")
-            if content_length and int(content_length) > self.settings.max_image_bytes:
-                raise InputLimitExceeded("Image payload exceeds maximum size")
-
-            buf = io.BytesIO()
-            total = 0
-            for chunk in response.iter_content(chunk_size=8192):
-                if not chunk:
-                    continue
-                total += len(chunk)
-                if total > self.settings.max_image_bytes:
-                    raise InputLimitExceeded("Image payload exceeds maximum size")
-                buf.write(chunk)
-
-            return buf.getvalue()
+        return fetch_remote_image(image_url, self.settings)
 
     def _decode_base64(self, image_base64: str) -> bytes:
         return decode_base64(image_base64, self.settings.max_image_bytes)
