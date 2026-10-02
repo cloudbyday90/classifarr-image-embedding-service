@@ -420,7 +420,9 @@ Embedding requests return HTTP 504 when `REQUEST_TIMEOUT_SECONDS` expires. A wor
 
 Single requests, `/embed-batch`, and batch-window dispatch share the same execution service. Shutdown closes admission (HTTP 503 for new work) and drains dispatched inference for up to `SHUTDOWN_TIMEOUT_SECONDS`. If the drain budget expires, the service logs the remaining work and skips shutdown memory cleanup. Uvicorn retains control of process signals. Configure Uvicorn's graceful-shutdown timeout and the container/process supervisor's stop timeout to allow request draining plus this application drain budget; a supervisor must enforce any hard stop for a stuck native inference thread.
 
-The optional batch window still has a separate pending queue. Bounding its admission and accounting for pending payloads is the next planned improvement.
+The optional batch window uses the same bounded admission budget as `/embed-batch`. It reserves one computation slot before collecting compatible requests, so `in_flight` includes collection and shared-lock acquisition as well as running inference. Waiting batch members each count toward `IMAGE_EMBEDDER_MAX_QUEUE`; health and queue headers include them. New groups fail with HTTP 429 when the waiting room is full. With a zero waiting limit, compatible requests can still join an admitted collecting group up to `EMBED_BATCH_MAX_SIZE`, but another group cannot wait for capacity.
+
+Queue deadlines start at admission, before collection; a queued group's members inherit its first member's deadline. Once admitted, the collection window starts and cannot be extended by later joins. Cancellation removes pending membership, and dispatch rebuilds the payload from live clients after shared-lock acquisition. With concurrency C, batch maximum B, and waiting maximum Q, admitted single-image jobs and explicit-batch requests are bounded by C × B + Q. An explicit-batch request can contain multiple images; this is a request-count limit, not a byte-memory limit. Backend container build validation and decoded-image memory budgets remain follow-ups.
 
 ## Environment Variables
 
@@ -438,6 +440,9 @@ The optional batch window still has a separate pending queue. Bounding its admis
 - `IMAGE_EMBEDDER_CONCURRENCY` (default `1`)
 - `IMAGE_EMBEDDER_MAX_QUEUE` (default `100`)
 - `IMAGE_EMBEDDER_MAX_WAIT_SECONDS` (default `60`)
+- `EMBED_BATCH_WINDOW_MS` (default `0` - disables coalescing; positive values collect compatible admitted requests)
+- `EMBED_BATCH_MAX_SIZE` (default `8` - maximum members per coalesced computation)
+- `EMBED_BATCH_API_MAX_ITEMS` (default `32` - maximum images per `/embed-batch` request)
 
 ### Startup
 - `WARMUP_ON_STARTUP` (default `true` - preload default model)
@@ -483,7 +488,9 @@ pytest
 ## Engineering Decisions
 
 - [Inference execution design and validation](docs/inference-execution.md)
+- [Bounded batch admission design and validation](docs/bounded-batch-admission.md)
 - [Local PR 28 implementation and validation](docs/pr-28-local-validation.md)
+- [Local PR 42 implementation and validation](docs/pr-42-local-validation.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
 
 ## License

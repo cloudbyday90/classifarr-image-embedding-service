@@ -5,15 +5,17 @@
 from __future__ import annotations
 
 import asyncio
+from collections import deque
 from dataclasses import dataclass
 
+from .admission import (
+    AdmissionPool,
+    AdmissionTicket,
+    QueueFullError,
+    QueueWaitTimeoutError,
+)
 
-class QueueFullError(RuntimeError):
-    pass
-
-
-class QueueWaitTimeoutError(TimeoutError):
-    pass
+__all__ = ["EmbedQueue", "QueueStats", "QueueFullError", "QueueWaitTimeoutError", "RWLock"]
 
 
 @dataclass(frozen=True)
@@ -101,48 +103,38 @@ class EmbedQueue:
         self._max_wait_seconds = max_wait_seconds
 
         self._cond = asyncio.Condition()
-        self._in_flight = 0
-        self._waiting = 0
+        self._admission = AdmissionPool(concurrency, max_queue, max_wait_seconds)
+        self._acquired: deque[AdmissionTicket] = deque()
 
         self._rwlock = RWLock()
 
     async def acquire(self) -> None:
+        ticket = self.reserve()
+        await ticket.wait()
+        ticket.claim()
+        self._acquired.append(ticket)
+
+    def reserve(self) -> AdmissionTicket:
+        """Reserve before retaining a batch job; callers must transfer or discard."""
+        return self._admission.reserve()
+
+    def owns(self, ticket: AdmissionTicket) -> bool:
+        return ticket._pool is self._admission
+
+    def close_admission(self, error: Exception) -> None:
+        self._admission.close(error)
+
+    async def release_admission(self, ticket: AdmissionTicket) -> None:
+        if not self.owns(ticket):
+            raise RuntimeError("admission ticket belongs to another queue")
         async with self._cond:
-            # Fast-path: available slot
-            if self._in_flight < self._capacity:
-                self._in_flight += 1
-                return
-
-            # No waiting allowed
-            if self._max_queue == 0:
-                raise QueueFullError("service is busy")
-
-            # Waiting room full
-            if self._waiting >= self._max_queue:
-                raise QueueFullError("service is busy (queue full)")
-
-            self._waiting += 1
-            try:
-                try:
-                    await asyncio.wait_for(
-                        self._cond.wait_for(lambda: self._in_flight < self._capacity),
-                        timeout=self._max_wait_seconds,
-                    )
-                except TimeoutError as exc:
-                    raise QueueWaitTimeoutError(
-                        f"timed out waiting for a slot after {self._max_wait_seconds}s"
-                    ) from exc
-
-                self._in_flight += 1
-            finally:
-                self._waiting -= 1
+            ticket.release()
 
     async def release(self) -> None:
         async with self._cond:
-            if self._in_flight <= 0:
+            if not self._acquired:
                 raise RuntimeError("release called without a matching acquire")
-            self._in_flight -= 1
-            self._cond.notify(1)
+            self._acquired.popleft().release()
 
     async def acquire_shared(self) -> None:
         await self._rwlock.acquire_shared()
@@ -160,8 +152,8 @@ class EmbedQueue:
         readers, writer, writer_waiters = self._rwlock.stats()
         return QueueStats(
             concurrency=self._capacity,
-            in_flight=self._in_flight,
-            waiting=self._waiting,
+            in_flight=self._admission.in_flight,
+            waiting=self._admission.waiting,
             max_queue=self._max_queue,
             max_wait_seconds=self._max_wait_seconds,
             rw_readers=readers,

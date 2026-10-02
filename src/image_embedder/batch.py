@@ -2,251 +2,250 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Async batch-window coalescer for embed requests.
-
-When ``embed_batch_window_ms > 0``, incoming embed requests are collected for
-up to that many milliseconds (or until ``embed_batch_max_size`` is reached),
-then dispatched together.  Requests sharing the same ``(model, image_size)``
-bucket are sent to the model as a single batched tensor call; ``normalize`` is
-applied per-item post-forward so requests with different settings can coexist
-in the same window.
-
-When ``batch_window_ms == 0`` (default) the ``BatchWindow`` is disabled and
-``app.state.batch_window`` is ``None``; the route falls back to the standard
-single-request path.
-"""
+"""Bounded per-model batch collection using shared inference admission."""
 
 from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, List, Optional, ParamSpec, Tuple, TypeVar
+from functools import partial
+from typing import TYPE_CHECKING
 
+from .admission import AdmissionTicket
 from .execution import ExecutionClosedError, InferenceExecutor
 from .logging_config import get_logger
 
 if TYPE_CHECKING:
-    from .embedder import BatchItem, ImageEmbedder, ModelSpec
+    from .embedder import ImageEmbedder, ModelSpec
     from .queue import EmbedQueue
 
 logger = get_logger(__name__)
-P = ParamSpec("P")
-T = TypeVar("T")
-
-# (embedding, dims, provider, model_name, image_size)
-EmbedResult = Tuple[List[float], int, str, str, int]
+EmbedResult = tuple[list[float], int, str, str, int]
+GroupResult = list[EmbedResult | Exception]
 
 
-@dataclass
+@dataclass(eq=False)
 class EmbedJob:
-    """One pending embed request submitted to a BatchWindow."""
+    """One client; its payload is retained only after admission succeeds."""
 
-    image_url: Optional[str]
-    image_base64: Optional[str]
-    model: Optional[str]
+    image_url: str | None
+    image_base64: str | None
+    model: str | None
     normalize: bool
-    image_size: Optional[int]
-    # Set by bind(); not part of __init__ so callers don't have to provide it.
-    _future: "asyncio.Future[EmbedResult]" = field(default=None, init=False, repr=False)  # type: ignore[assignment]
+    image_size: int | None
+    _future: asyncio.Future[EmbedResult] = field(default=None, init=False, repr=False)  # type: ignore[assignment]
 
-    def bind(self, loop: asyncio.AbstractEventLoop) -> "asyncio.Future[EmbedResult]":
+    def bind(self, loop: asyncio.AbstractEventLoop) -> asyncio.Future[EmbedResult]:
+        if self._future is not None:
+            raise ValueError("an embed job may only be submitted once")
         self._future = loop.create_future()
         return self._future
 
 
+@dataclass(eq=False, slots=True)
+class _Group:
+    key: tuple[str, int]
+    spec: ModelSpec
+    ticket: AdmissionTicket
+    jobs: list[EmbedJob] = field(default_factory=list)
+    changed: asyncio.Event = field(default_factory=asyncio.Event)
+    task: asyncio.Task[None] | None = None
+
+
 class BatchWindow:
-    """Async batch-window coalescer sitting in front of EmbedQueue.
+    """Collect bounded compatible groups without a second waiting room.
 
-    Usage::
-
-        bw = BatchWindow(embedder, queue, batch_window_ms=50, batch_max_size=8)
-        await bw.start()
-        result = await bw.submit(job)   # raises on embed/queue errors
-        await bw.stop()
+    Waiting members count individually against EmbedQueue's waiting budget.
+    Admitted collecting groups reserve one computation slot; compatible joins
+    share that slot up to batch_max_size and never extend its collection window.
     """
 
     def __init__(
         self,
-        embedder: "ImageEmbedder",
-        queue: "EmbedQueue",
+        embedder: ImageEmbedder,
+        queue: EmbedQueue,
         batch_window_ms: int,
         batch_max_size: int,
         executor: InferenceExecutor | None = None,
     ) -> None:
         self._embedder = embedder
+        self._queue = queue
         self._executor = executor or InferenceExecutor(queue)
         self._owns_executor = executor is None
         self._window_ms = batch_window_ms
-        self._max_size = max(1, batch_max_size)
-        self._pending: asyncio.Queue[EmbedJob] = asyncio.Queue()
-        self._task: asyncio.Task | None = None
-        self._active: List[EmbedJob] = []
+        self._max_size = max(1, batch_max_size) if batch_window_ms > 0 else 1
+        self._open: dict[tuple[str, int], _Group] = {}
+        self._groups: set[_Group] = set()
+        self._task: asyncio.Task[None] | None = None
         self._stopping = False
+        self._stop_event = asyncio.Event()
+
+    @property
+    def _active(self) -> list[EmbedJob]:
+        return [job for group in self._groups for job in group.jobs]
 
     async def start(self) -> None:
-        self._task = asyncio.create_task(self._run(), name="batch-window")
-        logger.info(
-            f"BatchWindow started: window_ms={self._window_ms}, max_size={self._max_size}"
-        )
+        if self._stopping:
+            raise ExecutionClosedError("service is shutting down")
+        if self._task is None:
+            self._task = asyncio.create_task(self._run(), name="batch-window")
+            logger.info(
+                "BatchWindow started: window_ms=%s, max_size=%s",
+                self._window_ms,
+                self._max_size,
+            )
 
     async def stop(self) -> None:
         self._stopping = True
-        if self._task:
-            self._task.cancel()
-            try:
-                await self._task
-            except (asyncio.CancelledError, Exception):
-                pass
-
-        # Collection and dispatch remove jobs from _pending; they must also
-        # be settled if the dispatcher is canceled before delivering results.
-        for job in self._active:
-            if not job._future.done():
-                job._future.cancel()
-        self._active = []
-
-        # Cancel any jobs still waiting in the queue.
-        while True:
-            try:
-                job = self._pending.get_nowait()
-                if not job._future.done():
-                    job._future.cancel()
-            except asyncio.QueueEmpty:
-                break
-
+        self._stop_event.set()
+        if self._task is not None:
+            await self._task
+        else:
+            await self._stop_groups()
         if self._owns_executor:
             await self._executor.close(timeout_seconds=30.0)
 
-        logger.info("BatchWindow stopped")
-
     async def submit(self, job: EmbedJob) -> EmbedResult:
-        """Add *job* to the pending queue and return its result (or raise)."""
         if self._stopping:
             raise ExecutionClosedError("service is shutting down")
+        if job._future is not None:
+            raise ValueError("an embed job may only be submitted once")
+        spec = self._embedder.resolve_model(job.model)
+        size = spec.image_size if job.image_size is None else job.image_size
+        key = (spec.name, size)
+        group = self._open.get(key)
+        if group is not None and not group.ticket.finished:
+            group.ticket.add_member()
+        else:
+            group = _Group(key, spec, self._queue.reserve())
+            self._groups.add(group)
+            self._open[key] = group
         future = job.bind(asyncio.get_running_loop())
-        await self._pending.put(job)
-        return await future
+        group.jobs.append(job)
+        group.changed.set()
+        if len(group.jobs) >= self._max_size:
+            self._seal(group)
+        if group.task is None:
+            group.task = asyncio.create_task(self._run_group(group), name="batch-group")
+            group.task.add_done_callback(partial(self._group_completed, group))
+        try:
+            return await future
+        finally:
+            group.jobs.remove(job)
+            group.ticket.remove_member()
+            group.changed.set()
+            if not group.jobs:
+                self._seal(group)
+                self._cancel_group(group)
 
-    # ------------------------------------------------------------------
-    # Internal loop
-    # ------------------------------------------------------------------
+    def _seal(self, group: _Group) -> None:
+        if self._open.get(group.key) is group:
+            del self._open[group.key]
+
+    def _group_completed(self, group: _Group, task: asyncio.Task[None]) -> None:
+        self._groups.discard(group)
+        if not task.cancelled():
+            error = task.exception()
+            if error is not None:
+                logger.warning("Batch group failed (%s)", type(error).__name__)
+
+    @staticmethod
+    def _cancel_group(group: _Group) -> None:
+        if (
+            group.task is not None
+            and not group.task.done()
+            and not group.task.cancelling()
+        ):
+            group.task.cancel()
 
     async def _run(self) -> None:
-        while True:
-            try:
-                first = await self._pending.get()
-            except asyncio.CancelledError:
-                return
-
-            batch: List[EmbedJob] = [first]
-            self._active = batch
-
-            if self._window_ms > 0:
-                deadline = asyncio.get_event_loop().time() + self._window_ms / 1000.0
-                while len(batch) < self._max_size:
-                    remaining = deadline - asyncio.get_event_loop().time()
-                    if remaining <= 0:
-                        break
-                    try:
-                        job = await asyncio.wait_for(
-                            self._pending.get(), timeout=remaining
-                        )
-                        batch.append(job)
-                    except (asyncio.TimeoutError, TimeoutError):
-                        break
-
-            if len(batch) > 1:
-                logger.debug(f"BatchWindow dispatching {len(batch)} requests")
-
-            await self._dispatch(batch)
-            self._active = []
-
-    async def _dispatch(self, batch: List[EmbedJob]) -> None:
-        """Group batch by (resolved_model, image_size) then embed each group."""
-        # Group jobs by (resolved model name, resolved image_size).
-        groups: dict[tuple, list[EmbedJob]] = {}
-        for job in batch:
-            if job._future.done():
-                continue
-            spec: ModelSpec = self._embedder.resolve_model(job.model)
-            target_size: int = spec.image_size if job.image_size is None else job.image_size
-            key = (spec.name, target_size)
-            groups.setdefault(key, []).append(job)
-
-        for (model_name, image_size), jobs in groups.items():
-            jobs = [job for job in jobs if not job._future.done()]
-            if not jobs:
-                continue
-            try:
-                if len(jobs) == 1:
-                    j = jobs[0]
-                    result: EmbedResult = await self._execute_jobs(
-                        jobs,
-                        self._embedder.embed,
-                        j.image_url,
-                        j.image_base64,
-                        j.model,
-                        j.normalize,
-                        j.image_size,
-                    )
-                    if not j._future.done():
-                        j._future.set_result(result)
-                else:
-                    # Import the runtime batch type only on the batched path.
-                    from .embedder import BatchItem
-
-                    spec = self._embedder.resolve_model(jobs[0].model)
-                    batch_items: List[BatchItem] = [
-                        BatchItem(j.image_url, j.image_base64, j.normalize)
-                        for j in jobs
-                    ]
-                    per_item = await self._execute_jobs(
-                        jobs, self._embedder.embed_batch, spec, image_size, batch_items
-                    )
-                    if len(per_item) != len(jobs):
-                        raise RuntimeError(
-                            "embed_batch returned "
-                            f"{len(per_item)} results for {len(jobs)} jobs"
-                        )
-                    for job, outcome in zip(jobs, per_item):
-                        if not job._future.done():
-                            if isinstance(outcome, Exception):
-                                job._future.set_exception(outcome)
-                            else:
-                                job._future.set_result(outcome)
-
-            except asyncio.CancelledError:
-                task = asyncio.current_task()
-                if task is not None and task.cancelling():
-                    raise
-                # All clients abandoned this group. The executor cancels its
-                # admission or retains its running thread; collect the next.
-            except Exception as exc:
-                for job in jobs:
-                    if not job._future.done():
-                        job._future.set_exception(exc)
-
-    async def _execute_jobs(
-        self, jobs: List[EmbedJob], function: Callable[P, T],
-        *args: P.args, **kwargs: P.kwargs,
-    ) -> T:
-        dispatch = asyncio.create_task(
-            self._executor.run(function, *args, **kwargs), name="batch-dispatch"
-        )
-
-        def cancel_if_abandoned(_future) -> None:
-            if (
-                not dispatch.done()
-                and not dispatch.cancelling()
-                and all(job._future.done() for job in jobs)
-            ):
-                dispatch.cancel()
-
-        for job in jobs:
-            job._future.add_done_callback(cancel_if_abandoned)
         try:
-            return await dispatch
+            await self._stop_event.wait()
         finally:
-            for job in jobs:
-                job._future.remove_done_callback(cancel_if_abandoned)
+            await self._stop_groups()
+
+    async def _stop_groups(self) -> None:
+        groups = tuple(self._groups)
+        for group in groups:
+            self._cancel_group(group)
+            # An immediately canceled task may never enter its coroutine.
+            self._seal(group)
+            for job in group.jobs:
+                if not job._future.done():
+                    job._future.cancel()
+            group.ticket.discard()
+        await asyncio.gather(
+            *(group.task for group in groups if group.task is not None),
+            return_exceptions=True,
+        )
+        self._groups.difference_update(groups)
+
+    async def _run_group(self, group: _Group) -> None:
+        dispatched: list[EmbedJob] = []
+        try:
+            await group.ticket.wait()
+            deadline = asyncio.get_running_loop().time() + self._window_ms / 1000.0
+            while (
+                self._open.get(group.key) is group and len(group.jobs) < self._max_size
+            ):
+                remaining = deadline - asyncio.get_running_loop().time()
+                if remaining <= 0 or not group.jobs:
+                    break
+                group.changed.clear()
+                try:
+                    await asyncio.wait_for(group.changed.wait(), remaining)
+                except TimeoutError:
+                    break
+            self._seal(group)
+            results = await self._executor.run_admitted(
+                group.ticket, partial(self._prepare, group, dispatched)
+            )
+            if len(results) != len(dispatched):
+                raise RuntimeError(
+                    f"embed_batch returned {len(results)} results for {len(dispatched)} jobs"
+                )
+            for job, outcome in zip(dispatched, results):
+                if not job._future.done():
+                    if isinstance(outcome, Exception):
+                        job._future.set_exception(outcome)
+                    else:
+                        job._future.set_result(outcome)
+        except asyncio.CancelledError:
+            for job in group.jobs:
+                if not job._future.done():
+                    job._future.cancel()
+        except Exception as error:
+            for job in group.jobs:
+                if not job._future.done():
+                    job._future.set_exception(error)
+        finally:
+            self._seal(group)
+            group.ticket.discard()
+
+    def _prepare(
+        self, group: _Group, dispatched: list[EmbedJob]
+    ) -> Callable[[], GroupResult]:
+        """Run on the event loop after shared-lock acquisition, before dispatch."""
+        dispatched.extend(job for job in group.jobs if not job._future.done())
+        if not dispatched:
+            raise asyncio.CancelledError
+        if len(dispatched) == 1:
+            job = dispatched[0]
+            embed = partial(
+                self._embedder.embed,
+                job.image_url,
+                job.image_base64,
+                job.model,
+                job.normalize,
+                job.image_size,
+            )
+            return lambda: [embed()]
+
+        from .embedder import BatchItem
+
+        items = [
+            BatchItem(job.image_url, job.image_base64, job.normalize)
+            for job in dispatched
+        ]
+        return partial(self._embedder.embed_batch, group.spec, group.key[1], items)

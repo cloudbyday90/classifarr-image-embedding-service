@@ -188,26 +188,6 @@ def test_embed_route_returns_queue_headers_on_success():
     assert response.headers.get("X-Queue-Max-Wait-Seconds") is not None
 
 
-class _QueueNoop:
-    def __init__(self):
-        self.acquire_calls = 0
-        self.release_calls = 0
-        self.acquire_shared_calls = 0
-        self.release_shared_calls = 0
-
-    async def acquire(self):
-        self.acquire_calls += 1
-
-    async def release(self):
-        self.release_calls += 1
-
-    async def acquire_shared(self):
-        self.acquire_shared_calls += 1
-
-    async def release_shared(self):
-        self.release_shared_calls += 1
-
-
 class _EmbedderThatFailsBatch:
     def resolve_model(self, model):
         return SimpleNamespace(name=model or "ViT-L-14", image_size=224)
@@ -221,28 +201,18 @@ class _EmbedderThatFailsBatch:
 
 @pytest.mark.anyio
 async def test_batch_dispatch_sets_exception_on_each_future_when_embed_batch_fails():
-    queue = _QueueNoop()
+    queue = EmbedQueue(1, 0, 2)
     embedder = _EmbedderThatFailsBatch()
-    batch = BatchWindow(embedder, queue, batch_window_ms=10, batch_max_size=8)
-
-    loop = asyncio.get_running_loop()
+    batch = BatchWindow(embedder, queue, batch_window_ms=10, batch_max_size=2)
     j1 = EmbedJob(None, "AA==", "ViT-L-14", True, 224)
     j2 = EmbedJob(None, "AA==", "ViT-L-14", False, 224)
-    f1 = j1.bind(loop)
-    f2 = j2.bind(loop)
-
-    await batch._dispatch([j1, j2])
-
-    assert f1.done() and f2.done()
-    with pytest.raises(RuntimeError, match="batch failed"):
-        f1.result()
-    with pytest.raises(RuntimeError, match="batch failed"):
-        f2.result()
-
-    assert queue.acquire_calls == 1
-    assert queue.acquire_shared_calls == 1
-    assert queue.release_shared_calls == 1
-    assert queue.release_calls == 1
+    await batch.start()
+    try:
+        results = await asyncio.gather(batch.submit(j1), batch.submit(j2), return_exceptions=True)
+        assert all(isinstance(result, RuntimeError) and str(result) == "batch failed" for result in results)
+        assert queue.stats().in_flight == queue.stats().waiting == queue.stats().rw_readers == 0
+    finally:
+        await batch.stop()
 
 
 class _EmbedderThatReturnsShortBatch:
@@ -258,25 +228,15 @@ class _EmbedderThatReturnsShortBatch:
 
 @pytest.mark.anyio
 async def test_batch_dispatch_sets_exception_on_each_future_when_batch_result_count_is_wrong():
-    queue = _QueueNoop()
+    queue = EmbedQueue(1, 0, 2)
     embedder = _EmbedderThatReturnsShortBatch()
-    batch = BatchWindow(embedder, queue, batch_window_ms=10, batch_max_size=8)
-
-    loop = asyncio.get_running_loop()
+    batch = BatchWindow(embedder, queue, batch_window_ms=10, batch_max_size=2)
     j1 = EmbedJob(None, "AA==", "ViT-L-14", True, 224)
     j2 = EmbedJob(None, "AA==", "ViT-L-14", False, 224)
-    f1 = j1.bind(loop)
-    f2 = j2.bind(loop)
-
-    await batch._dispatch([j1, j2])
-
-    assert f1.done() and f2.done()
-    with pytest.raises(RuntimeError, match="returned 1 results for 2 jobs"):
-        f1.result()
-    with pytest.raises(RuntimeError, match="returned 1 results for 2 jobs"):
-        f2.result()
-
-    assert queue.acquire_calls == 1
-    assert queue.acquire_shared_calls == 1
-    assert queue.release_shared_calls == 1
-    assert queue.release_calls == 1
+    await batch.start()
+    try:
+        results = await asyncio.gather(batch.submit(j1), batch.submit(j2), return_exceptions=True)
+        assert all(isinstance(result, RuntimeError) and "returned 1 results for 2 jobs" in str(result) for result in results)
+        assert queue.stats().in_flight == queue.stats().waiting == queue.stats().rw_readers == 0
+    finally:
+        await batch.stop()

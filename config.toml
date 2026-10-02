@@ -31,9 +31,9 @@ request_timeout_seconds = 15
 
 [queue]
 concurrency = 1
-max_queue = 100
+max_queue = 100  # global waiting requests, including individual batch-window members; 0 = no waiting
 max_wait_seconds = 60
-batch_window_ms = 0   # ms to wait for more requests before flushing a batch; 0 = disabled
+batch_window_ms = 0   # collection ms after admission reserves one computation slot; 0 = disabled
 batch_max_size = 8    # maximum images per internal batch flush
 batch_api_max_items = 32  # maximum items per POST /embed-batch request (hard limit; 413 if exceeded)
 

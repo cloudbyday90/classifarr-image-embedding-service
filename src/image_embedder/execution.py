@@ -14,6 +14,7 @@ from typing import Any, Generic, ParamSpec, TypeVar, cast
 
 from anyio.to_thread import run_sync
 
+from .admission import AdmissionTicket
 from .logging_config import get_logger
 from .queue import EmbedQueue
 
@@ -59,12 +60,25 @@ class InferenceExecutor:
     async def run(
         self, function: Callable[P, T], *args: P.args, **kwargs: P.kwargs
     ) -> T:
+        return await self._submit(partial(function, *args, **kwargs))
+
+    async def run_admitted(
+        self, ticket: AdmissionTicket, prepare: Callable[[], Callable[[], T]]
+    ) -> T:
+        """Transfer reserved admission; prepare live payloads just before dispatch."""
+        if not self._queue.owns(ticket):
+            raise ValueError("admission ticket belongs to another queue")
+        return await self._submit(prepare, ticket)
+
+    async def _submit(
+        self, function: Callable[[], Any], ticket: AdmissionTicket | None = None
+    ) -> Any:
         if self._closing:
             raise ExecutionClosedError("service is shutting down")
 
         work = _Work()
         task = asyncio.create_task(
-            self._execute(work, partial(function, *args, **kwargs)),
+            self._execute(work, function, ticket),
             name="inference-owner",
         )
         self._tasks[task] = work
@@ -96,12 +110,14 @@ class InferenceExecutor:
                     pass
             raise
 
-    async def _execute(self, work: _Work, function: Callable[[], T]) -> _Outcome[T]:
+    async def _execute(
+        self, work: _Work, function: Callable[[], Any], ticket: AdmissionTicket | None
+    ) -> _Outcome[Any]:
         # Ordinary failures travel as values until an attached caller unwraps
         # them. Python 3.14 shield otherwise reports detached exceptions to the
         # loop even when a separate done callback has retrieved the exception.
         try:
-            return _Outcome(value=await self._run_work(work, function))
+            return _Outcome(value=await self._run_work(work, function, ticket))
         except asyncio.CancelledError:
             if self._closing and not work.dispatched:
                 return _Outcome(error=ExecutionClosedError("service is shutting down"))
@@ -109,14 +125,22 @@ class InferenceExecutor:
         except Exception as error:
             return _Outcome(error=error)
 
-    async def _run_work(self, work: _Work, function: Callable[[], T]) -> T:
+    async def _run_work(
+        self, work: _Work, function: Callable[[], Any], ticket: AdmissionTicket | None
+    ) -> Any:
         acquired = False
         shared = False
         try:
-            await self._queue.acquire()
+            if ticket is None:
+                await self._queue.acquire()
+            else:
+                await ticket.wait()
+                ticket.claim()
             acquired = True
             await self._queue.acquire_shared()
             shared = True
+            if ticket is not None:
+                function = function()
             # No suspension between committing dispatch and scheduling work.
             # After this point only this owner may release the permits.
             work.dispatched = True
@@ -125,7 +149,10 @@ class InferenceExecutor:
             if shared:
                 await self._queue.release_shared()
             if acquired:
-                await self._queue.release()
+                if ticket is None:
+                    await self._queue.release()
+                else:
+                    await self._queue.release_admission(ticket)
 
     def _completed(self, task: asyncio.Task[_Outcome[Any]]) -> None:
         work = self._tasks.pop(task)
@@ -150,6 +177,7 @@ class InferenceExecutor:
         not free its model/GPU resources until those owners finish.
         """
         self._closing = True
+        self._queue.close_admission(ExecutionClosedError("service is shutting down"))
         tasks = tuple(self._tasks)
         for task in tasks:
             if not self._tasks[task].dispatched:

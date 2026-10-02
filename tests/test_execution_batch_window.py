@@ -173,7 +173,8 @@ async def test_all_clients_cancel_while_group_waits_for_admission(blocked_by):
 
 @pytest.mark.anyio
 async def test_one_canceled_client_does_not_cancel_another_client_in_same_group():
-    queue = EmbedQueue(1, 1, 2)
+    # Queued group members now count individually toward the shared limit.
+    queue = EmbedQueue(1, 2, 2)
     executor = InferenceExecutor(queue)
     gate = ThreadGate()
     batch = BatchWindow(GatedEmbedder(gate), queue, 1000, 2, executor=executor)
@@ -183,7 +184,7 @@ async def test_one_canceled_client_does_not_cancel_another_client_in_same_group(
     try:
         await gate.wait_started()
         requests = [asyncio.create_task(batch.submit(job())) for _ in range(2)]
-        await wait_until(lambda: queue.stats().waiting == 1)
+        await wait_until(lambda: queue.stats().waiting == 2)
         requests[0].cancel()
         with pytest.raises(asyncio.CancelledError):
             await requests[0]

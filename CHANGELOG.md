@@ -6,18 +6,22 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Shared FIFO admission service and regressions for bounded batch retention, waiting telemetry, and live-client dispatch.
 - Application-scoped inference execution service shared by single, bulk, and coalesced embedding paths.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Optional batch collection reserves capacity before retaining jobs; waiting members share the global queue limit with explicit batch requests.
 - Timed-out inference remains visible in queue telemetry until its worker finishes; expired queue admissions are removed.
 
 ### Fixed
+- Batch-window bursts can no longer bypass queue limits, and expired members are removed from payloads before worker dispatch.
 - Request deadlines and caller cancellation no longer release capacity while inference threads continue running.
 - Graceful shutdown preserves Uvicorn's signal handlers, drains inference work, and skips memory cleanup when active work exceeds the drain budget.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Applied open PR #42 locally by upgrading checkout to verified v7.0.1, pinned to an immutable commit across six workflows.
 - Raised the development pytest minimum to 9.0.3, applying open PR #28 locally and including its upstream temporary-directory security fix.
 
 ## v0.0.1.3-alpha — 2026-04-18
