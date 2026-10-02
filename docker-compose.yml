@@ -4,6 +4,9 @@ services:
       context: .
     ports:
       - "8000:8000"
+    # Hard host-memory containment; tune from production peak RSS, including all workers.
+    mem_limit: ${IMAGE_EMBEDDER_MEMORY_LIMIT:-4g}
+    memswap_limit: ${IMAGE_EMBEDDER_MEMORY_LIMIT:-4g}
     environment:
       # Secrets only — all other settings live in config.toml (mounted below).
       # Set SERVICE_API_KEY via .env (run: python scripts/generate_env.py)

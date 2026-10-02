@@ -48,7 +48,7 @@ def _int(env_key: str, section: str, cfg_key: str, default: int) -> int:
     return int(c) if c is not None else default
 
 
-def _input_limit(env_key: str, cfg_key: str, default: int) -> int:
+def _positive_int(env_key: str, section: str, cfg_key: str, default: int) -> int:
     """Validate configured ceilings without coercing TOML floats or booleans."""
     raw = os.getenv(env_key)
     if raw is not None:
@@ -57,11 +57,15 @@ def _input_limit(env_key: str, cfg_key: str, default: int) -> int:
         except ValueError as exc:
             raise ValueError(f"{env_key} must be a positive integer") from exc
     else:
-        configured = _c("image", cfg_key)
+        configured = _c(section, cfg_key)
         value = default if configured is None else configured
     if type(value) is not int or value <= 0:
         raise ValueError(f"{env_key} must be a positive integer")
     return value
+
+
+def _input_limit(env_key: str, cfg_key: str, default: int) -> int:
+    return _positive_int(env_key, "image", cfg_key, default)
 
 
 def _bool(env_key: str, section: str, cfg_key: str, default: bool) -> bool:
@@ -84,6 +88,10 @@ def _get_csv_list(value: str) -> list[str]:
 class Settings:
     host: str = field(default_factory=lambda: _str("IMAGE_EMBEDDER_HOST", "server", "host", "0.0.0.0"))
     port: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_PORT", "server", "port", 8000))
+    max_http_requests: int = field(default_factory=lambda: _positive_int("MAX_HTTP_REQUESTS", "server", "max_http_requests", 8))
+    server_workers: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_WORKERS", "server", "workers", 1))
+    server_concurrency: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_SERVER_CONCURRENCY", "server", "limit_concurrency", 64))
+    server_backlog: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_SERVER_BACKLOG", "server", "backlog", 128))
     default_model: str = field(default_factory=lambda: _str("DEFAULT_MODEL", "model", "default_model", "ViT-L-14"))
     device: str = field(default_factory=lambda: _str("DEVICE", "model", "device", "auto"))
     allow_remote_urls: bool = field(default_factory=lambda: _bool("ALLOW_REMOTE_IMAGE_URLS", "image", "allow_remote_urls", False))
@@ -144,7 +152,8 @@ class Settings:
 
     def __post_init__(self) -> None:
         for name in ("max_image_bytes", "max_request_body_bytes", "max_image_pixels",
-                     "max_batch_image_bytes", "max_batch_image_pixels"):
+                     "max_batch_image_bytes", "max_batch_image_pixels", "max_http_requests",
+                     "server_workers", "server_concurrency", "server_backlog"):
             value = getattr(self, name)
             if type(value) is not int or value <= 0:
                 raise ValueError(f"{name} must be a positive integer")

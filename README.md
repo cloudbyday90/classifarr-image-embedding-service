@@ -353,7 +353,7 @@ python -m venv .venv
 pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt -r requirements-dev.txt torch==2.14.1
 $env:PYTHONPATH = "src"
-uvicorn image_embedder.main:app --host 0.0.0.0 --port 8000
+python -m image_embedder.server
 ```
 
 On Linux/macOS, activate with `source .venv/bin/activate` and set `export PYTHONPATH=src` before running the same install/server commands.
@@ -459,7 +459,15 @@ HTTP bodies have a 16 MiB ceiling, counting received bytes even without Content-
 
 Each compressed image remains limited to 10 MiB. Source and projected CLIP pre-crop resize each allow at most 16,000,000 pixels; this also refuses extreme aspect ratios that would create a large resize intermediate. A batch resolves at most 32 MiB of compressed image data, including cache hits, and retains uncached images within a 32,000,000-pixel budget counting source plus projected resize. Items refused during worker processing remain ordered per-item batch errors; a coalesced single request receives HTTP 413 for its own refused image. Decoded images close after work or errors, including when the HTTP caller has already timed out.
 
-All ceilings must be positive integers. Configure them in `[image]` or the environment variables below. The default raw body ceiling permits one near-10-MiB base64 image, but large inline batches may need smaller images or a deliberately raised ceiling. These limits do not impose an exact RSS quota: size model/tensor memory and configure server/proxy concurrency and container memory limits, especially with multiple workers. See the [input budget design and outcome](docs/input-memory-budgets.md).
+All ceilings must be positive integers. Configure them in `[image]` or the environment variables below. The default raw body ceiling permits one near-10-MiB base64 image, but large inline batches may need smaller images or a deliberately raised ceiling. These limits do not impose an exact RSS quota: size model/tensor memory with the ingress and deployment controls below. See the [input budget design and outcome](docs/input-memory-budgets.md).
+
+### Aggregate HTTP Ingress and Deployment Memory
+
+Each application admits at most `MAX_HTTP_REQUESTS` complete ordinary HTTP requests (default 8). A slot covers upload, JSON parsing, inference queueing and downstream response sending. Excess requests receive JSON HTTP 503 with `Retry-After: 1` before their bodies are read; HTTP/1 connections close. This outer gate can return 503 before authentication/rate checks. Admitted requests retain their existing behavior. GET/HEAD `/health` and `/ready` bypass this gate, while server/container limits still apply. Native work that outlives an HTTP response remains owned by the separate inference executor.
+
+The shared container/local launcher explicitly defaults to one worker, 64 server connections/tasks and a 128-connection listen backlog. It reads `[server]` and the environment settings below. `WEB_CONCURRENCY` does not change the shipped worker count. Each additional worker duplicates ingress/queue budgets, model memory and caches. An alternative direct ASGI launcher must configure its own server limits. If you change the listener port, adjust Docker's published container port to match; the shipped healthcheck follows the configured listener.
+
+Compose sets both memory and total memory/swap to `IMAGE_EMBEDDER_MEMORY_LIMIT` (default `4g`), including CUDA/OpenVINO overrides, disabling additional swap. This is an initial containment policy: measure peak production model/tensor/cache/input memory with representative batches and headroom before increasing workers or admission. It does not cap GPU VRAM. Raw body allowance alone is approximately workers × ingress slots × body ceiling (128 MiB at defaults), with parsed copies and native memory additional. Slow uploads can occupy finite slots, so deployment upload timeouts remain useful. See the [design, tradeoffs and measured outcome](docs/aggregate-ingress.md).
 
 ## Remote Image URLs
 
@@ -490,6 +498,16 @@ At most three redirects are followed. Credentialed URLs, raw controls/backslashe
 - `EMBED_BATCH_WINDOW_MS` (default `0` - disables coalescing; positive values collect compatible admitted requests)
 - `EMBED_BATCH_MAX_SIZE` (default `8` - maximum members per coalesced computation)
 - `EMBED_BATCH_API_MAX_ITEMS` (default `32` - maximum images per `/embed-batch` request)
+
+### HTTP Server and Deployment
+
+- `MAX_HTTP_REQUESTS` (default `8` - complete ordinary HTTP lifetimes per app/worker)
+- `IMAGE_EMBEDDER_WORKERS` (default `1` - explicit launcher process count)
+- `IMAGE_EMBEDDER_SERVER_CONCURRENCY` (default `64` - launcher connection/task limit, including health)
+- `IMAGE_EMBEDDER_SERVER_BACKLOG` (default `128` - launcher socket backlog)
+- `IMAGE_EMBEDDER_MEMORY_LIMIT` (Compose interpolation only; default `4g` - memory and combined memory/swap ceiling)
+
+The first four map to `[server]` keys `max_http_requests`, `workers`, `limit_concurrency` and `backlog`; all require positive integers.
 
 ### Startup
 - `WARMUP_ON_STARTUP` (default `true` - preload default model)
@@ -533,6 +551,9 @@ pytest
 ```
 
 ## Engineering Decisions
+
+- [Aggregate HTTP ingress, deployment sizing and validation](docs/aggregate-ingress.md)
+- [Open PR 51 local implementation and validation](docs/pr-51-local-validation.md)
 
 - [Remote image destination design and validation](docs/remote-image-destinations.md)
 - [Open PR 49 local implementation and validation](docs/pr-49-local-validation.md)

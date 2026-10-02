@@ -7,6 +7,10 @@
 host = "0.0.0.0"
 port = 8000
 shutdown_timeout_seconds = 30
+max_http_requests = 8       # complete ordinary HTTP lifetimes; immediate 503 when full
+workers = 1                 # each process owns separate ingress, models, caches and queues
+limit_concurrency = 64       # Uvicorn connections/tasks, including health; launcher setting
+backlog = 128                # socket listen backlog; launcher setting
 
 [model]
 default_model = "ViT-L-14"

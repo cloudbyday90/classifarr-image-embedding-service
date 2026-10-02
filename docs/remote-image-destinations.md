@@ -48,4 +48,4 @@ Remaining limits: DNS calls and trickled downloads do not have a total wall-cloc
 
 ## Next recommendation
 
-Bound aggregate HTTP body parsing and size deployment memory across workers. Follow with production-model/cache revision contracts and complete dependency locks. Per-request and per-worker input ceilings do not bound all concurrent parsers or OS/native/model memory. No release or upstream PR merge is created.
+The subsequent [aggregate ingress iteration](aggregate-ingress.md) bounds HTTP retention and adds deployment worker/memory controls. Next add production-model/preprocessor fixtures and cached-IR revision contracts, followed by complete dependency locks. Use those fixtures to measure production RSS/VRAM and calibrate limits; total remote DNS/download deadlines remain a separate design task. This record retains its earlier remote-boundary evidence. No release or upstream PR merge is created.

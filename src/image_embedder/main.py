@@ -16,6 +16,8 @@ from .batch import BatchWindow
 from .config import Settings
 from .embedder import ImageEmbedder
 from .execution import InferenceExecutor
+from .ingress import IngressAdmission
+from .ingress_middleware import IngressAdmissionMiddleware
 from .lifecycle import make_lifespan
 from .logging_config import get_logger, setup_logging
 from .queue import EmbedQueue
@@ -46,6 +48,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
         max_wait_seconds=settings.embed_max_wait_seconds,
     )
     executor = InferenceExecutor(queue)
+    ingress = IngressAdmission(settings.max_http_requests)
 
     limiter = make_limiter(settings)
     auth = make_auth_dependency(settings)
@@ -76,6 +79,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
     app.state.embedder = embedder_instance
     app.state.queue = queue
     app.state.executor = executor
+    app.state.ingress = ingress
     app.state.batch_window = batch_window
     app.state.settings = settings
     app.state.logger = logger
@@ -84,6 +88,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
     # FastAPI preserves HTTP 413 instead of translating an exception group to 400.
     app.add_middleware(RequestBodyLimitMiddleware, max_body_size=settings.max_request_body_bytes)
     app.add_middleware(SlowAPIMiddleware)
+    app.add_middleware(IngressAdmissionMiddleware, admission=ingress)
 
     def rate_limit_handler(request: Request, exc: Exception):
         if not isinstance(exc, RateLimitExceeded):

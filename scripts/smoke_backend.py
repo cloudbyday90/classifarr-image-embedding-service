@@ -37,12 +37,13 @@ def check_service(port: int, device: str) -> None:
         SERVICE_API_KEY=api_key,
         CONFIG_FILE="/nonexistent/backend-smoke.toml",
         LOG_FILE="",
+        IMAGE_EMBEDDER_HOST="127.0.0.1",
+        IMAGE_EMBEDDER_PORT=str(port),
     )
     base_url = f"http://127.0.0.1:{port}"
     with TemporaryFile(mode="w+b") as log:
         process = subprocess.Popen(
-            [sys.executable, "-m", "uvicorn", "image_embedder.main:app",
-             "--host", "127.0.0.1", "--port", str(port)],
+            [sys.executable, "-m", "image_embedder.server"],
             env=env, stdout=log, stderr=subprocess.STDOUT,
         )
         try:
@@ -59,6 +60,7 @@ def check_service(port: int, device: str) -> None:
                     time.sleep(0.1)
             if not isinstance(health, dict) or health.get("status") != "ok":
                 raise RuntimeError(f"Unexpected health response: {health}")
+            subprocess.run([sys.executable, "-m", "image_embedder.healthcheck"], env=env, check=True)
             device_info = health.get("device")
             if not isinstance(device_info, dict) or device_info.get("type") != device.split(":")[0]:
                 raise RuntimeError(f"Service did not select {device}: {device_info}")
