@@ -1,0 +1,46 @@
+[
+  {
+    "name": "ViT-L-14",
+    "repo_id": "openai/clip-vit-large-patch14",
+    "revision": "32bd64288804d66eefd0ccbe215aa642df71cc41",
+    "assets": {
+      "config.json": {
+        "sha256": "8a09b467700c58138c29d53c605b34ebc69beaadd13274a8a2af8ad2c2f4032a",
+        "size": 4519,
+        "url": "https://huggingface.co/openai/clip-vit-large-patch14/resolve/32bd64288804d66eefd0ccbe215aa642df71cc41/config.json"
+      },
+      "preprocessor_config.json": {
+        "sha256": "910e70b3956ac9879ebc90b22fb3bc8a75b6a0677814500101a4c072bd7857bd",
+        "size": 316,
+        "url": "https://huggingface.co/openai/clip-vit-large-patch14/resolve/32bd64288804d66eefd0ccbe215aa642df71cc41/preprocessor_config.json"
+      },
+      "model.safetensors": {
+        "sha256": "a2bf730a0c7debf160f7a6b50b3aaf3703e7e88ac73de7a314903141db026dcb",
+        "size": 1710540580,
+        "url": "https://huggingface.co/openai/clip-vit-large-patch14/resolve/32bd64288804d66eefd0ccbe215aa642df71cc41/model.safetensors"
+      }
+    }
+  },
+  {
+    "name": "ViT-B-16",
+    "repo_id": "openai/clip-vit-base-patch16",
+    "revision": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+    "assets": {
+      "config.json": {
+        "sha256": "eaf1c9089a8553c913d27ea66407f8bfc2be9989c80c9f331ddb3d63d4c5e8ad",
+        "size": 4104,
+        "url": "https://huggingface.co/openai/clip-vit-base-patch16/resolve/57c216476eefef5ab752ec549e440a49ae4ae5f3/config.json"
+      },
+      "preprocessor_config.json": {
+        "sha256": "910e70b3956ac9879ebc90b22fb3bc8a75b6a0677814500101a4c072bd7857bd",
+        "size": 316,
+        "url": "https://huggingface.co/openai/clip-vit-base-patch16/resolve/57c216476eefef5ab752ec549e440a49ae4ae5f3/preprocessor_config.json"
+      },
+      "pytorch_model.bin": {
+        "sha256": "ec89c7b09c749a60aae3c9cd910516f24b58214a7df060b48962d14c469cfbf0",
+        "size": 598641023,
+        "url": "https://huggingface.co/openai/clip-vit-base-patch16/resolve/57c216476eefef5ab752ec549e440a49ae4ae5f3/pytorch_model.bin"
+      }
+    }
+  }
+]

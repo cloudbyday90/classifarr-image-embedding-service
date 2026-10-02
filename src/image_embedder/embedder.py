@@ -17,6 +17,9 @@ from PIL import Image
 from .config import Settings
 from .image_input import decode_base64, load_rgb
 from .input_limits import BatchInputBudget
+from .model_catalog import MODEL_CATALOG, ModelSpec
+from .model_loading import load_processor, load_vision_model
+from .openvino_models import load_openvino_model
 from .remote_fetch import fetch_remote_image
 from .remote_url import is_public_address, resolve_remote_url
 
@@ -121,28 +124,6 @@ class BatchItem:
     normalize: bool
 
 
-@dataclass
-class ModelSpec:
-    name: str
-    hf_id: str
-    dims: int
-    image_size: int
-
-
-MODEL_CATALOG: Dict[str, ModelSpec] = {
-    "ViT-L-14": ModelSpec(
-        name="ViT-L-14",
-        hf_id="openai/clip-vit-large-patch14",
-        dims=768,
-        image_size=224
-    ),
-    "ViT-B-16": ModelSpec(
-        name="ViT-B-16",
-        hf_id="openai/clip-vit-base-patch16",
-        dims=512,
-        image_size=224
-    )
-}
 
 
 class ImageEmbedder:
@@ -300,65 +281,15 @@ class ImageEmbedder:
             if isinstance(device, str) and device.startswith("ov:"):
                 return self._load_model_openvino(spec, device)
 
-            from transformers import CLIPProcessor, CLIPVisionModelWithProjection
-
-            model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
-            processor = CLIPProcessor.from_pretrained(spec.hf_id)
+            processor = load_processor(spec)
+            model = load_vision_model(spec)
             model.to(device)  # type: ignore[arg-type]
-            model.eval()  # type: ignore[union-attr]
 
             self._models[spec.name] = (model, processor, str(device))
             return self._models[spec.name]
 
     def _load_model_openvino(self, spec: ModelSpec, ov_device_str: str):
-        """Load (or export-then-cache) a CLIP model for OpenVINO inference.
-
-        On the first call the HuggingFace model is loaded via PyTorch, converted
-        to OpenVINO IR format (.xml + .bin) with ``openvino.convert_model()``,
-        saved to *OV_MODEL_CACHE*, and compiled for the requested device.
-        Subsequent calls find the cached IR on disk and skip the export step,
-        so torch is not needed on the hot path after the first startup.
-
-        The stored tuple is ``(compiled_model, processor, ov_device_str)`` where
-        ``compiled_model`` is an ``openvino.CompiledModel``.  The rest of the
-        inference code detects the OV path by checking whether the device string
-        starts with ``"ov:"``.
-        """
-        import os
-        import pathlib
-
-        import openvino as ov
-        from transformers import CLIPProcessor
-
-        ov_device = ov_device_str[len("ov:"):]
-
-        cache_dir = pathlib.Path(
-            os.environ.get("OV_MODEL_CACHE", "/app/.cache/ov_ir")
-        ) / spec.name.replace("/", "_")
-        xml_path = cache_dir / "model.xml"
-
-        if not xml_path.exists():
-            # Export: load PyTorch model, trace + convert to OV IR, save to disk.
-            import torch
-            from transformers import CLIPVisionModelWithProjection
-
-            torch_model = CLIPVisionModelWithProjection.from_pretrained(spec.hf_id)
-            torch_model.eval()
-
-            dummy_input = {"pixel_values": torch.zeros(1, 3, spec.image_size, spec.image_size)}
-            ov_model = ov.convert_model(torch_model, example_input=dummy_input)
-
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            ov.save_model(ov_model, str(xml_path))
-        else:
-            core_tmp = ov.Core()
-            ov_model = core_tmp.read_model(str(xml_path))
-
-        core = ov.Core()
-        compiled = core.compile_model(ov_model, ov_device)
-
-        processor = CLIPProcessor.from_pretrained(spec.hf_id)
-        self._models[spec.name] = (compiled, processor, ov_device_str)
+        self._models[spec.name] = load_openvino_model(spec, ov_device_str)
         return self._models[spec.name]
 
     def _is_public_ip(self, ip_str: str) -> bool:

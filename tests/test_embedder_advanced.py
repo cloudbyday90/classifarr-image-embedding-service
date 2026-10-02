@@ -11,7 +11,12 @@ import pytest
 from PIL import Image
 
 from image_embedder.config import Settings
-from image_embedder.embedder import BatchItem, EmbeddingLRUCache, ImageEmbedder, MODEL_CATALOG
+from image_embedder.embedder import (
+    MODEL_CATALOG,
+    BatchItem,
+    EmbeddingLRUCache,
+    ImageEmbedder,
+)
 
 
 def _install_fake_torch_device_module(monkeypatch, *, cuda_available: bool, hip_version=None):
@@ -45,7 +50,8 @@ def _install_fake_openvino(monkeypatch, *, available_devices=None):
             state["read_calls"].append(path)
             return f"read:{path}"
 
-        def compile_model(self, model, device_name):
+        def compile_model(self, model, device_name, config):
+            assert config == {"EXECUTION_MODE_HINT": "ACCURACY"}
             state["compile_calls"].append((model, device_name))
             return {"compiled_model": model, "device": device_name}
 
@@ -53,10 +59,12 @@ def _install_fake_openvino(monkeypatch, *, available_devices=None):
         state["convert_calls"].append((model, example_input))
         return "converted-model"
 
-    def save_model(model, path):
+    def save_model(model, path, *, compress_to_fp16):
+        assert compress_to_fp16 is False
         state["save_calls"].append((model, path))
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         Path(path).write_text("<xml/>", encoding="utf-8")
+        Path(path).with_suffix(".bin").write_bytes(b"weights")
 
     fake_openvino = types.SimpleNamespace(
         Core=FakeCore,
@@ -72,24 +80,28 @@ def _install_fake_openvino_transformers(monkeypatch):
 
     class FakeTorchModel:
         @classmethod
-        def from_pretrained(cls, _hf_id):
+        def from_pretrained(cls, _hf_id, **_kwargs):
             calls["torch_model"] += 1
-            return cls()
+            model = cls()
+            model.config = types.SimpleNamespace(projection_dim=768, image_size=224)
+            return model
 
         def eval(self):
             return self
 
     class FakeProcessor:
         @classmethod
-        def from_pretrained(cls, _hf_id):
+        def from_pretrained(cls, _hf_id, **_kwargs):
             calls["processor"] += 1
             return cls()
 
     fake_transformers = types.SimpleNamespace(
         CLIPVisionModelWithProjection=FakeTorchModel,
-        CLIPProcessor=FakeProcessor,
+        CLIPImageProcessorPil=FakeProcessor,
     )
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setattr("image_embedder.model_loading.verified_asset", lambda _s, filename: Path("source") / filename)
+    monkeypatch.setattr("image_embedder.openvino_models.version", lambda name: "test-" + name)
     return calls
 
 
@@ -190,13 +202,17 @@ def test_load_model_openvino_exports_model_when_cache_missing(monkeypatch, tmp_p
 
     loaded = embedder._load_model_openvino(spec, "ov:GPU")
 
-    xml_path = tmp_path / spec.name.replace("/", "_") / "model.xml"
+    from image_embedder.ir_cache import contract_key
+    from image_embedder.openvino_models import ir_contract
+    xml_path = tmp_path / contract_key(ir_contract(spec)) / "model.xml"
     assert xml_path.exists()
     assert calls == {"torch_model": 1, "processor": 1}
     assert len(state["convert_calls"]) == 1
-    assert state["save_calls"] == [("converted-model", str(xml_path))]
-    assert state["compile_calls"] == [("converted-model", "GPU")]
-    assert loaded == ({"compiled_model": "converted-model", "device": "GPU"}, loaded[1], "ov:GPU")
+    assert len(state["save_calls"]) == 1
+    assert Path(state["save_calls"][0][1]).name == "model.xml"
+    assert state["read_calls"] == [str(xml_path)]
+    assert state["compile_calls"] == [(f"read:{xml_path}", "GPU")]
+    assert loaded == ({"compiled_model": f"read:{xml_path}", "device": "GPU"}, loaded[1], "ov:GPU")
 
 
 def test_load_model_openvino_uses_cached_ir_when_present(monkeypatch, tmp_path):
@@ -210,10 +226,12 @@ def test_load_model_openvino_uses_cached_ir_when_present(monkeypatch, tmp_path):
     )
 
     spec = next(iter(MODEL_CATALOG.values()))
-    cache_dir = tmp_path / spec.name.replace("/", "_")
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    xml_path = cache_dir / "model.xml"
-    xml_path.write_text("<xml/>", encoding="utf-8")
+    from image_embedder.ir_cache import IRCache
+    from image_embedder.openvino_models import ir_contract
+    def export(xml_path):
+        xml_path.write_text("<xml/>", encoding="utf-8")
+        xml_path.with_suffix(".bin").write_bytes(b"weights")
+    xml_path = IRCache(tmp_path).get_or_create(ir_contract(spec), export)
 
     embedder = ImageEmbedder(settings=Settings())
     loaded = embedder._load_model_openvino(spec, "ov:CPU")

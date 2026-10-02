@@ -228,7 +228,7 @@ A dedicated `Dockerfile.openvino` targets Intel hardware via **OpenVINO 2026.4.0
 - Intel Arc discrete GPU: A-series, B-series (Battlemage), and future Arc generations
 - Intel CPU: all modern Intel CPUs via the OpenVINO CPU plugin (AVX-512 / VNNI optimized)
 
-**How it works:** On first startup the service exports the HuggingFace CLIP model to OpenVINO IR format (`.xml` + `.bin`) and caches it in the model volume. Subsequent restarts load the cached IR directly — no re-export, no PyTorch on the hot path.
+**How it works:** On first startup the service exports the pinned Hugging Face CLIP model to OpenVINO IR (`.xml` + `.bin`). A process lock protects atomic publication of the complete pair and its integrity manifest. Cache identity includes source revision/digests, shape, runtime versions and precision policy; missing or mismatched files rebuild before reuse. Both first use and restarts compile the saved FP32 representation with the accuracy execution hint. Legacy alias-only entries are ignored and left intact. See [model artifact contracts](docs/model-artifact-contracts.md) for storage ownership and rollout limits.
 
 **Host prerequisites (Linux):**
 - Intel GPU kernel driver (`xe` for 12th-gen+, or `i915`); kernel 6.2+ recommended
@@ -372,6 +372,25 @@ docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
 
 Use `--backend cuda`, `cuda-legacy`, or `openvino` with the corresponding image. To require real NVIDIA GPU execution, add `--gpus all` to Docker and `--require-gpu` to the script. Without GPU access, CUDA smoke verifies its wheel profile and CPU projection. OpenVINO smoke uses its CPU plugin; Intel GPU deployments need separate hardware validation. The script verifies readiness remains false without production weights.
 
+## Production Model Validation
+
+The two supported model aliases use immutable publisher revisions and SHA-256 checks for configuration, preprocessing and weights. The large model uses safetensors; the base publisher supplies PyTorch weights, loaded with `weights_only=True` and the patched Torch profile. Loading uses verified local snapshots without remote model code or ambient Hub credentials. Image-only PIL preprocessing is explicit.
+
+Small archived publisher fixtures run in the ordinary offline suite. A separate change-scoped and weekly CI workflow downloads/verifies the pinned production weights, then disables networking while comparing single, batch, authenticated API and OpenVINO reload results. The shipped probe can also run locally:
+
+```bash
+# Reuse the CPU image built above. The first command downloads verified assets.
+docker run --rm --cap-drop ALL --security-opt no-new-privileges \
+  -v classifarr-model-contracts:/app/.cache --entrypoint python \
+  classifarr-image-embedder:cpu-smoke scripts/production_model_probe.py --download-only
+docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
+  --memory 8g --memory-swap 8g -v classifarr-model-contracts:/app/.cache \
+  -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 --entrypoint python \
+  classifarr-image-embedder:cpu-smoke scripts/production_model_probe.py --backend cpu --model ViT-L-14
+```
+
+Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. Representative maximum batches, multiple loaded models and accelerator VRAM still require capacity measurements. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
+
 ## API
 ### GET /health
 Returns service health with device, model, and memory info.
@@ -467,7 +486,7 @@ Each application admits at most `MAX_HTTP_REQUESTS` complete ordinary HTTP reque
 
 The shared container/local launcher explicitly defaults to one worker, 64 server connections/tasks and a 128-connection listen backlog. It reads `[server]` and the environment settings below. `WEB_CONCURRENCY` does not change the shipped worker count. Each additional worker duplicates ingress/queue budgets, model memory and caches. An alternative direct ASGI launcher must configure its own server limits. If you change the listener port, adjust Docker's published container port to match; the shipped healthcheck follows the configured listener.
 
-Compose sets both memory and total memory/swap to `IMAGE_EMBEDDER_MEMORY_LIMIT` (default `4g`), including CUDA/OpenVINO overrides, disabling additional swap. This is an initial containment policy: measure peak production model/tensor/cache/input memory with representative batches and headroom before increasing workers or admission. It does not cap GPU VRAM. Raw body allowance alone is approximately workers × ingress slots × body ceiling (128 MiB at defaults), with parsed copies and native memory additional. Slow uploads can occupy finite slots, so deployment upload timeouts remain useful. See the [design, tradeoffs and measured outcome](docs/aggregate-ingress.md).
+Compose sets both memory and total memory/swap to `IMAGE_EMBEDDER_MEMORY_LIMIT`, disabling additional swap. CPU/CUDA default to `4g`; the OpenVINO override defaults to `8g` after the production large-model cold export exceeded 4 GiB. An explicit environment override applies to either profile. These are containment policies: measure peak production model/tensor/cache/input memory with representative batches and headroom before increasing workers or admission. They do not cap GPU VRAM. Raw body allowance alone is approximately workers × ingress slots × body ceiling (128 MiB at defaults), with parsed copies and native memory additional. Slow uploads can occupy finite slots, so deployment upload timeouts remain useful. See the [ingress design](docs/aggregate-ingress.md) and [production model measurements](docs/model-artifact-contracts.md).
 
 ## Remote Image URLs
 
@@ -505,7 +524,7 @@ At most three redirects are followed. Credentialed URLs, raw controls/backslashe
 - `IMAGE_EMBEDDER_WORKERS` (default `1` - explicit launcher process count)
 - `IMAGE_EMBEDDER_SERVER_CONCURRENCY` (default `64` - launcher connection/task limit, including health)
 - `IMAGE_EMBEDDER_SERVER_BACKLOG` (default `128` - launcher socket backlog)
-- `IMAGE_EMBEDDER_MEMORY_LIMIT` (Compose interpolation only; default `4g` - memory and combined memory/swap ceiling)
+- `IMAGE_EMBEDDER_MEMORY_LIMIT` (Compose interpolation only; default `4g` for CPU/CUDA, `8g` for OpenVINO - memory and combined memory/swap ceiling)
 
 The first four map to `[server]` keys `max_http_requests`, `workers`, `limit_concurrency` and `backlog`; all require positive integers.
 
@@ -567,6 +586,9 @@ pytest
 - [Backend build design and validation](docs/backend-build-recommendation.md)
 - [Local PR 40 implementation and validation](docs/pr-40-local-validation.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
+- [Production model and generated artifact design and validation](docs/model-artifact-contracts.md)
+- [OpenVINO runtime environment design and validation](docs/openvino-runtime-environment.md)
+- [Open PR 41 local implementation and validation](docs/pr-41-local-validation.md)
 
 ## License
 Classifarr Image Embedding Service is licensed under GPL-3.0 (or later). See `LICENSE`.

@@ -1,0 +1,87 @@
+name: Production Model Contracts
+
+permissions: {}
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'src/image_embedder/model_catalog.py'
+      - 'src/image_embedder/model_loading.py'
+      - 'src/image_embedder/artifact_integrity.py'
+      - 'src/image_embedder/ir_cache.py'
+      - 'src/image_embedder/openvino_models.py'
+      - 'src/image_embedder/embedder.py'
+      - 'scripts/production_model_probe.py'
+      - 'tests/fixtures/models/**'
+      - 'requirements*.txt'
+      - 'Dockerfile*'
+      - '.github/workflows/model-contracts.yml'
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/image_embedder/model_catalog.py'
+      - 'src/image_embedder/model_loading.py'
+      - 'src/image_embedder/artifact_integrity.py'
+      - 'src/image_embedder/ir_cache.py'
+      - 'src/image_embedder/openvino_models.py'
+      - 'src/image_embedder/embedder.py'
+      - 'scripts/production_model_probe.py'
+      - 'tests/fixtures/models/**'
+      - 'requirements*.txt'
+      - 'Dockerfile*'
+      - '.github/workflows/model-contracts.yml'
+  schedule:
+    - cron: '0 4 * * 6'
+  workflow_dispatch:
+
+jobs:
+  production-models:
+    name: Pinned models (${{ matrix.backend }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: cpu
+            dockerfile: Dockerfile
+          - backend: openvino
+            dockerfile: Dockerfile.openvino
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build native image
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: docker build -f "$DOCKERFILE" -t production-contracts:local .
+      - name: Download and verify pinned publisher assets
+        run: >-
+          docker run --rm --cap-drop ALL --security-opt no-new-privileges
+          --mount type=volume,source=production-model-cache,target=/app/.cache
+          --entrypoint python production-contracts:local
+          scripts/production_model_probe.py --download-only
+      - name: Compare actual offline single, batch, API and IR reload behavior
+        env:
+          BACKEND: ${{ matrix.backend }}
+        run: |
+          mkdir -p validation
+          for model in ViT-B-16 ViT-L-14; do
+            docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
+              --memory 8g --memory-swap 8g \
+              --mount type=volume,source=production-model-cache,target=/app/.cache \
+              -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 \
+              --entrypoint python production-contracts:local \
+              scripts/production_model_probe.py --backend "$BACKEND" --model "$model" \
+              > "validation/$BACKEND-$model.log" 2>&1
+          done
+      - name: Retain measured validation logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: production-model-contracts-${{ matrix.backend }}
+          path: validation/*.log
+          if-no-files-found: warn
+          retention-days: 30

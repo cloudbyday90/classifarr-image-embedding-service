@@ -8,7 +8,7 @@ import types
 import pytest
 
 from image_embedder.config import Settings
-from image_embedder.embedder import ImageEmbedder, MODEL_CATALOG
+from image_embedder.embedder import MODEL_CATALOG, ImageEmbedder
 
 
 def _install_fake_torch(monkeypatch, cuda_available: bool, hip_version=None):
@@ -84,9 +84,11 @@ def test_load_model_is_cached(monkeypatch):
 
     class FakeModel:
         @classmethod
-        def from_pretrained(cls, _hf_id):
+        def from_pretrained(cls, _hf_id, **_kwargs):
             calls["model"] += 1
-            return cls()
+            model = cls()
+            model.config = types.SimpleNamespace(projection_dim=768, image_size=224)
+            return model
 
         def to(self, _device):
             return self
@@ -96,12 +98,14 @@ def test_load_model_is_cached(monkeypatch):
 
     class FakeProcessor:
         @classmethod
-        def from_pretrained(cls, _hf_id):
+        def from_pretrained(cls, _hf_id, **_kwargs):
             calls["proc"] += 1
             return cls()
 
-    fake_transformers = types.SimpleNamespace(CLIPVisionModelWithProjection=FakeModel, CLIPProcessor=FakeProcessor)
+    fake_transformers = types.SimpleNamespace(CLIPVisionModelWithProjection=FakeModel, CLIPImageProcessorPil=FakeProcessor)
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    from pathlib import Path
+    monkeypatch.setattr("image_embedder.model_loading.verified_asset", lambda _s, filename: Path("source") / filename)
 
     spec = next(iter(MODEL_CATALOG.values()))
     first = embedder._load_model(spec)

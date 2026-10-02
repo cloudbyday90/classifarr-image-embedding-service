@@ -9,6 +9,8 @@ pillow>=12.3.0
 numpy>=2.4
 torch>=2.13
 transformers>=5.10.1
+huggingface-hub>=1.33.0
+filelock>=3.32.3
 slowapi>=0.1.9
 # Torch's vendor index can supply older tooling; keep the packaged dependency patched.
 setuptools>=83.0.0

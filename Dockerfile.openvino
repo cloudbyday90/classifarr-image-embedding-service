@@ -89,11 +89,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# COPY merges directories; remove the base venv's stale files/metadata first.
+RUN rm -rf /opt/venv
 COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY src ./src
-COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/
+COPY scripts/backend_probe.py scripts/smoke_backend.py scripts/production_model_probe.py ./scripts/
 
 # CIS Docker Benchmark 4.1: do not run as root.
 # Use gid 44 (video) and 109 (render) to grant access to /dev/dri/* nodes

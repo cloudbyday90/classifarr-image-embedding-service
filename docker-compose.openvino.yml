@@ -28,7 +28,8 @@
 # and set DEVICE to openvino:GPU.
 #
 # What this file changes relative to docker-compose.yml:
-#   - Builds from Dockerfile.openvino (CPU-only torch + OpenVINO 2026.1.0 runtime base)
+#   - Builds from Dockerfile.openvino (CPU-only torch + OpenVINO 2026.4.0 runtime base)
+#   - Uses an 8 GiB/no-swap default to accommodate measured production cold export
 #   - Sets DEVICE=openvino:AUTO so OpenVINO selects the best available device at startup
 #     (GPU preferred over CPU when /dev/dri is accessible)
 #   - Mounts /dev/dri into the container for Intel GPU access
@@ -38,6 +39,9 @@
 
 services:
   image-embedder:
+    # ViT-L-14 cold FP32 export exceeded 4 GiB in production-model validation.
+    mem_limit: ${IMAGE_EMBEDDER_MEMORY_LIMIT:-8g}
+    memswap_limit: ${IMAGE_EMBEDDER_MEMORY_LIMIT:-8g}
     build:
       context: .
       dockerfile: Dockerfile.openvino

@@ -48,4 +48,4 @@ Remaining limits: DNS calls and trickled downloads do not have a total wall-cloc
 
 ## Next recommendation
 
-The subsequent [aggregate ingress iteration](aggregate-ingress.md) bounds HTTP retention and adds deployment worker/memory controls. Next add production-model/preprocessor fixtures and cached-IR revision contracts, followed by complete dependency locks. Use those fixtures to measure production RSS/VRAM and calibrate limits; total remote DNS/download deadlines remain a separate design task. This record retains its earlier remote-boundary evidence. No release or upstream PR merge is created.
+The subsequent [aggregate ingress iteration](aggregate-ingress.md) bounds HTTP retention and adds deployment worker/memory controls. The [production model/artifact iteration](model-artifact-contracts.md) now implements pinned preprocessing fixtures and versioned IR contracts with native peak measurements. Next calibrate maximum-batch/multi-model RSS/VRAM capacity and complete dependency locks; total remote DNS/download deadlines remain a separate design task. This record retains its earlier remote-boundary evidence. No release or upstream PR merge is created.

@@ -5,7 +5,10 @@
 """Offline native dependency and tiny CLIP projection checks for container CI."""
 
 import os
+import re
+from collections import Counter
 from importlib import import_module
+from importlib.metadata import distributions
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -22,13 +25,24 @@ def validate_torch_backend(backend: str, cuda: str | None, hip: str | None) -> N
         )
 
 
+def validate_package_inventory() -> None:
+    """Refuse stale metadata left by overlaying an environment from another image."""
+    names = (
+        re.sub(r"[-_.]+", "-", dist.metadata["Name"]).lower()
+        for dist in distributions()
+    )
+    duplicates = sorted(name for name, count in Counter(names).items() if count > 1)
+    if duplicates:
+        raise RuntimeError(f"Duplicate installed package metadata: {', '.join(duplicates)}")
+
+
 def probe_backend(backend: str, cache_root: Path, *, require_gpu: bool = False) -> dict[str, object]:
     """Exercise installed wheels without production weights or external requests."""
+    validate_package_inventory()
     import torch
     from PIL import Image
     from transformers import (
-        CLIPImageProcessor,
-        CLIPProcessor,
+        CLIPImageProcessorPil,
         CLIPVisionConfig,
         CLIPVisionModelWithProjection,
     )
@@ -39,12 +53,9 @@ def probe_backend(backend: str, cache_root: Path, *, require_gpu: bool = False) 
         raise RuntimeError(f"CUDA base {runtime_cuda!r} does not match Torch {torch.version.cuda}")
     if require_gpu and (not backend.startswith("cuda") or not torch.cuda.is_available()):
         raise RuntimeError("GPU execution was required but CUDA is unavailable")
-    # Import the production processor class as well as the offline image processor.
-    if not callable(CLIPProcessor):
-        raise RuntimeError("CLIPProcessor is unavailable")
     torch.set_num_threads(1)
     torch.manual_seed(0)
-    processor = CLIPImageProcessor(size=16, crop_size=16)
+    processor = CLIPImageProcessorPil(size=16, crop_size=16)
     pixels = processor(images=Image.new("RGB", (16, 16), "navy"), return_tensors="pt")
     model: torch.nn.Module = CLIPVisionModelWithProjection(
         CLIPVisionConfig.from_dict({
