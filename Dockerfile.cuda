@@ -2,8 +2,8 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# CUDA variant — installs PyTorch with CUDA 12.4 wheels and uses the official
-# NVIDIA CUDA 12.4 + cuDNN runtime image so GPU inference works out of the box.
+# CUDA variant — installs the pinned PyTorch CUDA 13.0 profile and uses the
+# verified NVIDIA CUDA 13.0.3 base. See README for the explicit CUDA 12.6 profile.
 #
 # Prerequisites on the Docker host:
 #   NVIDIA Container Toolkit — https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/
@@ -15,7 +15,8 @@
 #   docker compose -f docker-compose.yml -f docker-compose.cuda.yml up -d
 
 # ── Build stage: install wheels (no CUDA toolkit needed — we use pre-built wheels) ──
-FROM ubuntu:24.04 AS builder
+ARG CUDA_BASE=nvidia/cuda:13.0.3-base-ubuntu24.04@sha256:7c7413a56200486f71f181cad9310f6fd31b6bb21816ade15fc9c1e1e927a5c1
+FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_NO_CACHE_DIR=1
@@ -27,21 +28,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /tmp/requirements.txt
+ARG TORCH_PROFILE=requirements-torch-cuda.txt
+ARG TORCH_INDEX=https://download.pytorch.org/whl/cu130
+COPY ${TORCH_PROFILE} /tmp/requirements-torch.txt
 
-# Install torch from the CUDA 12.4 wheel index first so pip picks the GPU-enabled
-# wheel rather than the CPU-only wheel on PyPI.  All other packages come from PyPI
-# in the second pass; pip sees torch already satisfied and skips reinstalling it.
+# Select Torch from one official index, then constrain the PyPI installation so
+# a newer shared requirement cannot silently replace the chosen backend wheel.
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --upgrade pip \
-    && /opt/venv/bin/pip install torch \
-        --index-url https://download.pytorch.org/whl/cu124 \
-    && /opt/venv/bin/pip install -r /tmp/requirements.txt
+    && /opt/venv/bin/pip install -r /tmp/requirements-torch.txt \
+        --index-url "${TORCH_INDEX}"
 
-# ── Runtime stage: CUDA 12.4 + cuDNN runtime, no build tools ────────────────
-# nvidia/cuda runtime images ship libcuda, libcudart, and cuDNN — everything
-# PyTorch needs for GPU inference; the 'devel' variant (full toolkit) is not required.
-FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu24.04
+COPY requirements.txt /tmp/
+RUN /opt/venv/bin/pip install -r /tmp/requirements.txt \
+        -c /tmp/requirements-torch.txt \
+    && /opt/venv/bin/pip check
+
+# ── Runtime stage: minimal CUDA base, no build tools ──────────────────────
+# Torch's wheel dependencies supply CUDA libraries and cuDNN. The host driver
+# supplies libcuda through NVIDIA Container Toolkit; do not duplicate cuDNN here.
+FROM ${CUDA_BASE}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -67,6 +73,7 @@ COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY src ./src
+COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/
 
 # CIS Docker Benchmark 4.1: do not run as root
 RUN groupadd --gid 1001 appgroup \

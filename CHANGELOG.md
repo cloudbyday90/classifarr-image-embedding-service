@@ -6,21 +6,30 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Offline backend build/smoke CI for CPU, modern CUDA, legacy CUDA, and OpenVINO, including tiny CLIP projection and OpenVINO IR export/reload checks.
+- Backend compatibility, dependency-selection, and local PR 40 design/validation records.
 - Shared FIFO admission service and regressions for bounded batch retention, waiting telemetry, and live-client dispatch.
 - Application-scoped inference execution service shared by single, bulk, and coalesced embedding paths.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Container builds use exact backend-specific Torch profiles, constrained shared dependencies, and verified base-image digests; CPU and OpenVINO use CPU-only wheels.
+- Default CUDA builds support CUDA 13.0 and Blackwell, with an explicit CUDA 12.6 legacy profile; OpenVINO bindings and base now match 2026.4.0.
+- Tag-only publishing waits for backend validation; weekly Docker base updates complement existing Dependabot checks.
+- Validated CUDA support is amd64; ARM CUDA remains blocked by upstream cuSPARSELt wheel metadata, with dependency checks kept strict.
 - Optional batch collection reserves capacity before retaining jobs; waiting members share the global queue limit with explicit batch requests.
 - Timed-out inference remains visible in queue telemetry until its worker finishes; expired queue admissions are removed.
 
 ### Fixed
+- Repaired the missing CUDA base and OpenVINO's collision with the Intel base's existing non-root identity.
 - Batch-window bursts can no longer bypass queue limits, and expired members are removed from payloads before worker dispatch.
 - Request deadlines and caller cancellation no longer release capacity while inference threads continue running.
 - Graceful shutdown preserves Uvicorn's signal handlers, drains inference work, and skips memory cleanup when active work exceeds the drain budget.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Raised Pillow, Transformers, Torch, and packaged setuptools minimums to published patched versions; strict OSV audits cover the installed environment and each validated runtime image.
+- Applied open PR #40 locally by upgrading the direct OSV scanner to 2.3.8 and pinning its actual container digest.
 - Applied open PR #42 locally by upgrading checkout to verified v7.0.1, pinned to an immutable commit across six workflows.
 - Raised the development pytest minimum to 9.0.3, applying open PR #28 locally and including its upstream temporary-directory security fix.
 

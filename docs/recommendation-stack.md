@@ -1,33 +1,44 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-01. These recommendations combine local review, reproducible probes, and official documentation linked in the individual design records.
+Assessment date: 2026-10-01. Recommendations combine local review, actual build/runtime probes, and official sources linked in each design record.
 
-## Priority and tradeoffs
+## Completed recommendations and tradeoffs
 
-| Priority | Recommendation | Benefits | Costs or limits | Outcome |
-|---|---|---|---|---|
-| 1 | Track inference owners independently of HTTP request deadlines | Restores concurrency and lock accounting during slow work, cancellation, and retries | Running Python threads cannot be forcibly killed | Implemented; see [execution design](inference-execution.md) |
-| 1 | Preserve server signal ownership and drain application work in lifespan | Allows Uvicorn shutdown to reach the new drain logic and prevents cleanup racing inference | Drain, server, and container deadlines must be configured together | Implemented as part of execution lifecycle ownership |
-| 1 | Apply randomly selected open PR 28 locally | Raises the pytest minimum to include upstream fixes | Lower-bound dependency policy remains | Implemented and tested locally; see [PR record](pr-28-local-validation.md) |
-| Completed | Bound batch-window admission with shared FIFO tickets | Enforces one waiting budget, visible pending members, immediate cancellation, and live payload preparation | Collection reserves a slot; compatible joins share a ticket; counts do not bound decoded bytes | Implemented; see [admission design](bounded-batch-admission.md) |
-| Completed | Apply randomly selected open PR 42 locally, pinning checkout v7.0.1 | ESM action, safer trusted-event fork handling, immutable CI dependency | Patch updates require review; hosted runner not exercised locally | Implemented; see [PR record](pr-42-local-validation.md) |
-| Next 1 | Repair backend image/dependency contracts and add build smoke checks on PRs | Detects missing CUDA bases and incompatible Torch/runtime selections before release | CI cost; GPU correctness needs suitable hardware | Next task; see [backend design recommendation](backend-build-recommendation.md) |
-| Next 2 | Bound HTTP bodies, decoded pixels, and aggregate batch memory | Limits memory expansion and payload retention beyond the admission count | Requires documented budgets and compatibility decisions | Separate input-processing change |
-| Next 3 | Add offline real model/preprocessor contract tests | Detects regressions hidden by mocked backends | Additional test runtime and backend-specific environments | Separate verification change |
-| Next 4 | Pin remaining CI action dependencies and review workflow permissions | Makes other CI dependencies immutable and limits credential exposure | Version maintenance; permissions need job-specific validation | Separate workflow change |
+| Recommendation | Pros | Cons or limits | Outcome |
+|---|---|---|---|
+| Track inference owners beyond HTTP deadlines | Preserves concurrency and telemetry during timeouts, cancellation, and retries | Running Python threads cannot be forcibly killed | Implemented; [execution design](inference-execution.md) |
+| Preserve Uvicorn signals and drain work in lifespan | Shutdown reaches drain logic; cleanup cannot race active inference | Server, application, and container deadlines need coordinated settings | Implemented with execution ownership |
+| Shared FIFO admission for batch-window members and explicit batches | One waiting budget, prompt cancellation, live payload preparation | Admission counts do not bound decoded bytes; collection reserves capacity | Implemented; [admission design](bounded-batch-admission.md) |
+| Exact CPU/CUDA/OpenVINO profiles, matching digests, isolated vendor indexes | Detects missing images and backend substitution; keeps CUDA libraries out of CPU builds | Version/digest maintenance; transitive/apt dependencies remain ranged | Implemented; [backend design](backend-build-recommendation.md) |
+| Modern cu130 default plus explicit amd64 cu126 legacy profile | Supports Blackwell and retains an older GPU option without duplicating Dockerfiles | Driver and GPU architecture selection must match the profile | Implemented and covered by backend checks |
+| Non-root offline build/startup probes on PRs | Actual tiny CLIP projection, OpenVINO export/reload, auth, cache, and shutdown evidence before publishing | More CI work; production weights and Intel GPU validation remain separate | Implemented with five native CI jobs |
+| Patch dependency floors and strictly audit installed packages through OSV | Covers vendor Torch local versions and packaged setuptools; no advisory suppression | Audits require current public metadata and do not prove complete security | Implemented; test environment and all five runtime audits passed without skips |
+| Selected open PRs 28, 42, and 40 implemented locally | Updated pytest, ESM checkout, and OSV scanner execution with immutable references where supported | Original PRs remain unmerged; other workflow references require review | [PR 28](pr-28-local-validation.md), [PR 42](pr-42-local-validation.md), [PR 40](pr-40-local-validation.md) |
 
-## Final recommendation
+## Next items
 
-Keep the existing Python/FastAPI/AnyIO stack. Use application-scoped admission, queue, execution, and batch modules with explicit ownership; keep routes focused on HTTP behavior. Test event-controlled workers so a quick 504 cannot conceal work that continues in the background. Preserve authentication and remote-image validation, avoid logging payloads or secrets, observe detached failures, and keep JavaScript dependencies on ESM-compatible releases.
+| Priority | Recommendation | Pros | Cons or decisions needed |
+|---|---|---|---|
+| Next 1 | Bound HTTP bodies, decoded pixels, and aggregate batch memory before retention | Prevents expansion and payload retention beyond the admission count | Choose documented byte/pixel budgets, chunked-body handling, and batch rejection semantics |
+| Next 2 | Add production-model/preprocessor fixtures and cached-IR version contracts | Detects large-model and stale-cache regressions beyond the new tiny CLIP checks | Assets, model revision management, test runtime, and backend-specific environments |
+| Next 3 | Complete hash-locked dependency profiles and base/runtime update policy | Reproducible transitive package selection and explicit update review | Per-platform locks, vendor wheels, apt strategy, and security refresh cadence |
+| Next 4 | Pin remaining CI actions/reusable workflows and validate permissions | Freezes other executed CI dependencies and reduces credential exposure | Nested container refs and update automation need review too |
+| Next 5 | Restore CUDA ARM after valid upstream wheel metadata, then add selective Intel GPU and legacy NVIDIA hardware gates | Demonstrates device-specific behavior on suitable hardware | Current cuSPARSELt ARM metadata fails pip check; hardware access and CI cost; Jetson needs distinct validation |
 
-The former unbounded pending queue is removed. Both endpoints use the same FIFO admission budget; queued coalescer members count individually. Compatible requests can share an admitted collecting group's slot without extending its window. Collection reserves capacity and is included in `in_flight`. These semantics, including zero-wait admission and early inherited deadlines, are documented in the admission design and README.
+## Final recommendation stack
 
-Mixed groups now rebuild live payloads immediately before thread submission, after acquiring the shared lock. Canceled jobs leave retained membership promptly; dispatched work remains owned until its thread completes. Cross-endpoint FIFO ordering and live result association are covered by regressions.
+Keep Python/FastAPI/AnyIO and the application's scoped admission, queue, execution, and batch services. Maintain small routes and modules with explicit ownership. No platform rewrite or new CommonJS code is needed; any future JavaScript should use ES Modules.
 
-The next task is backend build validation: a fresh registry check still returns "not found" for the configured CUDA base. Avoid replacing that tag without matching the Torch wheel, runtime, driver, and architecture contracts. Follow with body/decoded-memory limits, real model contracts, and remaining CI pins. This task does not constitute a full repository security audit or proof that the complete system is secure.
+Use CPU-only Torch for the default image, cu130 Torch/NVIDIA CUDA 13 for modern NVIDIA GPUs, the documented cu126 profile for older amd64 NVIDIA hardware, and matching OpenVINO bindings/base for Intel deployments. Keep exact native-backend profiles separate from shared requirements and resolve Torch from a single official index before constrained PyPI installation. Keep non-root runtime execution and writable caches scoped to the application.
+
+Validate with event-controlled worker tests, actual tiny native-model checks, network-disabled service smokes, and strict installed-package audits. Publish only from release tags after unit/backend gates. Immutable base/action image references require reviewed updates; default Docker bases receive weekly Dependabot proposals, while the legacy base override and direct scanner image require explicit digest review.
+
+Next implement the input-memory budget: enforce an HTTP body ceiling before JSON parsing, bound decoded image pixels before conversion/loading, and charge aggregate batch bytes before queuing or retaining payloads. Count admission alone cannot bound memory. Preserve authentication and remote-image validation, avoid recording payloads/secrets, and cover cancellation/rejection without leaking reservations.
 
 ## Delivery outcome
 
-Execution ownership, lifecycle integration, bounded admission, and both selected PR patches are implemented. The admission change passed 236 tests. Final coverage reached 92.80% lines and 85.48% branches, above the unchanged committed floor of 89.42% and 79.37%. The executor retains 100% line and branch coverage. Focused Ruff/Pyright, copyright, compilation, dependency consistency, and actionlint checks passed. The pinned checkout's ESM/Node 24 and unsafe-fork refusal smoke checks passed locally. Detailed validation and platform limits are recorded in the individual documents.
+The backend iteration preserves the previously committed execution/admission work. The full suite passed 252 tests on the new Python 3.12 CPU environment. Coverage is 92.97% lines and 85.48% branches, above the unchanged 89.42%/79.37% floor. The executor remains at 100% line and branch coverage. A strict OSV audit covered all 79 packages with zero findings and zero skips; package advisory suppression was not used.
 
-`README.md`, configuration comments, the prior implementation plan's status, and `CHANGELOG.md` under Unreleased are updated. Delivery targets `fix/bounded-batch-admission`. No release, default-branch merge, or PR merge is part of this change.
+All five rebuilt images passed their shipped-script smokes; modern CUDA inference and service device selection passed on an RTX 5070 Ti. CUDA ARM failed because its vendor wheel declares an unsupported internal SBSA tag; keep pip check strict and defer this target. Ruff, Pyright, workflow lint, compilation, copyright, coverage ratchet, and whitespace checks passed. The direct OSV 2.3.8 image returned the expected clean/vulnerable fixture exits; GitHub MCP reconfirmed PR 40 is open/unmerged.
+
+Documentation, README, and the Unreleased changelog describe the design, alternatives, implementation, compatibility limits, and outcomes. Delivery targets `fix/backend-build-contracts`. No release or merge is part of this iteration. These checks improve security properties and package hygiene; they are not a full repository security audit.

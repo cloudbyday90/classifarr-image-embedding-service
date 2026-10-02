@@ -2,8 +2,10 @@ fastapi>=0.135,<1
 uvicorn[standard]>=0.41,<1
 pydantic>=2.11,<3
 requests>=2.33.0
-pillow>=12.2.0
+pillow>=12.3.0
 numpy>=2.4
-torch>=2.10
-transformers>=5.3
+torch>=2.13
+transformers>=5.10.1
 slowapi>=0.1.9
+# Torch's vendor index can supply older tooling; keep the packaged dependency patched.
+setuptools>=83.0.0

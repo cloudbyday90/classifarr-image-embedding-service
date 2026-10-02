@@ -30,10 +30,8 @@
 
 # ── Build stage: install Python wheels ──────────────────────────────────────
 # Use plain Ubuntu 24.04 for the build stage to keep the builder lean.
-# The openvino/ubuntu24_runtime base already ships the OpenVINO C++ runtime
-# libraries and the openvino Python bindings, so we don't need to pip-install
-# openvino itself — only the Python packages that sit on top of it.
-FROM ubuntu:24.04 AS builder
+# Install matching Python bindings in our venv; it replaces the base's venv.
+FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_NO_CACHE_DIR=1
@@ -45,16 +43,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements-openvino.txt /tmp/requirements-openvino.txt
+COPY requirements-torch-cpu.txt /tmp/
 
 # Build the venv with all Python-level dependencies.
-# CPU-only torch is pulled via --extra-index-url in requirements-openvino.txt;
-# it is needed at runtime only for the first-startup model export step.
+# Install CPU-only Torch from one index, then constrain the PyPI installation.
+# Torch is needed at runtime for the first-startup model export step.
 # optimum-intel is intentionally NOT installed — we use openvino.convert_model()
 # directly, which preserves CLIPVisionModelWithProjection's projection head.
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --upgrade pip \
-    && /opt/venv/bin/pip install -r /tmp/requirements-openvino.txt
+    && /opt/venv/bin/pip install -r /tmp/requirements-torch-cpu.txt \
+        --index-url https://download.pytorch.org/whl/cpu
+
+COPY requirements.txt requirements-openvino.txt /tmp/
+RUN /opt/venv/bin/pip install -r /tmp/requirements-openvino.txt \
+        -c /tmp/requirements-torch-cpu.txt \
+    && /opt/venv/bin/pip check
 
 # ── Runtime stage: official Intel OpenVINO Ubuntu 24.04 runtime image ───────
 # openvino/ubuntu24_runtime ships:
@@ -62,7 +66,8 @@ RUN python3 -m venv /opt/venv \
 #   • openvino Python bindings pre-installed in the system Python
 #   • Intel GPU firmware packages and required udev rules
 # We copy our venv on top and configure Python to prefer it.
-FROM openvino/ubuntu24_runtime:2026.1.0
+# This verified Intel manifest supports linux/amd64 only.
+FROM openvino/ubuntu24_runtime:2026.4.0@sha256:b326dcae9b91fa25f794a391d9953e65a65096597237e6de431116b184a01718
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -88,20 +93,20 @@ COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY src ./src
+COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/
 
 # CIS Docker Benchmark 4.1: do not run as root.
 # Use gid 44 (video) and 109 (render) to grant access to /dev/dri/* nodes
 # for Intel GPU inference.  Group IDs match typical Debian/Ubuntu defaults;
 # docker-compose.openvino.yml passes group_add to cover host variations.
-RUN groupadd --gid 1001 appgroup \
+RUN (getent group 1001 >/dev/null || groupadd --gid 1001 appgroup) \
     && (getent group video >/dev/null || groupadd --gid 44 video) \
     && (getent group render >/dev/null || groupadd --gid 109 render) \
-    && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser \
-    && usermod -aG video appuser \
-    && usermod -aG render appuser \
+    && (getent passwd 1001 >/dev/null || useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser) \
+    && usermod -aG video,render "$(getent passwd 1001 | cut -d: -f1)" \
     && mkdir -p /app/.cache/ov_ir \
-    && chown -R appuser:appgroup /app/.cache
-USER appuser
+    && chown -R 1001:1001 /app/.cache
+USER 1001
 
 EXPOSE 8000
 

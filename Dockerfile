@@ -1,5 +1,5 @@
 # ── Build stage: compile wheels and install dependencies ────────────────────
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_NO_CACHE_DIR=1
@@ -11,14 +11,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /tmp/requirements.txt
+COPY requirements-torch-cpu.txt /tmp/
 
 RUN python3 -m venv /opt/venv \
     && /opt/venv/bin/pip install --upgrade pip \
-    && /opt/venv/bin/pip install -r /tmp/requirements.txt
+    && /opt/venv/bin/pip install -r /tmp/requirements-torch-cpu.txt \
+        --index-url https://download.pytorch.org/whl/cpu
+
+COPY requirements.txt /tmp/
+RUN /opt/venv/bin/pip install -r /tmp/requirements.txt \
+        -c /tmp/requirements-torch-cpu.txt \
+    && /opt/venv/bin/pip check
 
 # ── Runtime stage: minimal image, no build tools, non-root user ──────────────
-FROM ubuntu:24.04
+FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
@@ -40,6 +46,7 @@ COPY --from=builder /opt/venv /opt/venv
 
 WORKDIR /app
 COPY src ./src
+COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/
 
 # CIS Docker Benchmark 4.1: do not run as root
 RUN groupadd --gid 1001 appgroup \

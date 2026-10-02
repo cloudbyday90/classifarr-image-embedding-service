@@ -34,17 +34,21 @@ jobs:
           cache: 'pip'
           cache-dependency-path: |
             requirements.txt
+            requirements-torch-cpu.txt
             requirements-dev.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install -r requirements-torch-cpu.txt --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt -r requirements-dev.txt -c requirements-torch-cpu.txt
+          pip check
 
       - name: Audit Python runtime dependencies
         run: |
-          pip install pip-audit
-          pip-audit -r requirements.txt
+          pip install "pip-audit>=2.10.1"
+          # OSV can audit vendor Torch local versions that are absent from PyPI.
+          pip-audit --local --strict --vulnerability-service osv
 
       - name: Run tests
         run: pytest
@@ -60,11 +64,80 @@ jobs:
           path: coverage.xml
           retention-days: 30
 
+  backend-smoke:
+    name: Backend smoke (${{ matrix.backend }}, ${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: cpu
+            arch: amd64
+            runner: ubuntu-24.04
+            dockerfile: Dockerfile
+          - backend: cpu
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            dockerfile: Dockerfile
+          - backend: cuda
+            arch: amd64
+            runner: ubuntu-24.04
+            dockerfile: Dockerfile.cuda
+          - backend: openvino
+            arch: amd64
+            runner: ubuntu-24.04
+            dockerfile: Dockerfile.openvino
+          - backend: cuda-legacy
+            arch: amd64
+            runner: ubuntu-24.04
+            dockerfile: Dockerfile.cuda
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Make room for CUDA wheel layers on the disposable runner
+        if: startsWith(matrix.backend, 'cuda')
+        run: |
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          # This Docker-only job does not use these preinstalled SDKs or tool caches.
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet /opt/hostedtoolcache
+          df -h /var/lib/docker
+      - name: Build local image
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+          ARCH: ${{ matrix.arch }}
+          LEGACY_PROFILE: ${{ matrix.backend == 'cuda-legacy' }}
+        run: |
+          build_args=()
+          if [ "$LEGACY_PROFILE" = "true" ]; then
+            build_args=(
+              --build-arg CUDA_BASE=nvidia/cuda:12.6.3-base-ubuntu24.04@sha256:c87e78933f4c16e3272123bf2f75537306596d0fbaa395a29696a22786e5ee0e
+              --build-arg TORCH_PROFILE=requirements-torch-cuda-legacy.txt
+              --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cu126
+            )
+          fi
+          docker build --platform "linux/$ARCH" "${build_args[@]}" -f "$DOCKERFILE" -t backend-smoke:local .
+      - name: Audit the actual runtime packages without changing the image
+        run: >-
+          docker run --rm --user root --read-only --tmpfs /tmp:rw,exec,nosuid,nodev,size=512m
+          --cap-drop ALL --security-opt no-new-privileges --entrypoint sh backend-smoke:local -c
+          'python -m pip install -q --root-user-action=ignore --target /tmp/audit-tools "pip-audit>=2.10.1" &&
+          PYTHONPATH=/tmp/audit-tools python -m pip_audit --strict --vulnerability-service osv
+          --path /opt/venv/lib/python3.12/site-packages --cache-dir /tmp/audit-cache'
+      - name: Check dependencies and offline startup as non-root
+        env:
+          BACKEND: ${{ matrix.backend }}
+        run: >-
+          docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges
+          --entrypoint python backend-smoke:local scripts/smoke_backend.py --backend "$BACKEND"
+
   docker-release:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: build-and-test
+    needs: [build-and-test, backend-smoke]
 
     permissions:
       contents: read
@@ -164,4 +237,3 @@ jobs:
           else
             echo "Only $TAG_COUNT tags exist, keeping all (minimum is $KEEP_COUNT)"
           fi
-

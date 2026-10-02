@@ -1,0 +1,3 @@
+# Linux container profile. Install from the official cu130 index first, then use
+# this file as a constraint while installing requirements.txt from PyPI.
+torch==2.14.1+cu130

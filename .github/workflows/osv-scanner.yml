@@ -21,9 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: OSV scan (no SARIF upload for Dependabot)
-        uses: google/osv-scanner-action/osv-scanner-action@v2.3.5
+        # PR 40's v2.3.8 image, pinned because the upstream wrapper uses a mutable image tag.
+        uses: docker://ghcr.io/google/osv-scanner-action@sha256:48406c58197201fe55e56615ad9d414f85063da320e204d0b0ed460fb3908dba
         with:
-          scan-args: |-
+          args: >-
             --recursive
             ./
 

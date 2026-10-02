@@ -151,7 +151,9 @@ docker compose up -d
 
 ## GPU / CUDA Build
 
-A dedicated `Dockerfile.cuda` ships PyTorch with **CUDA 12.4 wheels** and uses `nvidia/cuda:12.4.1-cudnn-runtime-ubuntu24.04` as the runtime base, so no extra CUDA toolkit installation is needed inside the container.
+A dedicated `Dockerfile.cuda` ships **Torch 2.14.1 CUDA 13.0 wheels** for **linux/amd64** on a digest-pinned `nvidia/cuda:13.0.3-base-ubuntu24.04` base. Torch's wheel dependencies provide CUDA libraries and cuDNN. The default supports Turing and newer GPUs, including Blackwell; Maxwell, Pascal, and Volta require the explicit legacy profile below.
+
+Use a compatible driver from branch 580 or newer; Linux 580.126.20 or newer is the corresponding CUDA 13.0.3 toolkit driver. Windows/WSL drivers are installed separately. See the [backend design and compatibility record](docs/backend-build-recommendation.md) for official sources and architecture limits.
 
 **Prerequisites:** [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/) installed on the Docker host.
 
@@ -174,6 +176,15 @@ curl http://localhost:8000/health | python -m json.tool
 ```
 
 > The default `Dockerfile` / `docker-compose.yml` remain CPU-only. `DEVICE=auto` in `config.toml` will fall back to CPU automatically if CUDA is unavailable at runtime.
+
+**Legacy amd64 GPUs (CUDA 12.6):** select the base, profile, and index together. This profile excludes Blackwell. Prefer Linux driver 560.35.05 or Windows driver 561.17 or newer compatible versions.
+
+```bash
+docker build -f Dockerfile.cuda -t classifarr-image-embedder:cuda-legacy \
+  --build-arg CUDA_BASE=nvidia/cuda:12.6.3-base-ubuntu24.04@sha256:c87e78933f4c16e3272123bf2f75537306596d0fbaa395a29696a22786e5ee0e \
+  --build-arg TORCH_PROFILE=requirements-torch-cuda-legacy.txt \
+  --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cu126 .
+```
 
 ---
 
@@ -210,7 +221,7 @@ curl http://localhost:8000/health | python -m json.tool
 
 ## Intel OpenVINO Build
 
-A dedicated `Dockerfile.openvino` targets Intel hardware via **OpenVINO 2026.1.0**, using `openvino/ubuntu24_runtime` as the runtime base.
+A dedicated `Dockerfile.openvino` targets Intel hardware via **OpenVINO 2026.4.0**, with matching Python bindings and a digest-pinned `openvino/ubuntu24_runtime:2026.4.0` base. This image supports **linux/amd64**. CPU-only Torch 2.14.1 handles initial export.
 
 **Supported hardware (all via a single `DEVICE=openvino:AUTO`):**
 - Intel integrated GPU: 12th-gen Core (UHD 770) and newer, including Core Ultra series
@@ -227,7 +238,7 @@ A dedicated `Dockerfile.openvino` targets Intel hardware via **OpenVINO 2026.1.0
   - `export VIDEO_GID="$(getent group video | cut -d: -f3)"`
   - `export RENDER_GID="$(stat -c '%g' /dev/dri/renderD128)"`
 
-**Optimum-Intel status:** Latest release is `1.27.0` (Dec 23, 2025), but this service intentionally does **not** depend on it for image embeddings. We use `openvino.convert_model()` directly to preserve CLIP `image_embeds` output.
+**Model conversion:** We use `openvino.convert_model()` directly to preserve CLIP `image_embeds` output.
 
 **Build and run (Compose override — recommended):**
 ```bash
@@ -336,12 +347,30 @@ services:
 
 ## Local Development (No Docker)
 
-```bash
+```powershell
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt -r requirements-dev.txt
+.\.venv\Scripts\Activate.ps1
+pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt -r requirements-dev.txt torch==2.14.1
+$env:PYTHONPATH = "src"
 uvicorn image_embedder.main:app --host 0.0.0.0 --port 8000
 ```
+
+On Linux/macOS, activate with `source .venv/bin/activate` and set `export PYTHONPATH=src` before running the same install/server commands.
+
+## Offline Container Validation
+
+PRs and default-branch pushes build and smoke CPU on amd64 and arm64, plus modern CUDA, legacy CUDA, and OpenVINO on amd64, without publishing images. Each check audits the actual installed packages through OSV and runs the native libraries, tiny CLIP projection, non-root cache access, and service startup/authentication/shutdown without model downloads. OpenVINO also exports and reloads IR. Release publishing remains tag-only and depends on these checks.
+
+CUDA ARM is deferred: the selected upstream cuSPARSELt 0.8.1 aarch64 wheel contains an incompatible internal SBSA platform tag and fails `pip check`. The build retains this failure; see the [backend design and outcome](docs/backend-build-recommendation.md) for the exact evidence and restoration criteria.
+
+```bash
+docker build -t classifarr-image-embedder:cpu-smoke .
+docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
+  --entrypoint python classifarr-image-embedder:cpu-smoke scripts/smoke_backend.py --backend cpu
+```
+
+Use `--backend cuda`, `cuda-legacy`, or `openvino` with the corresponding image. To require real NVIDIA GPU execution, add `--gpus all` to Docker and `--require-gpu` to the script. Without GPU access, CUDA smoke verifies its wheel profile and CPU projection. OpenVINO smoke uses its CPU plugin; Intel GPU deployments need separate hardware validation. The script verifies readiness remains false without production weights.
 
 ## API
 ### GET /health
@@ -422,7 +451,7 @@ Single requests, `/embed-batch`, and batch-window dispatch share the same execut
 
 The optional batch window uses the same bounded admission budget as `/embed-batch`. It reserves one computation slot before collecting compatible requests, so `in_flight` includes collection and shared-lock acquisition as well as running inference. Waiting batch members each count toward `IMAGE_EMBEDDER_MAX_QUEUE`; health and queue headers include them. New groups fail with HTTP 429 when the waiting room is full. With a zero waiting limit, compatible requests can still join an admitted collecting group up to `EMBED_BATCH_MAX_SIZE`, but another group cannot wait for capacity.
 
-Queue deadlines start at admission, before collection; a queued group's members inherit its first member's deadline. Once admitted, the collection window starts and cannot be extended by later joins. Cancellation removes pending membership, and dispatch rebuilds the payload from live clients after shared-lock acquisition. With concurrency C, batch maximum B, and waiting maximum Q, admitted single-image jobs and explicit-batch requests are bounded by C × B + Q. An explicit-batch request can contain multiple images; this is a request-count limit, not a byte-memory limit. Backend container build validation and decoded-image memory budgets remain follow-ups.
+Queue deadlines start at admission, before collection; a queued group's members inherit its first member's deadline. Once admitted, the collection window starts and cannot be extended by later joins. Cancellation removes pending membership, and dispatch rebuilds the payload from live clients after shared-lock acquisition. With concurrency C, batch maximum B, and waiting maximum Q, admitted single-image jobs and explicit-batch requests are bounded by C × B + Q. An explicit-batch request can contain multiple images; this is a request-count limit, not a byte-memory limit. HTTP body and decoded-image memory budgets remain the next follow-up.
 
 ## Environment Variables
 
@@ -491,6 +520,8 @@ pytest
 - [Bounded batch admission design and validation](docs/bounded-batch-admission.md)
 - [Local PR 28 implementation and validation](docs/pr-28-local-validation.md)
 - [Local PR 42 implementation and validation](docs/pr-42-local-validation.md)
+- [Backend build design and validation](docs/backend-build-recommendation.md)
+- [Local PR 40 implementation and validation](docs/pr-40-local-validation.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
 
 ## License
