@@ -6,16 +6,19 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
-- N/A
+- Application-scoped inference execution service shared by single, bulk, and coalesced embedding paths.
+- Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
-- N/A
+- Timed-out inference remains visible in queue telemetry until its worker finishes; expired queue admissions are removed.
 
 ### Fixed
-- N/A
+- Request deadlines and caller cancellation no longer release capacity while inference threads continue running.
+- Graceful shutdown preserves Uvicorn's signal handlers, drains inference work, and skips memory cleanup when active work exceeds the drain budget.
+- Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
-- N/A
+- Raised the development pytest minimum to 9.0.3, applying open PR #28 locally and including its upstream temporary-directory security fix.
 
 ## v0.0.1.3-alpha — 2026-04-18
 

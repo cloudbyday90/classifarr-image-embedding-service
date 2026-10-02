@@ -2,6 +2,8 @@
 
 ## Goal
 
+Status: the P0/P1 work below was implemented in v0.0.1.3-alpha. This document is retained as its design reference. The subsequent execution-lifetime repair and current recommendations are documented separately in [inference execution](docs/inference-execution.md) and the [recommendation stack](docs/recommendation-stack.md).
+
 Fix the correctness issues found in the embedding pipeline and close the test gaps that currently allow mathematically invalid or misleading responses to pass.
 
 ## Priority Summary

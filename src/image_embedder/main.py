@@ -14,6 +14,7 @@ from . import __version__
 from .batch import BatchWindow
 from .config import Settings
 from .embedder import ImageEmbedder
+from .execution import InferenceExecutor
 from .lifecycle import make_lifespan
 from .logging_config import get_logger, setup_logging
 from .queue import EmbedQueue
@@ -43,6 +44,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
         max_queue=settings.embed_max_queue,
         max_wait_seconds=settings.embed_max_wait_seconds,
     )
+    executor = InferenceExecutor(queue)
 
     limiter = make_limiter(settings)
     auth = make_auth_dependency(settings)
@@ -53,12 +55,15 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
             queue,
             batch_window_ms=settings.embed_batch_window_ms,
             batch_max_size=settings.embed_batch_max_size,
+            executor=executor,
         )
         if settings.embed_batch_window_ms > 0
         else None
     )
 
-    lifespan = make_lifespan(embedder_instance, settings, logger, batch_window=batch_window)
+    lifespan = make_lifespan(
+        embedder_instance, settings, logger, batch_window=batch_window, executor=executor
+    )
 
     app = FastAPI(
         title="Classifarr Image Embedding Service",
@@ -69,6 +74,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
     app.state.limiter = limiter
     app.state.embedder = embedder_instance
     app.state.queue = queue
+    app.state.executor = executor
     app.state.batch_window = batch_window
     app.state.settings = settings
     app.state.logger = logger

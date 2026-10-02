@@ -6,11 +6,11 @@
 
 import asyncio
 
-import anyio
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from ..batch import EmbedJob
 from ..embedder import ImageEmbedder
+from ..execution import ExecutionClosedError, InferenceExecutor
 from ..models import EmbedImageRequest, EmbedImageResponse
 from ..queue import EmbedQueue, QueueFullError, QueueWaitTimeoutError
 
@@ -38,6 +38,7 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         logger = request.app.state.logger
         embedder_instance: ImageEmbedder = request.app.state.embedder
         queue: EmbedQueue = request.app.state.queue
+        executor: InferenceExecutor = request.app.state.executor
         settings = request.app.state.settings
 
         # Resolve canonical spec/size at the route boundary so the response
@@ -59,33 +60,24 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                 )
                 return await batch_window.submit(job)
 
-            # Standard single-request path.
-            acquired = False
-            shared = False
-            try:
-                await queue.acquire()
-                acquired = True
-                await queue.acquire_shared()
-                shared = True
-                return await anyio.to_thread.run_sync(  # type: ignore[union-attr]
-                    embedder_instance.embed,
-                    payload.image_url,
-                    payload.image_base64,
-                    payload.model,
-                    payload.normalize,
-                    payload.image_size,
-                )
-            finally:
-                if shared:
-                    await queue.release_shared()
-                if acquired:
-                    await queue.release()
+            return await executor.run(
+                embedder_instance.embed,
+                payload.image_url,
+                payload.image_base64,
+                payload.model,
+                payload.normalize,
+                payload.image_size,
+            )
 
         try:
             embedding, dims, provider, model_name, image_size = await asyncio.wait_for(
                 _do_embed(),
                 timeout=settings.request_timeout_seconds,
             )
+        except ExecutionClosedError as exc:
+            raise HTTPException(
+                status_code=503, detail=str(exc), headers=_queue_headers(queue)
+            ) from exc
         except QueueFullError as exc:
             logger.warning(f"Queue full: {exc}")
             raise HTTPException(

@@ -19,11 +19,11 @@ single-request path.
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, ParamSpec, Tuple, TypeVar
 
-import anyio
-
+from .execution import ExecutionClosedError, InferenceExecutor
 from .logging_config import get_logger
 
 if TYPE_CHECKING:
@@ -31,6 +31,8 @@ if TYPE_CHECKING:
     from .queue import EmbedQueue
 
 logger = get_logger(__name__)
+P = ParamSpec("P")
+T = TypeVar("T")
 
 # (embedding, dims, provider, model_name, image_size)
 EmbedResult = Tuple[List[float], int, str, str, int]
@@ -70,13 +72,17 @@ class BatchWindow:
         queue: "EmbedQueue",
         batch_window_ms: int,
         batch_max_size: int,
+        executor: InferenceExecutor | None = None,
     ) -> None:
         self._embedder = embedder
-        self._queue = queue
+        self._executor = executor or InferenceExecutor(queue)
+        self._owns_executor = executor is None
         self._window_ms = batch_window_ms
         self._max_size = max(1, batch_max_size)
         self._pending: asyncio.Queue[EmbedJob] = asyncio.Queue()
         self._task: asyncio.Task | None = None
+        self._active: List[EmbedJob] = []
+        self._stopping = False
 
     async def start(self) -> None:
         self._task = asyncio.create_task(self._run(), name="batch-window")
@@ -85,12 +91,20 @@ class BatchWindow:
         )
 
     async def stop(self) -> None:
+        self._stopping = True
         if self._task:
             self._task.cancel()
             try:
                 await self._task
             except (asyncio.CancelledError, Exception):
                 pass
+
+        # Collection and dispatch remove jobs from _pending; they must also
+        # be settled if the dispatcher is canceled before delivering results.
+        for job in self._active:
+            if not job._future.done():
+                job._future.cancel()
+        self._active = []
 
         # Cancel any jobs still waiting in the queue.
         while True:
@@ -101,10 +115,15 @@ class BatchWindow:
             except asyncio.QueueEmpty:
                 break
 
+        if self._owns_executor:
+            await self._executor.close(timeout_seconds=30.0)
+
         logger.info("BatchWindow stopped")
 
     async def submit(self, job: EmbedJob) -> EmbedResult:
         """Add *job* to the pending queue and return its result (or raise)."""
+        if self._stopping:
+            raise ExecutionClosedError("service is shutting down")
         future = job.bind(asyncio.get_running_loop())
         await self._pending.put(job)
         return await future
@@ -121,6 +140,7 @@ class BatchWindow:
                 return
 
             batch: List[EmbedJob] = [first]
+            self._active = batch
 
             if self._window_ms > 0:
                 deadline = asyncio.get_event_loop().time() + self._window_ms / 1000.0
@@ -140,29 +160,29 @@ class BatchWindow:
                 logger.debug(f"BatchWindow dispatching {len(batch)} requests")
 
             await self._dispatch(batch)
+            self._active = []
 
     async def _dispatch(self, batch: List[EmbedJob]) -> None:
         """Group batch by (resolved_model, image_size) then embed each group."""
         # Group jobs by (resolved model name, resolved image_size).
         groups: dict[tuple, list[EmbedJob]] = {}
         for job in batch:
+            if job._future.done():
+                continue
             spec: ModelSpec = self._embedder.resolve_model(job.model)
             target_size: int = spec.image_size if job.image_size is None else job.image_size
             key = (spec.name, target_size)
             groups.setdefault(key, []).append(job)
 
         for (model_name, image_size), jobs in groups.items():
-            acquired = False
-            shared = False
+            jobs = [job for job in jobs if not job._future.done()]
+            if not jobs:
+                continue
             try:
-                await self._queue.acquire()
-                acquired = True
-                await self._queue.acquire_shared()
-                shared = True
-
                 if len(jobs) == 1:
                     j = jobs[0]
-                    result: EmbedResult = await anyio.to_thread.run_sync(
+                    result: EmbedResult = await self._execute_jobs(
+                        jobs,
                         self._embedder.embed,
                         j.image_url,
                         j.image_base64,
@@ -173,15 +193,16 @@ class BatchWindow:
                     if not j._future.done():
                         j._future.set_result(result)
                 else:
-                    from .embedder import BatchItem  # local import avoids circular at module level
+                    # Import the runtime batch type only on the batched path.
+                    from .embedder import BatchItem
 
                     spec = self._embedder.resolve_model(jobs[0].model)
                     batch_items: List[BatchItem] = [
                         BatchItem(j.image_url, j.image_base64, j.normalize)
                         for j in jobs
                     ]
-                    per_item = await anyio.to_thread.run_sync(
-                        self._embedder.embed_batch, spec, image_size, batch_items
+                    per_item = await self._execute_jobs(
+                        jobs, self._embedder.embed_batch, spec, image_size, batch_items
                     )
                     if len(per_item) != len(jobs):
                         raise RuntimeError(
@@ -195,12 +216,37 @@ class BatchWindow:
                             else:
                                 job._future.set_result(outcome)
 
+            except asyncio.CancelledError:
+                task = asyncio.current_task()
+                if task is not None and task.cancelling():
+                    raise
+                # All clients abandoned this group. The executor cancels its
+                # admission or retains its running thread; collect the next.
             except Exception as exc:
                 for job in jobs:
                     if not job._future.done():
                         job._future.set_exception(exc)
-            finally:
-                if shared:
-                    await self._queue.release_shared()
-                if acquired:
-                    await self._queue.release()
+
+    async def _execute_jobs(
+        self, jobs: List[EmbedJob], function: Callable[P, T],
+        *args: P.args, **kwargs: P.kwargs,
+    ) -> T:
+        dispatch = asyncio.create_task(
+            self._executor.run(function, *args, **kwargs), name="batch-dispatch"
+        )
+
+        def cancel_if_abandoned(_future) -> None:
+            if (
+                not dispatch.done()
+                and not dispatch.cancelling()
+                and all(job._future.done() for job in jobs)
+            ):
+                dispatch.cancel()
+
+        for job in jobs:
+            job._future.add_done_callback(cancel_if_abandoned)
+        try:
+            return await dispatch
+        finally:
+            for job in jobs:
+                job._future.remove_done_callback(cancel_if_abandoned)

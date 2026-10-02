@@ -2,19 +2,25 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""App lifespan: signal handling, model warmup, and background memory cleanup."""
+"""App lifespan: model warmup, inference draining, and memory cleanup."""
 
 import asyncio
-import signal
 from contextlib import asynccontextmanager
 
 import anyio
 from fastapi import FastAPI
 
-from .memory import cleanup_gpu_memory, force_cleanup, check_memory_health
+from .execution import InferenceExecutor
+from .memory import check_memory_health, cleanup_gpu_memory, force_cleanup
 
 
-def make_lifespan(embedder_instance, settings, logger, batch_window=None):
+def make_lifespan(
+    embedder_instance,
+    settings,
+    logger,
+    batch_window=None,
+    executor: InferenceExecutor | None = None,
+):
     """Return a FastAPI lifespan context manager bound to the given embedder, settings, and logger."""
 
     shutdown_event = asyncio.Event()
@@ -40,17 +46,8 @@ def make_lifespan(embedder_instance, settings, logger, batch_window=None):
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         memory_cleanup_task: asyncio.Task | None = None
-        loop = asyncio.get_event_loop()
-
-        def _signal_handler(signum, frame):
-            logger.info(f"Received signal {signum}, initiating graceful shutdown")
-            shutdown_event.set()
-
-        try:
-            for sig in (signal.SIGTERM, signal.SIGINT):
-                loop.add_signal_handler(sig, lambda s=sig: _signal_handler(s, None))
-        except (NotImplementedError, RuntimeError):
-            pass
+        # Uvicorn owns process signals and invokes this lifespan's teardown.
+        # Replacing its handlers would prevent graceful server shutdown.
 
         if settings.warmup_on_startup:
             logger.info("Warming up default model...")
@@ -67,29 +64,39 @@ def make_lifespan(embedder_instance, settings, logger, batch_window=None):
         memory_cleanup_task = asyncio.create_task(_memory_cleanup_loop())
         logger.info("Started memory cleanup background task")
 
-        yield
+        try:
+            yield
+        finally:
+            logger.info("Shutdown initiated")
+            shutdown_event.set()
 
-        logger.info("Shutdown initiated")
-        shutdown_event.set()
+            if batch_window is not None:
+                await batch_window.stop()
 
-        if batch_window is not None:
-            await batch_window.stop()
+            drained = True
+            if executor is not None:
+                drained = await executor.close(settings.shutdown_timeout_seconds)
+                if not drained:
+                    logger.warning(
+                        "Inference drain timed out; running work retains capacity. "
+                        "Skipping shutdown memory cleanup."
+                    )
 
-        if memory_cleanup_task:
-            memory_cleanup_task.cancel()
-            try:
-                await asyncio.wait_for(memory_cleanup_task, timeout=5.0)
-            except (asyncio.CancelledError, asyncio.TimeoutError):
-                pass
+            if memory_cleanup_task:
+                memory_cleanup_task.cancel()
+                try:
+                    await asyncio.wait_for(memory_cleanup_task, timeout=5.0)
+                except (asyncio.CancelledError, asyncio.TimeoutError):
+                    pass
 
-        if settings.cleanup_on_shutdown:
-            logger.info("Performing cleanup on shutdown")
-            try:
-                result = force_cleanup()
-                logger.info(f"Shutdown cleanup complete: {result}")
-            except Exception as e:
-                logger.error(f"Error during shutdown cleanup: {e}")
+            if settings.cleanup_on_shutdown and drained:
+                logger.info("Performing cleanup on shutdown")
+                try:
+                    result = force_cleanup()
+                    logger.info(f"Shutdown cleanup complete: {result}")
+                except Exception as e:
+                    logger.error(f"Error during shutdown cleanup: {e}")
 
-        logger.info("Shutdown complete")
+            logger.info("Shutdown complete")
 
     return lifespan

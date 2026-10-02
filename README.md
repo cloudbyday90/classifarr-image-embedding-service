@@ -414,6 +414,14 @@ Response body:
 }
 ```
 
+### Request Deadlines and Shutdown
+
+Embedding requests return HTTP 504 when `REQUEST_TIMEOUT_SECONDS` expires. A worker already running continues to hold its concurrency slot until it finishes, because Python cannot forcibly stop an inference thread. `/health` and `X-Queue-In-Flight` include this work after the response has been sent. With `IMAGE_EMBEDDER_MAX_QUEUE=0`, retries receive HTTP 429 while every slot is occupied. Requests that expire or are canceled while waiting for admission are removed before inference starts.
+
+Single requests, `/embed-batch`, and batch-window dispatch share the same execution service. Shutdown closes admission (HTTP 503 for new work) and drains dispatched inference for up to `SHUTDOWN_TIMEOUT_SECONDS`. If the drain budget expires, the service logs the remaining work and skips shutdown memory cleanup. Uvicorn retains control of process signals. Configure Uvicorn's graceful-shutdown timeout and the container/process supervisor's stop timeout to allow request draining plus this application drain budget; a supervisor must enforce any hard stop for a stuck native inference thread.
+
+The optional batch window still has a separate pending queue. Bounding its admission and accounting for pending payloads is the next planned improvement.
+
 ## Environment Variables
 
 ### Core Settings
@@ -448,7 +456,7 @@ Response body:
 - `CLEANUP_ON_SHUTDOWN` (default `true` - cleanup on graceful shutdown)
 
 ### Graceful Shutdown
-- `SHUTDOWN_TIMEOUT_SECONDS` (default `30` - max time for graceful shutdown)
+- `SHUTDOWN_TIMEOUT_SECONDS` (default `30` - application inference drain budget after server shutdown begins)
 
 ### Authentication
 - `SERVICE_API_KEY` — shared secret validated on every protected request; must match the key configured in Classifarr Settings. Set via `.env`, never in `config.toml`.
@@ -471,6 +479,12 @@ Most settings are defined in `config.toml` (committed to the repo) and mounted r
 ```bash
 pytest
 ```
+
+## Engineering Decisions
+
+- [Inference execution design and validation](docs/inference-execution.md)
+- [Local PR 28 implementation and validation](docs/pr-28-local-validation.md)
+- [Recommendation stack and next task](docs/recommendation-stack.md)
 
 ## License
 Classifarr Image Embedding Service is licensed under GPL-3.0 (or later). See `LICENSE`.

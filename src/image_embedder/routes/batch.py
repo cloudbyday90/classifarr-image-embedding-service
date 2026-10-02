@@ -5,12 +5,11 @@
 """Batch embedding endpoint: POST /embed-batch."""
 
 import asyncio
-import functools
 
-import anyio
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from ..embedder import BatchItem, ImageEmbedder
+from ..execution import ExecutionClosedError, InferenceExecutor
 from ..models import (
     EmbedBatchItemResult,
     EmbedBatchRequest,
@@ -29,6 +28,7 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         logger = request.app.state.logger
         embedder_instance: ImageEmbedder = request.app.state.embedder
         queue: EmbedQueue = request.app.state.queue
+        executor: InferenceExecutor = request.app.state.executor
         settings = request.app.state.settings
 
         max_items: int = settings.embed_batch_api_max_items
@@ -61,33 +61,9 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         # Only hit the embedder + queue when there is something to embed.
         embed_results: list = []
         if batch_items:
-            acquired = False
-            shared = False
-
-            async def _do_embed():
-                nonlocal acquired, shared
-                try:
-                    await queue.acquire()
-                    acquired = True
-                    await queue.acquire_shared()
-                    shared = True
-                    return await anyio.to_thread.run_sync(
-                        functools.partial(
-                            embedder_instance.embed_batch,
-                            spec,
-                            target_size,
-                            batch_items,
-                        )
-                    )
-                finally:
-                    if shared:
-                        await queue.release_shared()
-                    if acquired:
-                        await queue.release()
-
             try:
                 embed_results = await asyncio.wait_for(
-                    _do_embed(),
+                    executor.run(embedder_instance.embed_batch, spec, target_size, batch_items),
                     timeout=settings.request_timeout_seconds,
                 )
                 if len(embed_results) != len(batch_items):
@@ -95,6 +71,10 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                         "embed_batch returned "
                         f"{len(embed_results)} results for {len(batch_items)} items"
                     )
+            except ExecutionClosedError as exc:
+                raise HTTPException(
+                    status_code=503, detail=str(exc), headers=_queue_headers(queue)
+                ) from exc
             except QueueFullError as exc:
                 logger.warning(f"Batch queue full: {exc}")
                 raise HTTPException(
