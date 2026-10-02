@@ -48,6 +48,22 @@ def _int(env_key: str, section: str, cfg_key: str, default: int) -> int:
     return int(c) if c is not None else default
 
 
+def _input_limit(env_key: str, cfg_key: str, default: int) -> int:
+    """Validate configured ceilings without coercing TOML floats or booleans."""
+    raw = os.getenv(env_key)
+    if raw is not None:
+        try:
+            value = int(raw)
+        except ValueError as exc:
+            raise ValueError(f"{env_key} must be a positive integer") from exc
+    else:
+        configured = _c("image", cfg_key)
+        value = default if configured is None else configured
+    if type(value) is not int or value <= 0:
+        raise ValueError(f"{env_key} must be a positive integer")
+    return value
+
+
 def _bool(env_key: str, section: str, cfg_key: str, default: bool) -> bool:
     v = os.getenv(env_key)
     if v is not None:
@@ -78,7 +94,11 @@ class Settings:
             else (_c("image", "allowed_remote_hosts") or [])
         )
     )
-    max_image_bytes: int = field(default_factory=lambda: _int("MAX_IMAGE_BYTES", "image", "max_image_bytes", 10485760))
+    max_image_bytes: int = field(default_factory=lambda: _input_limit("MAX_IMAGE_BYTES", "max_image_bytes", 10485760))
+    max_request_body_bytes: int = field(default_factory=lambda: _input_limit("MAX_REQUEST_BODY_BYTES", "max_request_body_bytes", 16 * 1024 * 1024))
+    max_image_pixels: int = field(default_factory=lambda: _input_limit("MAX_IMAGE_PIXELS", "max_image_pixels", 16_000_000))
+    max_batch_image_bytes: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_BYTES", "max_batch_image_bytes", 32 * 1024 * 1024))
+    max_batch_image_pixels: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_PIXELS", "max_batch_image_pixels", 32_000_000))
     request_timeout_seconds: int = field(default_factory=lambda: _int("REQUEST_TIMEOUT_SECONDS", "image", "request_timeout_seconds", 15))
 
     embed_concurrency: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_CONCURRENCY", "queue", "concurrency", 1))
@@ -121,3 +141,10 @@ class Settings:
     require_api_key: bool = field(default_factory=lambda: _bool("REQUIRE_API_KEY", "auth", "require_api_key", True))
     rate_limit_embed: str = field(default_factory=lambda: _str("RATE_LIMIT_EMBED", "auth", "rate_limit_embed", "30/minute"))
     rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))
+
+    def __post_init__(self) -> None:
+        for name in ("max_image_bytes", "max_request_body_bytes", "max_image_pixels",
+                     "max_batch_image_bytes", "max_batch_image_pixels"):
+            value = getattr(self, name)
+            if type(value) is not int or value <= 0:
+                raise ValueError(f"{name} must be a positive integer")

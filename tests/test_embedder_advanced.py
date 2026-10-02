@@ -8,6 +8,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from PIL import Image
 
 from image_embedder.config import Settings
 from image_embedder.embedder import BatchItem, EmbeddingLRUCache, ImageEmbedder, MODEL_CATALOG
@@ -236,7 +237,7 @@ def test_embed_openvino_path_normalizes_and_uses_cache(monkeypatch):
     embedder = ImageEmbedder(settings=Settings(embed_cache_size=8))
     monkeypatch.setattr(embedder, "_load_model", lambda _spec: (_model, processor, "ov:GPU"))
     monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda *_a, **_k: b"payload-a")
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data, **_kwargs: Image.new("RGB", (1, 1)))
 
     first = embedder.embed(
         image_url=None,
@@ -296,7 +297,7 @@ def test_embed_cached_mutation_does_not_poison_future_hits(monkeypatch):
     embedder = ImageEmbedder(settings=Settings(embed_cache_size=8))
     monkeypatch.setattr(embedder, "_load_model", lambda _spec: (_model, processor, "ov:GPU"))
     monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda *_a, **_k: b"payload-a")
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data, **_kwargs: Image.new("RGB", (1, 1)))
 
     first = embedder.embed(
         image_url=None,
@@ -381,10 +382,10 @@ def test_embed_batch_openvino_mixed_cache_errors_and_cleanup(monkeypatch):
     def _resolve_image_bytes(_image_url, image_base64):
         return image_base64.encode("ascii")
 
-    def _image_from_bytes(data):
+    def _image_from_bytes(data, **_kwargs):
         if data == b"bad":
             raise ValueError("corrupt image")
-        return object()
+        return Image.new("RGB", (1, 1))
 
     embedder = ImageEmbedder(settings=Settings(embed_cache_size=8, embed_cleanup_every_n=2))
     spec = next(iter(MODEL_CATALOG.values()))
@@ -453,7 +454,7 @@ def test_embed_remote_url_cache_keys_follow_fetched_bytes(monkeypatch):
     embedder = ImageEmbedder(settings=Settings(embed_cache_size=8))
     monkeypatch.setattr(embedder, "_fetch_image_bytes", _fetch_image_bytes)
     monkeypatch.setattr(embedder, "_load_model", lambda _spec: (_model, processor, "ov:GPU"))
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _data, **_kwargs: Image.new("RGB", (1, 1)))
 
     first = embedder.embed(
         image_url="https://example.com/poster.jpg",

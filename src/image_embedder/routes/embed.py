@@ -11,6 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from ..batch import EmbedJob
 from ..embedder import ImageEmbedder
 from ..execution import ExecutionClosedError, InferenceExecutor
+from ..input_limits import InputLimitExceeded, validate_inline_images
 from ..models import EmbedImageRequest, EmbedImageResponse
 from ..queue import EmbedQueue, QueueFullError, QueueWaitTimeoutError
 
@@ -40,6 +41,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         queue: EmbedQueue = request.app.state.queue
         executor: InferenceExecutor = request.app.state.executor
         settings = request.app.state.settings
+
+        try:
+            validate_inline_images((payload.image_base64,), settings)
+        except InputLimitExceeded as exc:
+            raise HTTPException(status_code=413, detail=str(exc)) from exc
 
         # Resolve canonical spec/size at the route boundary so the response
         # metadata is authoritative regardless of what the embedder returns.
@@ -101,6 +107,8 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                 detail=f"Embedding request timed out after {settings.request_timeout_seconds}s",
                 headers=_queue_headers(queue),
             ) from exc
+        except InputLimitExceeded as exc:
+            raise HTTPException(status_code=413, detail=str(exc)) from exc
         except ValueError as exc:
             logger.warning(f"Validation error: {exc}")
             raise HTTPException(status_code=400, detail=str(exc)) from exc

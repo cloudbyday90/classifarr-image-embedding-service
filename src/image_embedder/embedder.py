@@ -2,8 +2,6 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import base64
-import binascii
 import hashlib
 import ipaddress
 import io
@@ -13,7 +11,7 @@ import sys
 import threading
 from collections import OrderedDict
 from dataclasses import dataclass
-from contextlib import closing
+from contextlib import ExitStack, closing
 from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING
 from urllib.parse import urlparse
 
@@ -22,6 +20,8 @@ import requests
 from PIL import Image
 
 from .config import Settings
+from .image_input import decode_base64, load_rgb
+from .input_limits import BatchInputBudget, InputLimitExceeded
 
 if TYPE_CHECKING:
     import torch
@@ -434,7 +434,7 @@ class ImageEmbedder:
 
             content_length = response.headers.get("content-length")
             if content_length and int(content_length) > self.settings.max_image_bytes:
-                raise ValueError("Image payload exceeds maximum size")
+                raise InputLimitExceeded("Image payload exceeds maximum size")
 
             buf = io.BytesIO()
             total = 0
@@ -443,21 +443,13 @@ class ImageEmbedder:
                     continue
                 total += len(chunk)
                 if total > self.settings.max_image_bytes:
-                    raise ValueError("Image payload exceeds maximum size")
+                    raise InputLimitExceeded("Image payload exceeds maximum size")
                 buf.write(chunk)
 
             return buf.getvalue()
 
     def _decode_base64(self, image_base64: str) -> bytes:
-        try:
-            # validate=True rejects non-base64 characters instead of silently ignoring them.
-            data = base64.b64decode(image_base64, validate=True)
-        except (binascii.Error, ValueError) as exc:
-            raise ValueError("Invalid base64 image payload") from exc
-
-        if len(data) > self.settings.max_image_bytes:
-            raise ValueError("Image payload exceeds maximum size")
-        return data
+        return decode_base64(image_base64, self.settings.max_image_bytes)
 
     def _resolve_image_bytes(self, image_url: Optional[str], image_base64: Optional[str]) -> bytes:
         if image_base64:
@@ -466,11 +458,11 @@ class ImageEmbedder:
             return self._fetch_image_bytes(image_url)
         raise ValueError("image_url or image_base64 is required")
 
-    def _image_from_bytes(self, data: bytes) -> Image.Image:
-        try:
-            return Image.open(io.BytesIO(data)).convert("RGB")
-        except Exception as exc:
-            raise ValueError("Unable to decode image bytes") from exc
+    def _image_from_bytes(
+        self, data: bytes, *, target_size: int | None = None,
+        budget: BatchInputBudget | None = None,
+    ) -> Image.Image:
+        return load_rgb(data, self.settings.max_image_pixels, target_size=target_size, budget=budget)
 
     def _load_image(self, image_url: Optional[str], image_base64: Optional[str]) -> Image.Image:
         data = self._resolve_image_bytes(image_url, image_base64)
@@ -549,8 +541,17 @@ class ImageEmbedder:
         else:
             cache_key = ""
 
+        image = self._image_from_bytes(image_bytes, target_size=target_size)
+        try:
+            return self._embed_image(spec, target_size, normalize, image, cache_key)
+        finally:
+            image.close()
+
+    def _embed_image(
+        self, spec: ModelSpec, target_size: int, normalize: bool,
+        image: Image.Image, cache_key: str,
+    ) -> EmbedResult:
         model_obj, processor, device = self._load_model(spec)
-        image = self._image_from_bytes(image_bytes)
 
         if device.startswith("ov:"):
             # OpenVINO path: processor returns numpy tensors; compiled model
@@ -620,6 +621,15 @@ class ImageEmbedder:
         if not items:
             return []
 
+        # Close decoded images even when model loading or preprocessing fails.
+        with ExitStack() as images:
+            return self._embed_batch(spec, target_size, items, images)
+
+    def _embed_batch(
+        self, spec: ModelSpec, target_size: int, items: List[BatchItem], images: ExitStack,
+    ) -> List[Union[EmbedResult, Exception]]:
+        budget = BatchInputBudget(self.settings.max_batch_image_bytes, self.settings.max_batch_image_pixels)
+
         # Pre-check cache: items already computed don't need model inference.
         outcomes: List[Any] = [None] * len(items)
         uncached_indices: List[int] = []
@@ -629,6 +639,7 @@ class ImageEmbedder:
             for i, item in enumerate(items):
                 try:
                     image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                    budget.add_bytes(len(image_bytes))
                 except Exception as exc:
                     outcomes[i] = exc
                     continue
@@ -647,6 +658,7 @@ class ImageEmbedder:
             for i, item in enumerate(items):
                 try:
                     image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                    budget.add_bytes(len(image_bytes))
                 except Exception as exc:
                     outcomes[i] = exc
                     continue
@@ -658,7 +670,6 @@ class ImageEmbedder:
             return outcomes
 
         uncached_items = [payload[0] for payload in uncached_payloads]
-        model_obj, processor, device = self._load_model(spec)
 
         # Decode images, capturing per-item errors so one bad image
         # doesn't abort the whole batch.
@@ -666,7 +677,9 @@ class ImageEmbedder:
         load_errors: List[Optional[Exception]] = []
         for _item, image_bytes in uncached_payloads:
             try:
-                pil_images.append(self._image_from_bytes(image_bytes))
+                image = self._image_from_bytes(image_bytes, target_size=target_size, budget=budget)
+                images.callback(image.close)
+                pil_images.append(image)
                 load_errors.append(None)
             except Exception as exc:
                 pil_images.append(None)
@@ -677,8 +690,10 @@ class ImageEmbedder:
 
         # Partial outcomes for uncached items (index within uncached_items).
         uncached_outcomes: List[Any] = list(load_errors)
+        device: str | None = None
 
         if valid_images:
+            model_obj, processor, device = self._load_model(spec)
             if device.startswith("ov:"):
                 # OpenVINO path: batch all valid images in one compiled model call.
                 inputs = processor(  # type: ignore[operator]
@@ -746,7 +761,7 @@ class ImageEmbedder:
 
         # Cleanup tracking — count successful embeds.
         n_success = sum(1 for o in outcomes if not isinstance(o, Exception) and o is not None)
-        if self.settings.embed_cleanup_every_n > 0 and n_success > 0:
+        if device is not None and self.settings.embed_cleanup_every_n > 0 and n_success > 0:
             n = self.settings.embed_cleanup_every_n
             with self._embed_count_lock:
                 before = self._embed_count

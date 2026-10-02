@@ -451,7 +451,15 @@ Single requests, `/embed-batch`, and batch-window dispatch share the same execut
 
 The optional batch window uses the same bounded admission budget as `/embed-batch`. It reserves one computation slot before collecting compatible requests, so `in_flight` includes collection and shared-lock acquisition as well as running inference. Waiting batch members each count toward `IMAGE_EMBEDDER_MAX_QUEUE`; health and queue headers include them. New groups fail with HTTP 429 when the waiting room is full. With a zero waiting limit, compatible requests can still join an admitted collecting group up to `EMBED_BATCH_MAX_SIZE`, but another group cannot wait for capacity.
 
-Queue deadlines start at admission, before collection; a queued group's members inherit its first member's deadline. Once admitted, the collection window starts and cannot be extended by later joins. Cancellation removes pending membership, and dispatch rebuilds the payload from live clients after shared-lock acquisition. With concurrency C, batch maximum B, and waiting maximum Q, admitted single-image jobs and explicit-batch requests are bounded by C × B + Q. An explicit-batch request can contain multiple images; this is a request-count limit, not a byte-memory limit. HTTP body and decoded-image memory budgets remain the next follow-up.
+Queue deadlines start at admission, before collection; a queued group's members inherit its first member's deadline. Once admitted, the collection window starts and cannot be extended by later joins. Cancellation removes pending membership, and dispatch rebuilds the payload from live clients after shared-lock acquisition. With concurrency C, batch maximum B, and waiting maximum Q, admitted single-image jobs and explicit-batch requests are bounded by C × B + Q. An explicit-batch request can contain multiple images; request-count limits work alongside the input budgets below.
+
+### Input Size and Pixel Budgets
+
+HTTP bodies have a 16 MiB ceiling, counting received bytes even without Content-Length. Oversized bodies return HTTP 413 before JSON parsing completes. Known oversized inline images/batches are refused before queue admission. Starlette's header-based body refusal may use plain text; image refusals use JSON `detail`. Successful response schemas are unchanged.
+
+Each compressed image remains limited to 10 MiB. Source and projected CLIP pre-crop resize each allow at most 16,000,000 pixels; this also refuses extreme aspect ratios that would create a large resize intermediate. A batch resolves at most 32 MiB of compressed image data, including cache hits, and retains uncached images within a 32,000,000-pixel budget counting source plus projected resize. Items refused during worker processing remain ordered per-item batch errors; a coalesced single request receives HTTP 413 for its own refused image. Decoded images close after work or errors, including when the HTTP caller has already timed out.
+
+All ceilings must be positive integers. Configure them in `[image]` or the environment variables below. The default raw body ceiling permits one near-10-MiB base64 image, but large inline batches may need smaller images or a deliberately raised ceiling. These limits do not impose an exact RSS quota: size model/tensor memory and configure server/proxy concurrency and container memory limits, especially with multiple workers. See the [input budget design and outcome](docs/input-memory-budgets.md).
 
 ## Environment Variables
 
@@ -462,7 +470,11 @@ Queue deadlines start at admission, before collection; a queued group's members 
 - `DEVICE` (default `auto` -> cuda if available, else cpu)
 - `ALLOW_REMOTE_IMAGE_URLS` (default `false`)
 - `ALLOWED_REMOTE_IMAGE_HOSTS` (comma-separated host allowlist)
-- `MAX_IMAGE_BYTES` (default `10485760` - 10MB)
+- `MAX_IMAGE_BYTES` (default `10485760` - 10 MiB compressed image)
+- `MAX_REQUEST_BODY_BYTES` (default `16777216` - 16 MiB raw HTTP body)
+- `MAX_IMAGE_PIXELS` (default `16000000` - source and pre-crop resize ceilings)
+- `MAX_BATCH_IMAGE_BYTES` (default `33554432` - 32 MiB aggregate compressed inputs)
+- `MAX_BATCH_IMAGE_PIXELS` (default `32000000` - aggregate source + pre-crop resize pixels)
 - `REQUEST_TIMEOUT_SECONDS` (default `15`)
 
 ### Concurrency & Queue
@@ -516,6 +528,8 @@ pytest
 
 ## Engineering Decisions
 
+- [Input body and image allocation design and validation](docs/input-memory-budgets.md)
+- [Open PR 33 local implementation and validation](docs/pr-33-local-validation.md)
 - [Inference execution design and validation](docs/inference-execution.md)
 - [Bounded batch admission design and validation](docs/bounded-batch-admission.md)
 - [Local PR 28 implementation and validation](docs/pr-28-local-validation.md)

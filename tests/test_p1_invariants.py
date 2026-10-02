@@ -19,6 +19,7 @@ import types
 import httpx
 import numpy as np
 import pytest
+from PIL import Image
 from asgi_lifespan import LifespanManager
 from fastapi.testclient import TestClient
 
@@ -169,7 +170,7 @@ def test_embed_openvino_wrong_output_shape_single_raises(monkeypatch):
     embedder = ImageEmbedder(settings=Settings())
     monkeypatch.setattr(embedder, "_load_model", lambda _s: (_model_3d, processor, "ov:CPU"))
     monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda *_a, **_k: b"img")
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d, **_kwargs: Image.new("RGB", (1, 1)))
 
     with pytest.raises(ValueError, match="unexpected output shape"):
         embedder.embed(
@@ -188,7 +189,7 @@ def test_embed_openvino_correct_shape_single_succeeds(monkeypatch):
     embedder = ImageEmbedder(settings=Settings())
     monkeypatch.setattr(embedder, "_load_model", lambda _s: (_model_ok, processor, "ov:CPU"))
     monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda *_a, **_k: b"img")
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d, **_kwargs: Image.new("RGB", (1, 1)))
 
     embedding, dims, _, _, _ = embedder.embed(
         image_url=None, image_base64="AA==",
@@ -212,7 +213,7 @@ def test_embed_batch_openvino_wrong_output_shape_raises(monkeypatch):
 
     items = [BatchItem(None, "AA==", False), BatchItem(None, "BB==", False)]
     monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda _u, b64: b64.encode())
-    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d: object())
+    monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d, **_kwargs: Image.new("RGB", (1, 1)))
 
     with pytest.raises(ValueError, match="unexpected output shape"):
         embedder.embed_batch(spec, spec.image_size, items)
@@ -390,7 +391,7 @@ def test_embed_route_wrong_model_output_dims_returns_400(monkeypatch):
     real_embedder = ImageEmbedder(settings=settings)
     monkeypatch.setattr(real_embedder, "_load_model", lambda _s: (_model_wrong_dims, processor, "ov:CPU"))
     monkeypatch.setattr(real_embedder, "_resolve_image_bytes", lambda *_a, **_k: b"img")
-    monkeypatch.setattr(real_embedder, "_image_from_bytes", lambda _d: object())
+    monkeypatch.setattr(real_embedder, "_image_from_bytes", lambda _d, **_kwargs: Image.new("RGB", (1, 1)))
 
     app = create_app(embedder=real_embedder, settings=_no_auth_settings())
     client = TestClient(app, raise_server_exceptions=False)

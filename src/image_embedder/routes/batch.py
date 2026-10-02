@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
 from ..embedder import BatchItem, ImageEmbedder
 from ..execution import ExecutionClosedError, InferenceExecutor
+from ..input_limits import InputLimitExceeded, validate_inline_images
 from ..models import (
     EmbedBatchItemResult,
     EmbedBatchRequest,
@@ -37,6 +38,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                 status_code=413,
                 detail=f"Batch exceeds maximum of {max_items} items",
             )
+
+        try:
+            validate_inline_images((item.image_base64 for item in payload.items), settings, batch=True)
+        except InputLimitExceeded as exc:
+            raise HTTPException(status_code=413, detail=str(exc)) from exc
 
         spec = embedder_instance.resolve_model(payload.model)
         if payload.image_size is not None and payload.image_size != spec.image_size:

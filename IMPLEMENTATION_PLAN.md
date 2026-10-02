@@ -6,6 +6,8 @@ Status: the P0/P1 work below was implemented in v0.0.1.3-alpha. This document is
 
 The admission repair is documented separately in [bounded batch admission](docs/bounded-batch-admission.md), including queue semantics, ownership transfer, alternatives, and local validation. The [PR 42 record](docs/pr-42-local-validation.md) covers the locally implemented checkout update.
 
+The subsequent [backend contracts](docs/backend-build-recommendation.md) and [input memory budgets](docs/input-memory-budgets.md) are implemented with separate design/outcome records. The [PR 33 record](docs/pr-33-local-validation.md) covers the locally tested pytest-cov update. The next recommendation is remote destination validation across redirects and DNS changes, followed by concurrent body-parsing/deployment budgets; priorities are maintained in the recommendation stack.
+
 Fix the correctness issues found in the embedding pipeline and close the test gaps that currently allow mathematically invalid or misleading responses to pass.
 
 ## Priority Summary

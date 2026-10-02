@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from starlette.middleware.body_limit import RequestBodyLimitMiddleware
 
 from . import __version__
 from .batch import BatchWindow
@@ -79,8 +80,17 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
     app.state.settings = settings
     app.state.logger = logger
 
+    # Keep the receive-limit exception inside SlowAPI's BaseHTTP wrapper, so
+    # FastAPI preserves HTTP 413 instead of translating an exception group to 400.
+    app.add_middleware(RequestBodyLimitMiddleware, max_body_size=settings.max_request_body_bytes)
     app.add_middleware(SlowAPIMiddleware)
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    def rate_limit_handler(request: Request, exc: Exception):
+        if not isinstance(exc, RateLimitExceeded):
+            raise exc
+        return _rate_limit_exceeded_handler(request, exc)
+
+    app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
     @app.exception_handler(Exception)
     async def global_exception_handler(request: Request, exc: Exception):
