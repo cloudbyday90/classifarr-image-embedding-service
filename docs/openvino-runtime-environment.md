@@ -28,4 +28,4 @@ Both final shipped-script smokes passed dependency consistency, the inventory gu
 
 ## Next recommendation
 
-Include duplicate-inventory checks and exact installed-version checks in the planned hash-locked backend update policy. First complete the [capacity measurements](recommendation-stack.md) selected from the observed 4.40 GiB OpenVINO cold-export peak. Preserve reviewed source revisions, artifact contracts and strict auditing during dependency/base updates.
+Include duplicate-inventory checks and exact installed-version checks in the next hash-locked backend update policy. The subsequent [capacity measurements](capacity-calibration.md) exercise maximum batches and both resident models on CPU/OpenVINO CPU. Preserve reviewed source revisions, artifact contracts and strict auditing during dependency/base updates; remaining priorities are in the [recommendation stack](recommendation-stack.md).

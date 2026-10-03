@@ -389,7 +389,22 @@ docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
   classifarr-image-embedder:cpu-smoke scripts/production_model_probe.py --backend cpu --model ViT-L-14
 ```
 
-Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. Representative maximum batches, multiple loaded models and accelerator VRAM still require capacity measurements. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
+Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. The subsequent [capacity calibration](docs/capacity-calibration.md) exercises both resident models, maximum batches and detached owners on CPU/OpenVINO CPU; accelerator VRAM and every concurrent-input combination remain hardware/workload gates. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
+
+### Capacity calibration
+
+After the verified asset prefetch above, run the separate bounded probe without additional reference-model owners:
+
+```bash
+docker run --rm --network none --no-healthcheck \
+  --cap-drop ALL --security-opt no-new-privileges \
+  --memory 4g --memory-swap 4g -v classifarr-model-contracts:/app/.cache \
+  -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 --entrypoint python \
+  classifarr-image-embedder:cpu-smoke scripts/capacity_probe.py \
+  --backend cpu --scenario api --image-edge 974 --repeats 1
+```
+
+Run `serial`, `overlap`, `api` and `detached` in separate fresh containers. For OpenVINO use its image, `--backend openvino` and an 8 GiB/no-swap limit; add `--cold-ir` to measure private export without invalidating the original cache. Cold initialization is serialized within each process; cached inference retains its direct path. The CLI verifies the loaded backend and emits flushed JSONL phase records with process/cgroup memory and event counters. The manual **Production Capacity Calibration** workflow retains those records; routine tests remain offline and small. Measurements are workload observations, so retain one worker and current admission limits until target-host evidence supports tuning.
 
 ## API
 ### GET /health
@@ -433,7 +448,7 @@ Request body:
   "image_url": "https://example.com/poster.jpg",
   "model": "ViT-L-14",
   "normalize": true,
-  "image_size": 512
+  "image_size": 224
 }
 ```
 
@@ -444,7 +459,7 @@ Response body:
   "dims": 768,
   "provider": "local",
   "model": "ViT-L-14",
-  "image_size": 512
+  "image_size": 224
 }
 ```
 
@@ -464,7 +479,9 @@ Response body:
 
 ### Request Deadlines and Shutdown
 
-Embedding requests return HTTP 504 when `REQUEST_TIMEOUT_SECONDS` expires. A worker already running continues to hold its concurrency slot until it finishes, because Python cannot forcibly stop an inference thread. `/health` and `X-Queue-In-Flight` include this work after the response has been sent. With `IMAGE_EMBEDDER_MAX_QUEUE=0`, retries receive HTTP 429 while every slot is occupied. Requests that expire or are canceled while waiting for admission are removed before inference starts.
+Embedding requests return HTTP 504 when `EMBEDDING_TIMEOUT_SECONDS` expires, including queue wait and computation. The default is 45 seconds; `REQUEST_TIMEOUT_SECONDS` remains the remote-hop timeout, normally 15 seconds. Set the new environment variable or `[queue].embedding_timeout_seconds` to a positive finite duration, including fractional seconds. If the new setting is absent, an explicit legacy `REQUEST_TIMEOUT_SECONDS` environment value or a nondefault legacy TOML/constructor value preserves the previous embedding deadline. Align client/proxy deadlines with the application budget. See the [deadline design and migration](docs/embedding-deadlines.md).
+
+A worker already running continues to hold its concurrency slot until it finishes, because Python cannot forcibly stop an inference thread. `/health` and `X-Queue-In-Flight` include this work after the response has been sent. With `IMAGE_EMBEDDER_MAX_QUEUE=0`, retries receive HTTP 429 while every slot is occupied. Requests that expire or are canceled while waiting for admission are removed before inference starts.
 
 Single requests, `/embed-batch`, and batch-window dispatch share the same execution service. Shutdown closes admission (HTTP 503 for new work) and drains dispatched inference for up to `SHUTDOWN_TIMEOUT_SECONDS`. If the drain budget expires, the service logs the remaining work and skips shutdown memory cleanup. Uvicorn retains control of process signals. Configure Uvicorn's graceful-shutdown timeout and the container/process supervisor's stop timeout to allow request draining plus this application drain budget; a supervisor must enforce any hard stop for a stuck native inference thread.
 
@@ -508,7 +525,8 @@ At most three redirects are followed. Credentialed URLs, raw controls/backslashe
 - `MAX_IMAGE_PIXELS` (default `16000000` - source and pre-crop resize ceilings)
 - `MAX_BATCH_IMAGE_BYTES` (default `33554432` - 32 MiB aggregate compressed inputs)
 - `MAX_BATCH_IMAGE_PIXELS` (default `32000000` - aggregate source + pre-crop resize pixels)
-- `REQUEST_TIMEOUT_SECONDS` (default `15`)
+- `REQUEST_TIMEOUT_SECONDS` (remote-hop default `15`; explicit legacy values also apply to embedding deadlines if the new setting is absent)
+- `EMBEDDING_TIMEOUT_SECONDS` (embedding response default `45`; positive finite seconds, including fractions)
 
 ### Concurrency & Queue
 - `IMAGE_EMBEDDER_CONCURRENCY` (default `1`)
@@ -571,6 +589,10 @@ pytest
 
 ## Engineering Decisions
 
+- [Production capacity calibration and operating limits](docs/capacity-calibration.md)
+- [Embedding deadline design and migration](docs/embedding-deadlines.md)
+- [Process-owned model initialization](docs/model-initialization.md)
+- [Open PR 45 local implementation and validation](docs/pr-45-local-validation.md)
 - [Aggregate HTTP ingress, deployment sizing and validation](docs/aggregate-ingress.md)
 - [Open PR 51 local implementation and validation](docs/pr-51-local-validation.md)
 

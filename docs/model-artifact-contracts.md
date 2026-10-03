@@ -68,4 +68,4 @@ Change-scoped PR/default-branch checks, a weekly schedule and manual dispatch bu
 
 ## Next work
 
-Next calibrate maximum-batch and multi-model cold/warm capacity, including all owners and accelerator VRAM, using these pinned fixtures. Keep one worker and existing admission budgets until that evidence supports a change. Follow with hash-locked dependency profiles, remaining CI refs and total upload/download deadlines. Numerical or accelerator compatibility beyond tested devices remains a separate hardware gate.
+The subsequent [capacity calibration](capacity-calibration.md) exercises both resident models, maximum batches, cold initialization and detached owners on CPU/OpenVINO CPU, with separate deadline and initialization fixes. Its measurements supplement this document's historical small-batch evidence. Keep one worker and existing admission budgets. Next complete hash-locked dependency profiles and their update policy, followed by remaining CI refs and total upload/download deadlines. Accelerator VRAM and compatibility beyond tested devices remain separate hardware gates.

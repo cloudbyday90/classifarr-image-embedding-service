@@ -10,6 +10,7 @@ from pathlib import Path
 
 from .ir_cache import IRCache
 from .model_catalog import ModelSpec
+from .model_initialization import serialized_initialization
 from .model_loading import load_processor, load_vision_model
 
 
@@ -31,6 +32,7 @@ def ir_contract(spec: ModelSpec) -> dict:
     }
 
 
+@serialized_initialization
 def load_openvino_model(spec: ModelSpec, device: str):
     import openvino as ov
 

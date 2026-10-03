@@ -270,7 +270,7 @@ async def test_http_burst_is_bounded_and_pending_is_visible_in_headers_and_healt
             max_http_requests=32,  # Exercise inference admission independently of ingress.
             embed_max_wait_seconds=2,
             rate_limit_embed="1000/minute",
-            request_timeout_seconds=2,
+            embedding_timeout_seconds=2,
             cleanup_on_shutdown=False,
         ),
     )
@@ -332,7 +332,7 @@ async def test_http_queue_deadline_maps_504_without_dispatching_expired_payload(
             embed_concurrency=1,
             embed_max_queue=1,
             embed_max_wait_seconds=0.02,
-            request_timeout_seconds=2,
+            embedding_timeout_seconds=2,
             cleanup_on_shutdown=False,
         ),
     )

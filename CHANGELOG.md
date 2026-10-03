@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Modular offline capacity probes with process/cgroup memory, batch parity, authenticated deadline and detached-owner checks; a manual CPU/OpenVINO calibration workflow and separate design/outcome records.
 - Modular pinned model catalog, verified source loading and atomic versioned OpenVINO artifact services, with separate model/PR 41 design records.
 - Offline publisher preprocessing and cache-integrity regressions, plus opt-in production-weight probes and change-scoped/weekly CPU/OpenVINO validation CI.
 - Modular application-wide HTTP ingress admission, shared configured server/healthcheck entrypoints, and separate ingress/PR 51 design and validation records.
@@ -18,6 +19,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Separate the embedding HTTP deadline from the remote-hop timeout: default to 45 seconds for embeddings while preserving explicit legacy overrides and the 15-second remote default.
+- Apply open PR #45 locally by raising the Pydantic minimum to the tested stable 2.13.5 release.
 - Raise the OpenVINO Compose default to a tunable 8 GiB/no-swap ceiling after measured large-model cold export exceeded 4 GiB; CPU/CUDA retain their existing default.
 - Load supported CLIP models from immutable publisher snapshots using explicit image-only PIL preprocessing; compile saved FP32 OpenVINO IR with the accuracy execution hint on first use and reload.
 - Apply open PR #41 locally by updating the external Gitleaks action to verified Node 24 v3.0.0, pinned to its immutable commit.
@@ -33,6 +36,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Timed-out inference remains visible in queue telemetry until its worker finishes; expired queue admissions are removed.
 
 ### Fixed
+- Serialize cold model initialization across aliases and owners within each process after reproducing a concurrent Transformers import failure; cached models retain their direct return path.
 - Remove inherited OpenVINO Python-environment files before copying the verified builder environment; native smoke checks reject duplicate package metadata.
 - Reject image expansion before RGB/CLIP preprocessing and close decoded images on success, failures, and completed detached inference.
 - Repaired the missing CUDA base and OpenVINO's collision with the Intel base's existing non-root identity.

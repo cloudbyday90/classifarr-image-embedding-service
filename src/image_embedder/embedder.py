@@ -18,6 +18,7 @@ from .config import Settings
 from .image_input import decode_base64, load_rgb
 from .input_limits import BatchInputBudget
 from .model_catalog import MODEL_CATALOG, ModelSpec
+from .model_initialization import initialization_guard
 from .model_loading import load_processor, load_vision_model
 from .openvino_models import load_openvino_model
 from .remote_fetch import fetch_remote_image
@@ -272,7 +273,7 @@ class ImageEmbedder:
                 lock = threading.Lock()
                 self._model_locks[spec.name] = lock
 
-        with lock:
+        with lock, initialization_guard():
             if spec.name in self._models:
                 return self._models[spec.name]
 

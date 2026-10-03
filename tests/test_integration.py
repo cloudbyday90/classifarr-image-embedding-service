@@ -20,11 +20,10 @@ import time
 import httpx
 import pytest
 from asgi_lifespan import LifespanManager
-
 from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
+
 from image_embedder.config import Settings
 from image_embedder.main import create_app
-
 
 # ── Shared helpers ────────────────────────────────────────────────────────────
 
@@ -247,7 +246,7 @@ async def test_request_timeout_returns_504():
     """asyncio.wait_for raises TimeoutError → HTTP 504 with queue headers."""
     # Embedder sleeps 0.5s; timeout is 0.1s — reliably triggers asyncio.TimeoutError.
     settings = _no_auth_settings()
-    settings.request_timeout_seconds = 0.1  # type: ignore[assignment]
+    settings.embedding_timeout_seconds = 0.1
     app = create_app(embedder=SlowEmbedder(delay=0.5), settings=settings)
     async with LifespanManager(app):
         transport = httpx.ASGITransport(app=app)
@@ -269,7 +268,7 @@ async def test_queue_full_returns_429():
         embed_max_queue=0,
         embed_max_wait_seconds=0,
     )
-    settings.request_timeout_seconds = 10  # type: ignore[assignment]
+    settings.embedding_timeout_seconds = 10
     app = create_app(embedder=SlowEmbedder(delay=1.0, started=started), settings=settings)
     async with LifespanManager(app):
         transport = httpx.ASGITransport(app=app)
@@ -362,7 +361,7 @@ async def test_concurrent_requests_all_succeed():
         embed_max_wait_seconds=5,
         rate_limit_embed="100/minute",
     )
-    settings.request_timeout_seconds = 10  # type: ignore[assignment]
+    settings.embedding_timeout_seconds = 10
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
         transport = httpx.ASGITransport(app=app)

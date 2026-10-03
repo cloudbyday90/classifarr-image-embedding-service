@@ -70,7 +70,7 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
             try:
                 embed_results = await asyncio.wait_for(
                     executor.run(embedder_instance.embed_batch, spec, target_size, batch_items),
-                    timeout=settings.request_timeout_seconds,
+                    timeout=settings.embedding_timeout_seconds,
                 )
                 if len(embed_results) != len(batch_items):
                     raise RuntimeError(
@@ -97,11 +97,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                 ) from exc
             except asyncio.TimeoutError as exc:
                 logger.warning(
-                    f"Batch embedding timed out after {settings.request_timeout_seconds}s"
+                    f"Batch embedding timed out after {settings.embedding_timeout_seconds:g}s"
                 )
                 raise HTTPException(
                     status_code=504,
-                    detail=f"Embedding request timed out after {settings.request_timeout_seconds}s",
+                    detail=f"Embedding request timed out after {settings.embedding_timeout_seconds:g}s",
                     headers=_queue_headers(queue),
                 ) from exc
             except Exception as exc:

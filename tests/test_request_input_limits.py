@@ -203,7 +203,7 @@ async def test_coalesced_pixel_budget_preserves_single_response_mapping(monkeypa
 @pytest.mark.anyio
 async def test_timed_out_worker_keeps_image_until_native_work_finishes(monkeypatch):
     settings = _no_auth_settings(
-        request_timeout_seconds=0.05, cleanup_on_shutdown=False, embed_cache_size=0
+        embedding_timeout_seconds=0.05, cleanup_on_shutdown=False, embed_cache_size=0
     )
     embedder = ImageEmbedder(settings)
     started, release = threading.Event(), threading.Event()

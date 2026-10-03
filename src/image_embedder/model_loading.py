@@ -9,6 +9,7 @@ from pathlib import Path
 
 from .artifact_integrity import sha256_file
 from .model_catalog import ModelSpec
+from .model_initialization import serialized_initialization
 
 
 def verified_asset(spec: ModelSpec, filename: str) -> Path:
@@ -32,6 +33,7 @@ def verified_asset(spec: ModelSpec, filename: str) -> Path:
     return path
 
 
+@serialized_initialization
 def load_processor(spec: ModelSpec):
     from transformers import CLIPImageProcessorPil
 
@@ -41,6 +43,7 @@ def load_processor(spec: ModelSpec):
     )
 
 
+@serialized_initialization
 def load_vision_model(spec: ModelSpec):
     from transformers import CLIPVisionModelWithProjection
 

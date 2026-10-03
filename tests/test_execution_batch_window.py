@@ -103,7 +103,7 @@ async def test_coalesced_http_timeouts_keep_capacity_shared_with_explicit_batch_
             embed_batch_max_size=2,
             embed_concurrency=1,
             embed_max_queue=0,
-            request_timeout_seconds=0.1,
+            embedding_timeout_seconds=0.1,
             cleanup_on_shutdown=False,
         ),
     )

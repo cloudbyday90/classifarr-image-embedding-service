@@ -38,6 +38,9 @@ max_batch_image_pixels = 32000000 # aggregate source + pre-crop resize pixels
 request_timeout_seconds = 15
 
 [queue]
+# Embedding HTTP deadline includes queue wait and computation; remote hops use [image].
+# Default is 45 seconds; uncomment to override. Custom legacy timeouts still apply.
+# embedding_timeout_seconds = 45
 concurrency = 1
 max_queue = 100  # global waiting requests, including individual batch-window members; 0 = no waiting
 max_wait_seconds = 60

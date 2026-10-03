@@ -78,7 +78,7 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         try:
             embedding, dims, provider, model_name, image_size = await asyncio.wait_for(
                 _do_embed(),
-                timeout=settings.request_timeout_seconds,
+                timeout=settings.embedding_timeout_seconds,
             )
         except ExecutionClosedError as exc:
             raise HTTPException(
@@ -100,11 +100,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
             ) from exc
         except asyncio.TimeoutError as exc:
             logger.warning(
-                f"Embedding request timed out after {settings.request_timeout_seconds}s"
+                f"Embedding request timed out after {settings.embedding_timeout_seconds:g}s"
             )
             raise HTTPException(
                 status_code=504,
-                detail=f"Embedding request timed out after {settings.request_timeout_seconds}s",
+                detail=f"Embedding request timed out after {settings.embedding_timeout_seconds:g}s",
                 headers=_queue_headers(queue),
             ) from exc
         except InputLimitExceeded as exc:

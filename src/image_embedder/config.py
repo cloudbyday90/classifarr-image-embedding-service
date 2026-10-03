@@ -6,6 +6,8 @@ import os
 import tomllib
 from dataclasses import dataclass, field
 
+from .deadlines import embedding_deadline, positive_duration
+
 # ---------------------------------------------------------------------------
 # Optional TOML config file — loaded once at import time.
 # Docker Compose mounts ./config.toml into /app/config.toml read-only (0444).
@@ -68,6 +70,12 @@ def _input_limit(env_key: str, cfg_key: str, default: int) -> int:
     return _positive_int(env_key, "image", cfg_key, default)
 
 
+def _embedding_duration() -> float | None:
+    raw = os.getenv("EMBEDDING_TIMEOUT_SECONDS")
+    value = raw if raw is not None else _c("queue", "embedding_timeout_seconds")
+    return None if value is None else positive_duration(value)
+
+
 def _bool(env_key: str, section: str, cfg_key: str, default: bool) -> bool:
     v = os.getenv(env_key)
     if v is not None:
@@ -108,6 +116,7 @@ class Settings:
     max_batch_image_bytes: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_BYTES", "max_batch_image_bytes", 32 * 1024 * 1024))
     max_batch_image_pixels: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_PIXELS", "max_batch_image_pixels", 32_000_000))
     request_timeout_seconds: int = field(default_factory=lambda: _int("REQUEST_TIMEOUT_SECONDS", "image", "request_timeout_seconds", 15))
+    embedding_timeout_seconds: float | None = field(default_factory=_embedding_duration)
 
     embed_concurrency: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_CONCURRENCY", "queue", "concurrency", 1))
     embed_max_queue: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_MAX_QUEUE", "queue", "max_queue", 100))
@@ -151,6 +160,10 @@ class Settings:
     rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))
 
     def __post_init__(self) -> None:
+        self.embedding_timeout_seconds = embedding_deadline(
+            self.embedding_timeout_seconds, self.request_timeout_seconds,
+            legacy_env_set=os.getenv("REQUEST_TIMEOUT_SECONDS") is not None,
+        )
         for name in ("max_image_bytes", "max_request_body_bytes", "max_image_pixels",
                      "max_batch_image_bytes", "max_batch_image_pixels", "max_http_requests",
                      "server_workers", "server_concurrency", "server_backlog"):

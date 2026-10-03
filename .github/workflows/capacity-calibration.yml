@@ -1,0 +1,86 @@
+name: Production Capacity Calibration
+
+permissions: {}
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_edge:
+        description: Square fixture edge (974 approaches the default aggregate pixel ceiling)
+        required: true
+        default: '974'
+        type: string
+      embedding_deadline:
+        description: Finite embedding HTTP deadline in seconds
+        required: true
+        default: '45'
+        type: string
+
+jobs:
+  capacity:
+    name: Capacity (${{ matrix.backend }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: cpu
+            dockerfile: Dockerfile
+            memory: 4g
+          - backend: openvino
+            dockerfile: Dockerfile.openvino
+            memory: 8g
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build native image
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: docker build -f "$DOCKERFILE" -t capacity:local .
+      - name: Verify pinned publisher assets
+        env:
+          MEMORY_LIMIT: ${{ matrix.memory }}
+        run: >-
+          docker run --rm --no-healthcheck --memory "$MEMORY_LIMIT" --memory-swap "$MEMORY_LIMIT"
+          --cap-drop ALL --security-opt no-new-privileges
+          --mount type=volume,source=capacity-model-cache,target=/app/.cache
+          --entrypoint python capacity:local scripts/production_model_probe.py --download-only
+      - name: Measure fresh, cached, overlapping and detached owners
+        env:
+          BACKEND: ${{ matrix.backend }}
+          MEMORY_LIMIT: ${{ matrix.memory }}
+          IMAGE_EDGE: ${{ inputs.image_edge }}
+          EMBEDDING_DEADLINE: ${{ inputs.embedding_deadline }}
+        run: |
+          mkdir -p validation
+          chmod 0777 validation
+          for scenario in serial api overlap detached; do
+            extra=()
+            if [ "$BACKEND" = openvino ] && [ "$scenario" = overlap ]; then
+              extra+=(--cold-ir)
+            fi
+            docker run --rm --network none --no-healthcheck \
+              --memory "$MEMORY_LIMIT" --memory-swap "$MEMORY_LIMIT" \
+              --cap-drop ALL --security-opt no-new-privileges \
+              --mount type=volume,source=capacity-model-cache,target=/app/.cache \
+              --mount "type=bind,source=$PWD/validation,target=/results" \
+              -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 \
+              -e "EMBEDDING_TIMEOUT_SECONDS=$EMBEDDING_DEADLINE" \
+              --entrypoint python capacity:local scripts/capacity_probe.py \
+              --backend "$BACKEND" --scenario "$scenario" --image-edge "$IMAGE_EDGE" \
+              --repeats 1 "${extra[@]}" --output "/results/$BACKEND-$scenario.jsonl" \
+              > "validation/$BACKEND-$scenario.log" 2>&1
+          done
+      - name: Retain completed measurement records and failures
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: capacity-calibration-${{ matrix.backend }}
+          path: validation/*
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,3298 @@
+{
+  "assessment_date": "2026-10-02",
+  "baseline_commit": "15a39337b272ef4db11eccdf58f1116f7bbea2cb",
+  "baseline_harness_files": [
+    {
+      "path": "capacity_api.py",
+      "sha256": "a1f6e1e472091ff5612ff897713876d7de07721e5d4cd3fa98b8ff9eaff4947c"
+    },
+    {
+      "path": "capacity_metrics.py",
+      "sha256": "4fa6f56c80499660f634149778a50ec99d15315f75425449988e4bb7cc0a6754"
+    },
+    {
+      "path": "capacity_probe.py",
+      "sha256": "fbdac564114324eb87f7d5971ebebaa54aeec4daf379bf1cc4bfc6403fbef8f2"
+    },
+    {
+      "path": "capacity_workload.py",
+      "sha256": "3afe9b11bda8b02983c57c202528cdfd57d6815944477bd40806b33fd5690394"
+    }
+  ],
+  "cases": [
+    {
+      "api": {
+        "batch_http_seconds": 15.020690008997917,
+        "batch_http_status": 504,
+        "batch_size": 32,
+        "deadline_seconds": 15,
+        "in_flight_header_at_batch_response": "1",
+        "live_http_seconds": 0.2004414009861648,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "cpu-api-baseline",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 36589568,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 36593664,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 54312960,
+          "process_rss_bytes": 54312960
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:12fd44c700589853ef7bfc6c73c87d1cf9f45b62dd59735c52c226c24dc2768e",
+        "memory_limit_bytes": 4294967296,
+        "memory_swap_bytes": 4294967296,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "appuser"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 657309696,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1189154816,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 2755411968,
+        "process_rss_bytes": 2224906240
+      },
+      "journal_sha256": "f23b6e937cc0f3e8a2f860d5365b76ffc9b51895e875d8fef8c599c0d3f69a9d",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 361558016,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 13.219155565020628,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 385712128,
+          "sample_count": 130,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 361385984,
+            "process_rss_bytes": 384020480
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 380649472,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.002589284995338,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 386019328,
+          "sample_count": 10,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 380518400,
+            "process_rss_bytes": 386011136
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 424636416,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.6752214159932919,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 1628934144,
+          "sample_count": 18,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 420478976,
+            "process_rss_bytes": 1628934144
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 424636416,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.32907802300178446,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 1980649472,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 421052416,
+            "process_rss_bytes": 1980649472
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 424636416,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6449203659722116,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 1980649472,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 420900864,
+            "process_rss_bytes": 1980649472
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 626204672,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.8069462800049223,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 2189737984,
+          "sample_count": 39,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 624283648,
+            "process_rss_bytes": 2189352960
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1128325120,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 15.130589484004304,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 2693029888,
+          "sample_count": 151,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1125818368,
+            "process_rss_bytes": 2684624896
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1128325120,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.49084295402280986,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 2693029888,
+          "sample_count": 6,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 436596736,
+            "process_rss_bytes": 2003406848
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1128325120,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.4850426559860352,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 2693029888,
+          "sample_count": 16,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 558612480,
+            "process_rss_bytes": 2125000704
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1128325120,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 4.545726266980637,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 2693029888,
+          "sample_count": 46,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 974376960,
+            "process_rss_bytes": 2534334464
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1189154816,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 15.619996374007314,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 2755411968,
+          "sample_count": 156,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1188999168,
+            "process_rss_bytes": 2755342336
+          }
+        }
+      ],
+      "source_state": "baseline-15-second-deadline"
+    },
+    {
+      "api": {
+        "batch_http_seconds": 15.015901976003079,
+        "batch_http_status": 504,
+        "batch_size": 32,
+        "deadline_seconds": 15,
+        "in_flight_header_at_batch_response": "1",
+        "live_http_seconds": 0.2027475820214022,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "openvino-api",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 39260160,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 39260160,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52465664,
+          "process_rss_bytes": 52465664
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 4608290816,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 4608442368,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 4701945856,
+        "process_rss_bytes": 4701945856
+      },
+      "journal_sha256": "6e32559e59bae05bc4c42d69dc2d9aa25117a44920a08ac59e781f0569e4457f",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 2392039424,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 6.422352780995425,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 2466709504,
+          "sample_count": 63,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2392035328,
+            "process_rss_bytes": 2466709504
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2987991040,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.946716539998306,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3059019776,
+          "sample_count": 11,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2987991040,
+            "process_rss_bytes": 3059019776
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3424358400,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.588890209008241,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 3515338752,
+          "sample_count": 17,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3424358400,
+            "process_rss_bytes": 3515338752
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3549401088,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.3836025500204414,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3640152064,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3549401088,
+            "process_rss_bytes": 3640152064
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3549401088,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.49282491000485606,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 3640393728,
+          "sample_count": 6,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3549376512,
+            "process_rss_bytes": 3640393728
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3680821248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.122817027004203,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 3766550528,
+          "sample_count": 32,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3675566080,
+            "process_rss_bytes": 3766550528
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4142436352,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 13.472855122992769,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 4232916992,
+          "sample_count": 135,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4114518016,
+            "process_rss_bytes": 4202815488
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4142436352,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.13770877398201264,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 4232916992,
+          "sample_count": 3,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4108599296,
+            "process_rss_bytes": 4199284736
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4142436352,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.8485783610085491,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 4232916992,
+          "sample_count": 10,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4109115392,
+            "process_rss_bytes": 4199542784
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4344328192,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.7759210230142344,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 4433817600,
+          "sample_count": 39,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4344324096,
+            "process_rss_bytes": 4433817600
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4608442368,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 15.801793484017253,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 4701945856,
+          "sample_count": 157,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4608290816,
+            "process_rss_bytes": 4701945856
+          }
+        }
+      ],
+      "source_state": "baseline-15-second-deadline"
+    },
+    {
+      "api": null,
+      "case": "openvino-overlap-baseline",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": true,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 2,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 38023168,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 38023168,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 54243328,
+          "process_rss_bytes": 54243328
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "overlap",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 1,
+        "image_id": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": "ImportError",
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 3050442752,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 3050442752,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 4313788416,
+        "process_rss_bytes": 4313788416
+      },
+      "journal_sha256": "8ce5ebaf02b139b63d4d44846cb742231616f6650792e272a984c4ef1554fd52",
+      "loaded_devices": null,
+      "ownership": null,
+      "passed": false,
+      "phases": [],
+      "source_state": "baseline-without-process-initialization-guard"
+    },
+    {
+      "api": null,
+      "case": "cpu-overlap-final",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 2,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 41377792,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 41377792,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 53956608,
+          "process_rss_bytes": 53956608
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "overlap",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "memory_limit_bytes": 4294967296,
+        "memory_swap_bytes": 4294967296,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "appuser"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 532271104,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1111191552,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 2695532544,
+        "process_rss_bytes": 2118881280
+      },
+      "journal_sha256": "dcc151686e282c623d78cf2490cf5ec3c162615f2041ff3a3dfc0375a905d089",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 376942592,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 17.93473084497964,
+          "phase": "overlapping_model_loads",
+          "process_cumulative_peak_rss_bytes": 400084992,
+          "sample_count": 174,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 376455168,
+            "process_rss_bytes": 400068608
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 405123072,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.9765655979863368,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 1638653952,
+          "sample_count": 21,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 403984384,
+            "process_rss_bytes": 1638653952
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 405123072,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.9093645459797699,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 1980747776,
+          "sample_count": 10,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 404328448,
+            "process_rss_bytes": 1980747776
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 406536192,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.122915252984967,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 1985171456,
+          "sample_count": 13,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 406536192,
+            "process_rss_bytes": 1985171456
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 609222656,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 8.105749490001472,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 2192916480,
+          "sample_count": 81,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 609222656,
+            "process_rss_bytes": 2192752640
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1111191552,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 24.89856830998906,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 2695532544,
+          "sample_count": 247,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1110970368,
+            "process_rss_bytes": 2695389184
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1111191552,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.2930736650014296,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 2695532544,
+          "sample_count": 4,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 547782656,
+            "process_rss_bytes": 2133336064
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1111191552,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 2.141815923008835,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 2695532544,
+          "sample_count": 23,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 546205696,
+            "process_rss_bytes": 2132090880
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1111191552,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.832950979005545,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 2695532544,
+          "sample_count": 59,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 936366080,
+            "process_rss_bytes": 2505580544
+          }
+        }
+      ],
+      "source_state": "guarded-initialization"
+    },
+    {
+      "api": null,
+      "case": "openvino-overlap-final",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": true,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 2,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 36163584,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 36163584,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52187136,
+          "process_rss_bytes": 52187136
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "overlap",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 5184331776,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 5184344064,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 6770065408,
+        "process_rss_bytes": 6770065408
+      },
+      "journal_sha256": "7ce05119520f50928425ab93e5d9df1d8df92b56ac770b42b475636892abf623",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 3841142784,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 93.42740731401136,
+          "phase": "overlapping_model_loads",
+          "process_cumulative_peak_rss_bytes": 5411586048,
+          "sample_count": 758,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3841048576,
+            "process_rss_bytes": 5411586048
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4268187648,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 7.2472912759985775,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 5863165952,
+          "sample_count": 72,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4268056576,
+            "process_rss_bytes": 5863165952
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4394741760,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.8466380669851787,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 5993230336,
+          "sample_count": 10,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4394741760,
+            "process_rss_bytes": 5993230336
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4394872832,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6714492329920176,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 5993648128,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4394872832,
+            "process_rss_bytes": 5993648128
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4520185856,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 6.154488295986084,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 6119407616,
+          "sample_count": 62,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4520046592,
+            "process_rss_bytes": 6119407616
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4983562240,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 22.432951946975663,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 6568980480,
+          "sample_count": 223,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4980154368,
+            "process_rss_bytes": 6565416960
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4983562240,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.33411971997702494,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 6568980480,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4949872640,
+            "process_rss_bytes": 6535360512
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 4983562240,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.5017966020095628,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 6568980480,
+          "sample_count": 16,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4950372352,
+            "process_rss_bytes": 6536171520
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 5184344064,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.11133657200844,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 6770065408,
+          "sample_count": 52,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 5184204800,
+            "process_rss_bytes": 6770065408
+          }
+        }
+      ],
+      "source_state": "guarded-initialization-cold-private-ir"
+    },
+    {
+      "api": null,
+      "case": "cpu-detached-final",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34312192,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 34312192,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52068352,
+          "process_rss_bytes": 52068352
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "detached",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "memory_limit_bytes": 4294967296,
+        "memory_swap_bytes": 4294967296,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "appuser"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 572604416,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1103929344,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 2740731904,
+        "process_rss_bytes": 2208538624
+      },
+      "journal_sha256": "fd239a1f2c1b677d8b0a21b3d898c4bfa821e8ff4826516167daa3ac2c56c9a3",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "ownership": {
+        "detached": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "live_waiting": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 1
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "timings": {
+          "detached": {
+            "batch_size": 32,
+            "model": "ViT-L-14",
+            "native_and_validation_seconds": 17.91132534199278,
+            "submission_to_dispatch_seconds": 0.02343231698614545
+          },
+          "live": {
+            "batch_size": 32,
+            "model": "ViT-B-16",
+            "native_and_validation_seconds": 10.431568444997538,
+            "submission_to_dispatch_seconds": 17.922427059005713
+          }
+        }
+      },
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 304652288,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 6.3333050920045935,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 381267968,
+          "sample_count": 56,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 304652288,
+            "process_rss_bytes": 381251584
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 306159616,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6262144220236223,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 383639552,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 305737728,
+            "process_rss_bytes": 383639552
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 350781440,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.847327365016099,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 1629151232,
+          "sample_count": 20,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 346005504,
+            "process_rss_bytes": 1629151232
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 350781440,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.3528985649754759,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 1972609024,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 346832896,
+            "process_rss_bytes": 1972609024
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 350781440,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.5881397619959898,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 1972609024,
+          "sample_count": 7,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 346836992,
+            "process_rss_bytes": 1972609024
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 551333888,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.520664438983658,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 2186768384,
+          "sample_count": 56,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 515813376,
+            "process_rss_bytes": 2153095168
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1054420992,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 16.04759084500256,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 2690101248,
+          "sample_count": 160,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1054404608,
+            "process_rss_bytes": 2690039808
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1054420992,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.17158837101305835,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 2690101248,
+          "sample_count": 3,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 454594560,
+            "process_rss_bytes": 2091614208
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1054420992,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.1117997609835584,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 2690101248,
+          "sample_count": 12,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 483704832,
+            "process_rss_bytes": 2122297344
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1054420992,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 4.016347368014976,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 2690101248,
+          "sample_count": 41,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 852504576,
+            "process_rss_bytes": 2483691520
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1103929344,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 28.38222956401296,
+          "phase": "detached_owner_and_live_waiter",
+          "process_cumulative_peak_rss_bytes": 2740731904,
+          "sample_count": 282,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1103659008,
+            "process_rss_bytes": 2740498432
+          }
+        }
+      ],
+      "source_state": "guarded-initialization"
+    },
+    {
+      "api": null,
+      "case": "openvino-detached-final",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34803712,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 34803712,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52486144,
+          "process_rss_bytes": 52486144
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "detached",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 3038195712,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 3040276480,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 4699291648,
+        "process_rss_bytes": 4697522176
+      },
+      "journal_sha256": "6dfc8e0f5689a5a9a6d7b1f2553b597705062a39ac110737badf7ad19bf7a86c",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "ownership": {
+        "detached": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "live_waiting": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 1
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 1,
+          "max_wait_seconds": 300,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "timings": {
+          "detached": {
+            "batch_size": 32,
+            "model": "ViT-L-14",
+            "native_and_validation_seconds": 14.38691202699556,
+            "submission_to_dispatch_seconds": 0.02196698499028571
+          },
+          "live": {
+            "batch_size": 32,
+            "model": "ViT-B-16",
+            "native_and_validation_seconds": 3.389740635990165,
+            "submission_to_dispatch_seconds": 14.39794032802456
+          }
+        }
+      },
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 1167876096,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 6.4889720829960424,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 2473537536,
+          "sample_count": 62,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1167736832,
+            "process_rss_bytes": 2473537536
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1415680000,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.7544054989994038,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3053330432,
+          "sample_count": 9,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1415540736,
+            "process_rss_bytes": 3053330432
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1852940288,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.1313604770111851,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 3513573376,
+          "sample_count": 13,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1852940288,
+            "process_rss_bytes": 3513573376
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1977270272,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.3746145900222473,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3638571008,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1977257984,
+            "process_rss_bytes": 3638571008
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1977270272,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.511015109019354,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 3638824960,
+          "sample_count": 7,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1977253888,
+            "process_rss_bytes": 3638824960
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2109988864,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.277732073998777,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 3764559872,
+          "sample_count": 34,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2103701504,
+            "process_rss_bytes": 3764559872
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2571182080,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 18.196267482999247,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 4230647808,
+          "sample_count": 180,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2537218048,
+            "process_rss_bytes": 4197101568
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2571182080,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.35808575901319273,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 4230647808,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2537480192,
+            "process_rss_bytes": 4197101568
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2571182080,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.5011788220144808,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 4230647808,
+          "sample_count": 16,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2537512960,
+            "process_rss_bytes": 4197359616
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2777325568,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.868551420979202,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 4434952192,
+          "sample_count": 40,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2776145920,
+            "process_rss_bytes": 4434952192
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3040276480,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 17.81602976997965,
+          "phase": "detached_owner_and_live_waiter",
+          "process_cumulative_peak_rss_bytes": 4699291648,
+          "sample_count": 178,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3038195712,
+            "process_rss_bytes": 4697522176
+          }
+        }
+      ],
+      "source_state": "guarded-initialization"
+    },
+    {
+      "api": {
+        "batch_http_seconds": 30.04307406602311,
+        "batch_http_status": 504,
+        "batch_size": 32,
+        "deadline_seconds": 30.0,
+        "in_flight_header_at_batch_response": "1",
+        "live_http_seconds": 1.6942174830182921,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "cpu-api-final",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34123776,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 34123776,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52113408,
+          "process_rss_bytes": 52113408
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "memory_limit_bytes": 4294967296,
+        "memory_swap_bytes": 4294967296,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "appuser"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 593506304,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1125625856,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 2752114688,
+        "process_rss_bytes": 2221502464
+      },
+      "journal_sha256": "8a0d0ab21f6e48dbe54740254bbad8c221b758a36c278e4614b70a9eb688999b",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 306229248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.8725576539873146,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 381018112,
+          "sample_count": 55,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 306077696,
+            "process_rss_bytes": 381001728
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 307830784,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6293047850194853,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 382996480,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 307544064,
+            "process_rss_bytes": 382996480
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 351285248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.532337026001187,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 1630666752,
+          "sample_count": 17,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 347455488,
+            "process_rss_bytes": 1630666752
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 351285248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.4306366080127191,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 1974820864,
+          "sample_count": 6,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 347971584,
+            "process_rss_bytes": 1974820864
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 351285248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6219301979872398,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 1977372672,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 348233728,
+            "process_rss_bytes": 1977372672
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 552542208,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 4.75947486597579,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 2186850304,
+          "sample_count": 48,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 540090368,
+            "process_rss_bytes": 2172067840
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1055555584,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 21.000090007000836,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 2690166784,
+          "sample_count": 209,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1040596992,
+            "process_rss_bytes": 2673217536
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1055555584,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.3360642019833904,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 2690166784,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 364498944,
+            "process_rss_bytes": 2000379904
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1055555584,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.644339388993103,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 2690166784,
+          "sample_count": 18,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 476991488,
+            "process_rss_bytes": 2112327680
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1055555584,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.612238351022825,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 2690166784,
+          "sample_count": 57,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 906924032,
+            "process_rss_bytes": 2533363712
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1125625856,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 32.517807302006986,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 2752114688,
+          "sample_count": 320,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1124859904,
+            "process_rss_bytes": 2751725568
+          }
+        }
+      ],
+      "source_state": "trial-30-second-deadline"
+    },
+    {
+      "api": {
+        "batch_http_seconds": 20.131102706014644,
+        "batch_http_status": 200,
+        "batch_size": 32,
+        "deadline_seconds": 30.0,
+        "in_flight_header_at_batch_response": "0",
+        "live_http_seconds": 0.15056780001032166,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "openvino-api-final",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 30.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34967552,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 34967552,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52301824,
+          "process_rss_bytes": 52301824
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 3127922688,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 3128156160,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 4674363392,
+        "process_rss_bytes": 4674355200
+      },
+      "journal_sha256": "5c71e5efd04ef1d00c0dbb2de0247d207f878a609ac6f63d10716c0a114da9b1",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 1255026688,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 15.626157460006652,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 2471145472,
+          "sample_count": 151,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1254871040,
+            "process_rss_bytes": 2471145472
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1521811456,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.5299072490015533,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3050639360,
+          "sample_count": 36,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1521807360,
+            "process_rss_bytes": 3050639360
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1958207488,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.1649224910070188,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 3504234496,
+          "sample_count": 13,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1958207488,
+            "process_rss_bytes": 3504234496
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2083491840,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.39128970899037085,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3628965888,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2083491840,
+            "process_rss_bytes": 3628965888
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2083618816,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.5810872389993165,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 3629211648,
+          "sample_count": 7,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2083618816,
+            "process_rss_bytes": 3629211648
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2213863424,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.4014480680052657,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 3755335680,
+          "sample_count": 35,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2209603584,
+            "process_rss_bytes": 3755335680
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2675929088,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 13.593902221997268,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 4221337600,
+          "sample_count": 136,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2641965056,
+            "process_rss_bytes": 4187779072
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2675929088,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.12428840799839236,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 4221337600,
+          "sample_count": 3,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2642092032,
+            "process_rss_bytes": 4187779072
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2675929088,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.9260273410181981,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 4221337600,
+          "sample_count": 11,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2642616320,
+            "process_rss_bytes": 4188037120
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2866368512,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.803935984004056,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 4406173696,
+          "sample_count": 39,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2861379584,
+            "process_rss_bytes": 4406173696
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3128156160,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 21.144249976001447,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 4674363392,
+          "sample_count": 208,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3128025088,
+            "process_rss_bytes": 4674355200
+          }
+        }
+      ],
+      "source_state": "trial-30-second-deadline"
+    },
+    {
+      "api": {
+        "batch_http_seconds": 13.922575380012859,
+        "batch_http_status": 200,
+        "batch_size": 32,
+        "deadline_seconds": 45.0,
+        "in_flight_header_at_batch_response": "0",
+        "live_http_seconds": 0.14675343601265922,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "cpu-api-delivery",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34131968,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 34131968,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52101120,
+          "process_rss_bytes": 52101120
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:4ec992c91b83d60e7d0960860126c4bbc432d5cf63a6876d7b39bdaecb4ec5ae",
+        "memory_limit_bytes": 4294967296,
+        "memory_swap_bytes": 4294967296,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "appuser"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 583991296,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1116213248,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 2752647168,
+        "process_rss_bytes": 2222469120
+      },
+      "journal_sha256": "0b32f321756dd033639697ef2614a567d37d797a377797e4d0fd73e89d288a3b",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 305315840,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 5.624246286984999,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 381149184,
+          "sample_count": 54,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 305278976,
+            "process_rss_bytes": 381132800
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 306700288,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6950894839828834,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 383520768,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 306409472,
+            "process_rss_bytes": 383508480
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 348987392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.4985905989888124,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 1628504064,
+          "sample_count": 16,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 347107328,
+            "process_rss_bytes": 1628504064
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 348987392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.6097776149981655,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 1976586240,
+          "sample_count": 7,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 347627520,
+            "process_rss_bytes": 1976586240
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 348987392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.608478976006154,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 1976586240,
+          "sample_count": 8,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 347451392,
+            "process_rss_bytes": 1976586240
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 550203392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 4.8767159300041385,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 2187214848,
+          "sample_count": 50,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 549953536,
+            "process_rss_bytes": 2187034624
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1052852224,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 15.228547325008549,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 2690195456,
+          "sample_count": 152,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1052499968,
+            "process_rss_bytes": 2689982464
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1052852224,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.22003007199964486,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 2690195456,
+          "sample_count": 4,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 453021696,
+            "process_rss_bytes": 2091864064
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1052852224,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.038917907018913,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 2690195456,
+          "sample_count": 12,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 487616512,
+            "process_rss_bytes": 2122391552
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1052852224,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 4.124984752008459,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 2690195456,
+          "sample_count": 42,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 875253760,
+            "process_rss_bytes": 2501410816
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1116213248,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 14.561695666023297,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 2752647168,
+          "sample_count": 144,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1076592640,
+            "process_rss_bytes": 2699829248
+          }
+        }
+      ],
+      "source_state": "delivery-default-45-second-deadline"
+    },
+    {
+      "api": {
+        "batch_http_seconds": 12.785776065982645,
+        "batch_http_status": 200,
+        "batch_size": 32,
+        "deadline_seconds": 45.0,
+        "in_flight_header_at_batch_response": "0",
+        "live_http_seconds": 0.1767794000043068,
+        "live_http_status": 200,
+        "model": "ViT-L-14",
+        "oversized_status": 413,
+        "queue_after_batch_response": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "unauthenticated_status": 401
+      },
+      "case": "openvino-api-delivery",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 34267136,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 34267136,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "process_peak_rss_bytes": 52449280,
+          "process_rss_bytes": 52449280
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "api",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "container": {
+        "exit_code": 0,
+        "image_id": "sha256:00c862b627bc8423bcdc5e0a112627f024d10b447426b86a03aebd3572fa5540",
+        "memory_limit_bytes": 8589934592,
+        "memory_swap_bytes": 8589934592,
+        "network_mode": "none",
+        "oom_killed": false,
+        "user": "1001"
+      },
+      "failure_type": null,
+      "final_memory": {
+        "cgroup": {
+          "current_bytes": 3020189696,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 3020472320,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "process_peak_rss_bytes": 4683071488,
+        "process_rss_bytes": 4683071488
+      },
+      "journal_sha256": "255b216ea1cbb540989e8ca21ea48fb71c4005a5c4791447851f692c752c1eb9",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "ownership": null,
+      "passed": true,
+      "phases": [
+        {
+          "cgroup_cumulative_peak_bytes": 1167437824,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 6.613044758996693,
+          "phase": "load/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 2472906752,
+          "sample_count": 64,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1167298560,
+            "process_rss_bytes": 2472906752
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1414742016,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.9551151280174963,
+          "phase": "load/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3056041984,
+          "sample_count": 11,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1414586368,
+            "process_rss_bytes": 3056041984
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1851174912,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 1.1317821800184902,
+          "phase": "single_references/ViT-L-14",
+          "process_cumulative_peak_rss_bytes": 3512918016,
+          "sample_count": 13,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1851174912,
+            "process_rss_bytes": 3512918016
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1976344576,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.38690275698900223,
+          "phase": "single_references/ViT-B-16",
+          "process_cumulative_peak_rss_bytes": 3637882880,
+          "sample_count": 5,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1976344576,
+            "process_rss_bytes": 3637882880
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 1976471552,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.45659739201073535,
+          "phase": "batch/ViT-L-14/1/1",
+          "process_cumulative_peak_rss_bytes": 3637882880,
+          "sample_count": 6,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1976471552,
+            "process_rss_bytes": 3637882880
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2109886464,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.4356132999819238,
+          "phase": "batch/ViT-L-14/8/1",
+          "process_cumulative_peak_rss_bytes": 3765256192,
+          "sample_count": 36,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2104262656,
+            "process_rss_bytes": 3765256192
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2569531392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 13.280303752981126,
+          "phase": "batch/ViT-L-14/32/1",
+          "process_cumulative_peak_rss_bytes": 4230062080,
+          "sample_count": 133,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2535567360,
+            "process_rss_bytes": 4196405248
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2569531392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.12271156901260838,
+          "phase": "batch/ViT-B-16/1/1",
+          "process_cumulative_peak_rss_bytes": 4230062080,
+          "sample_count": 3,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2535694336,
+            "process_rss_bytes": 4196405248
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2569531392,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 0.8176337619952392,
+          "phase": "batch/ViT-B-16/8/1",
+          "process_cumulative_peak_rss_bytes": 4230062080,
+          "sample_count": 10,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2536075264,
+            "process_rss_bytes": 4196630528
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 2758070272,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 3.2490199349995237,
+          "phase": "batch/ViT-B-16/32/1",
+          "process_cumulative_peak_rss_bytes": 4414484480,
+          "sample_count": 34,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2754654208,
+            "process_rss_bytes": 4414484480
+          }
+        },
+        {
+          "cgroup_cumulative_peak_bytes": 3020472320,
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "elapsed_seconds": 13.506071401992813,
+          "phase": "authenticated_api_deadline",
+          "process_cumulative_peak_rss_bytes": 4683071488,
+          "sample_count": 133,
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3020345344,
+            "process_rss_bytes": 4683071488
+          }
+        }
+      ],
+      "source_state": "delivery-default-45-second-deadline"
+    }
+  ],
+  "delivery_source_files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "0e2fa5619765664b3adb40ab4cd0ccf6731a73bda3cf0a2938e4022146fac70b"
+    },
+    {
+      "path": "Dockerfile.cuda",
+      "sha256": "d17e36133d4c8b1de2f65afdad1b5a854c06147d93513b44087c66e2286850ab"
+    },
+    {
+      "path": "Dockerfile.openvino",
+      "sha256": "f866d06897426023da412b7cd695a7ababb289337412644cea768d26c31c65cb"
+    },
+    {
+      "path": "config.toml",
+      "sha256": "f619d9e24ab7e74345afdef4d91725e684016ce519869d2ce36a54af16862a8f"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "38a2bab444b7323e29c474ed55ab3761b971a6ac3165e485dff86637310a4ffe"
+    },
+    {
+      "path": "scripts/capacity_api.py",
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+    },
+    {
+      "path": "scripts/capacity_metrics.py",
+      "sha256": "4fa6f56c80499660f634149778a50ec99d15315f75425449988e4bb7cc0a6754"
+    },
+    {
+      "path": "scripts/capacity_probe.py",
+      "sha256": "39ef157b2274d7b7aa9f4e4929b0da7490288382a27d8aeac77c76beedabb26e"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "sha256": "3afe9b11bda8b02983c57c202528cdfd57d6815944477bd40806b33fd5690394"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "fa9b42728b0099195fbab651380d7f558ef2c6c4781b9f40aecaafef69c31922"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "afa276a878277cdf0c950de1ae1e1619bc1fa38219a802378316b5e972396e08"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "ccf6e808753f0785cb12a8a4b99af13e9dd79bf6997557ca6d87da46c80a83e4"
+    },
+    {
+      "path": "src/image_embedder/model_initialization.py",
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+    },
+    {
+      "path": "src/image_embedder/model_loading.py",
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+    },
+    {
+      "path": "src/image_embedder/openvino_models.py",
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+    },
+    {
+      "path": "src/image_embedder/routes/batch.py",
+      "sha256": "800c1446f9bcd7b3ab5598e7b72fb8d4174c1de12e5a3156d2c5ddba5fb78ba5"
+    },
+    {
+      "path": "src/image_embedder/routes/embed.py",
+      "sha256": "1a0a00420dc6277990103fd1b9225b7d0c781d8c43632209e6e9b58b0a4518ed"
+    }
+  ],
+  "method": {
+    "batch_sizes": [
+      1,
+      8,
+      32
+    ],
+    "cgroup_version": 1,
+    "embedding_cache": "disabled",
+    "fixtures": "two deterministic RGB PNG patterns, 974x974, pinned CLIP publisher assets",
+    "inference_concurrency": 1,
+    "network": "none",
+    "notes": [
+      "One capacity container at a time. Some cold-guard replay overlapped small QA validation on the shared host.",
+      "Observations are not paired throughput benchmarks; host load, first-touch costs and page-cache charging vary.",
+      "Shared file pages may be charged elsewhere; cgroup values can be lower than process RSS. No host cache flush.",
+      "Process/controller lifetime peaks differ from sampled stage peaks; absent counters remain unknown.",
+      "No CUDA or Intel GPU VRAM, all concurrent HTTP-input combinations, or GitHub-hosted workflow execution measured.",
+      "Guarded intermediate images used a 30-second default; final API images use 45. Image identities are recorded."
+    ],
+    "worker_processes": 1
+  },
+  "schema_version": 1,
+  "strict_osv_audits": {
+    "cpu": {
+      "installed_versions": {
+        "annotated-doc": "0.0.5",
+        "annotated-types": "0.8.0",
+        "anyio": "4.15.1",
+        "certifi": "2026.7.22",
+        "charset-normalizer": "3.5.2",
+        "click": "8.5.0",
+        "deprecated": "3.0.0",
+        "fastapi": "0.142.2",
+        "filelock": "3.32.3",
+        "fsspec": "2026.7.0",
+        "h11": "0.16.0",
+        "hf-xet": "1.6.0",
+        "httpcore": "1.0.9",
+        "httptools": "0.8.0",
+        "httpx": "0.28.1",
+        "huggingface-hub": "1.33.0",
+        "idna": "3.20",
+        "jinja2": "3.1.6",
+        "limits": "5.8.0",
+        "markdown-it-py": "4.2.0",
+        "markupsafe": "3.0.3",
+        "mdurl": "0.1.2",
+        "mpmath": "1.3.0",
+        "networkx": "3.6.1",
+        "numpy": "2.5.3",
+        "opentelemetry-api": "1.45.0",
+        "packaging": "26.3",
+        "pillow": "12.3.0",
+        "pip": "26.2.1",
+        "pydantic": "2.13.5",
+        "pydantic-core": "2.46.5",
+        "pygments": "2.21.0",
+        "python-dotenv": "1.2.4",
+        "pyyaml": "6.0.3",
+        "regex": "2026.9.29",
+        "requests": "2.34.2",
+        "rich": "15.0.0",
+        "safetensors": "0.8.0",
+        "setuptools": "84.0.0",
+        "shellingham": "1.5.4",
+        "slowapi": "0.1.10",
+        "starlette": "1.7.0",
+        "sympy": "1.14.0",
+        "tokenizers": "0.23.2",
+        "torch": "2.14.1+cpu",
+        "tqdm": "4.70.1",
+        "transformers": "5.18.0",
+        "typer": "0.27.2",
+        "typing-extensions": "4.16.0",
+        "typing-inspection": "0.4.4",
+        "urllib3": "2.8.0",
+        "uvicorn": "0.54.0",
+        "uvloop": "0.23.0",
+        "watchfiles": "1.3.0",
+        "websockets": "17.1",
+        "wrapt": "2.5.0"
+      },
+      "known_vulnerabilities": 0,
+      "packages": 56,
+      "report_sha256": "419f6f525df1352dcdc5b60e77f886200a5b8b6cf2958361d2c683c887b85d01",
+      "skipped": 0
+    },
+    "openvino": {
+      "installed_versions": {
+        "annotated-doc": "0.0.5",
+        "annotated-types": "0.8.0",
+        "anyio": "4.15.1",
+        "certifi": "2026.7.22",
+        "charset-normalizer": "3.5.2",
+        "click": "8.5.0",
+        "deprecated": "3.0.0",
+        "fastapi": "0.142.2",
+        "filelock": "3.32.3",
+        "fsspec": "2026.7.0",
+        "h11": "0.16.0",
+        "hf-xet": "1.6.0",
+        "httpcore": "1.0.9",
+        "httptools": "0.8.0",
+        "httpx": "0.28.1",
+        "huggingface-hub": "1.33.0",
+        "idna": "3.20",
+        "jinja2": "3.1.6",
+        "limits": "5.8.0",
+        "markdown-it-py": "4.2.0",
+        "markupsafe": "3.0.3",
+        "mdurl": "0.1.2",
+        "mpmath": "1.3.0",
+        "networkx": "3.6.1",
+        "numpy": "2.5.3",
+        "opentelemetry-api": "1.45.0",
+        "openvino": "2026.4.0",
+        "openvino-telemetry": "2025.2.0",
+        "packaging": "26.3",
+        "pillow": "12.3.0",
+        "pip": "26.2.1",
+        "pydantic": "2.13.5",
+        "pydantic-core": "2.46.5",
+        "pygments": "2.21.0",
+        "python-dotenv": "1.2.4",
+        "pyyaml": "6.0.3",
+        "regex": "2026.9.29",
+        "requests": "2.34.2",
+        "rich": "15.0.0",
+        "safetensors": "0.8.0",
+        "setuptools": "84.0.0",
+        "shellingham": "1.5.4",
+        "slowapi": "0.1.10",
+        "starlette": "1.7.0",
+        "sympy": "1.14.0",
+        "tokenizers": "0.23.2",
+        "torch": "2.14.1+cpu",
+        "tqdm": "4.70.1",
+        "transformers": "5.18.0",
+        "typer": "0.27.2",
+        "typing-extensions": "4.16.0",
+        "typing-inspection": "0.4.4",
+        "urllib3": "2.8.0",
+        "uvicorn": "0.54.0",
+        "uvloop": "0.23.0",
+        "watchfiles": "1.3.0",
+        "websockets": "17.1",
+        "wrapt": "2.5.0"
+      },
+      "known_vulnerabilities": 0,
+      "packages": 58,
+      "report_sha256": "059dbaf70ff946b4166035151df9cde58c341dab7fe502823cb4d088969a1f28",
+      "skipped": 0
+    },
+    "qa": {
+      "installed_versions": {
+        "annotated-doc": "0.0.5",
+        "annotated-types": "0.8.0",
+        "anyio": "4.15.1",
+        "asgi-lifespan": "2.1.0",
+        "certifi": "2026.7.22",
+        "cffi": "2.1.1",
+        "charset-normalizer": "3.5.2",
+        "click": "8.5.0",
+        "coverage": "7.16.2",
+        "cryptography": "50.0.2",
+        "deprecated": "3.0.0",
+        "fastapi": "0.142.2",
+        "filelock": "3.32.3",
+        "fsspec": "2026.7.0",
+        "h11": "0.16.0",
+        "hf-xet": "1.6.0",
+        "httpcore": "1.0.9",
+        "httptools": "0.8.0",
+        "httpx": "0.28.1",
+        "huggingface-hub": "1.33.0",
+        "idna": "3.20",
+        "iniconfig": "2.3.0",
+        "jinja2": "3.1.6",
+        "limits": "5.8.0",
+        "markdown-it-py": "4.2.0",
+        "markupsafe": "3.0.3",
+        "mdurl": "0.1.2",
+        "mpmath": "1.3.0",
+        "networkx": "3.6.1",
+        "numpy": "2.5.3",
+        "opentelemetry-api": "1.45.0",
+        "packaging": "26.3",
+        "pillow": "12.3.0",
+        "pip": "26.2.1",
+        "pluggy": "1.6.0",
+        "pycparser": "3.0",
+        "pydantic": "2.13.5",
+        "pydantic-core": "2.46.5",
+        "pygments": "2.21.0",
+        "pytest": "9.1.1",
+        "pytest-cov": "7.1.0",
+        "python-dotenv": "1.2.4",
+        "pyyaml": "6.0.3",
+        "regex": "2026.9.29",
+        "requests": "2.34.2",
+        "rich": "15.0.0",
+        "safetensors": "0.8.0",
+        "setuptools": "84.0.0",
+        "shellingham": "1.5.4",
+        "slowapi": "0.1.10",
+        "sniffio": "1.3.1",
+        "starlette": "1.7.0",
+        "sympy": "1.14.0",
+        "tokenizers": "0.23.2",
+        "torch": "2.14.1+cpu",
+        "tqdm": "4.70.1",
+        "transformers": "5.18.0",
+        "trustme": "1.2.1",
+        "typer": "0.27.2",
+        "typing-extensions": "4.16.0",
+        "typing-inspection": "0.4.4",
+        "urllib3": "2.8.0",
+        "uvicorn": "0.54.0",
+        "uvloop": "0.23.0",
+        "watchfiles": "1.3.0",
+        "websockets": "17.1",
+        "wrapt": "2.5.0"
+      },
+      "known_vulnerabilities": 0,
+      "packages": 67,
+      "report_sha256": "029d268d51b165f11146bdc605caf063d32be3fa1a83422c2412c938962955d4",
+      "skipped": 0
+    }
+  },
+  "verification": {
+    "branch_coverage_percent": 88.71,
+    "coverage_floors_percent": {
+      "branches": 79.37,
+      "lines": 89.42
+    },
+    "final_image_inventory_matches_strict_audit": true,
+    "line_coverage_percent": 94.31,
+    "pytest_passed": 561,
+    "pytest_skipped": 2,
+    "pytest_warnings": 1,
+    "python": "3.12",
+    "smokes": {
+      "cpu": {
+        "backend": "cpu",
+        "cache_writable": true,
+        "clean_shutdown": true,
+        "cuda": null,
+        "cuda_available": false,
+        "gpu_inference": false,
+        "non_root": true,
+        "projection_shape": [
+          1,
+          8
+        ],
+        "service_device": "cpu",
+        "service_startup": true,
+        "torch": "2.14.1+cpu"
+      },
+      "openvino": {
+        "backend": "openvino",
+        "cache_writable": true,
+        "clean_shutdown": true,
+        "cuda": null,
+        "cuda_available": false,
+        "gpu_inference": false,
+        "ir_reload": true,
+        "non_root": true,
+        "openvino": "2026.4.0-22959-99c81491cc3-releases/2026/4",
+        "openvino_device": "CPU",
+        "projection_shape": [
+          1,
+          8
+        ],
+        "service_device": "openvino:CPU",
+        "service_startup": true,
+        "torch": "2.14.1+cpu"
+      }
+    }
+  }
+}

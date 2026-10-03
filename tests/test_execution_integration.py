@@ -29,7 +29,7 @@ def anyio_backend():
 
 def gated_app(gate, **overrides):
     settings = _no_auth_settings(
-        request_timeout_seconds=0.1,
+        embedding_timeout_seconds=0.1,
         embed_concurrency=1,
         embed_max_queue=0,
         rate_limit_embed="1000/minute",
@@ -77,7 +77,7 @@ async def test_http_timeout_retains_real_concurrency_and_retry_rejects_until_wor
 @pytest.mark.parametrize("path, body", ENDPOINTS)
 async def test_http_caller_cancellation_does_not_release_running_work(path, body):
     gate = ThreadGate()
-    app = gated_app(gate, request_timeout_seconds=5)
+    app = gated_app(gate, embedding_timeout_seconds=5)
     try:
         async with LifespanManager(app):
             async with httpx.AsyncClient(

@@ -7,6 +7,10 @@ on:
     branches: [main, master]
     paths:
       - 'src/image_embedder/model_catalog.py'
+      - 'src/image_embedder/model_initialization.py'
+      - 'src/image_embedder/deadlines.py'
+      - 'src/image_embedder/config.py'
+      - 'src/image_embedder/routes/**'
       - 'src/image_embedder/model_loading.py'
       - 'src/image_embedder/artifact_integrity.py'
       - 'src/image_embedder/ir_cache.py'
@@ -21,6 +25,10 @@ on:
     branches: [main, master]
     paths:
       - 'src/image_embedder/model_catalog.py'
+      - 'src/image_embedder/model_initialization.py'
+      - 'src/image_embedder/deadlines.py'
+      - 'src/image_embedder/config.py'
+      - 'src/image_embedder/routes/**'
       - 'src/image_embedder/model_loading.py'
       - 'src/image_embedder/artifact_integrity.py'
       - 'src/image_embedder/ir_cache.py'
