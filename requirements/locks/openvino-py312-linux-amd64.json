@@ -368,7 +368,7 @@
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
     "requirements-openvino.txt": "552e8403ea7e49c251d7ba1561fbb9224b6a9c4a25cc3146ca496e6bcf618944",
     "requirements-torch-cpu.txt": "1d7163adbadfe000aee8b7e40b84ad3c67e2cac42d6b1479319366a82f8c0e5e",
-    "requirements.txt": "835443b22d9df062c48522e0193a2c5b01631e208163422177722b20c6be45b1"
+    "requirements.txt": "76490d6849c056f59ba7861938fc2d35d434b4aeb4bebc10d346d39e12517859"
   },
   "profile": "openvino-py312-linux-amd64",
   "python": "3.12",

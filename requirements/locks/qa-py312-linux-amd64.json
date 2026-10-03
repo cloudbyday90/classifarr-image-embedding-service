@@ -104,6 +104,12 @@
       "version": "1.0.9"
     },
     {
+      "name": "httpcore2",
+      "sha256": "e1e05d4f25f7d7d496bfb96748f6f4b67657b03da069b3a68c36069f3db73d0a",
+      "url": "https://files.pythonhosted.org/packages/09/ba/a4568248771ce81957bfb7cc600264a40fbcda092391ee1c415c50be4bea/httpcore2-2.13.1-py3-none-any.whl",
+      "version": "2.13.1"
+    },
+    {
       "name": "httptools",
       "sha256": "b15fc622b0f869d19207c4089a501d9bcc63ca5e071ffdd2f03f922df882dcb2",
       "url": "https://files.pythonhosted.org/packages/e3/a6/febbb8b8db0f58b38e44ad6cb946e6a255ae49b55f2e8543408fb7501ccd/httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl",
@@ -114,6 +120,12 @@
       "sha256": "d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad",
       "url": "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl",
       "version": "0.28.1"
+    },
+    {
+      "name": "httpx2",
+      "sha256": "6dff50fabc270ee5fd25d845d0b078ed20564579744d6d962850975996d2f9a4",
+      "url": "https://files.pythonhosted.org/packages/d8/9c/6fe8931fd9f381042a9e4c7d5a7b4cbf7016b252bec0c99a49fce42c3326/httpx2-2.13.1-py3-none-any.whl",
+      "version": "2.13.1"
     },
     {
       "name": "huggingface-hub",
@@ -350,6 +362,12 @@
       "version": "1.2.1"
     },
     {
+      "name": "truststore",
+      "sha256": "adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981",
+      "url": "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl",
+      "version": "0.10.4"
+    },
+    {
       "name": "typer",
       "sha256": "b3a5fc4342d5fc8fda8fc3010b1cf117e9249aab7fae800c2eff62fd3842d97d",
       "url": "https://files.pythonhosted.org/packages/dc/bf/205d0004930ede8f542fb58f601526fccf4ae7626075ca1e6c4de5d3d652/typer-0.27.2-py3-none-any.whl",
@@ -420,13 +438,13 @@
   },
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
-    "requirements-dev.txt": "6f83f477101842f194938bff1cf11489f51e78d8879583e1d576cbf27412d5ae",
+    "requirements-dev.txt": "c52c778efb6c9a54bdf4e7abe78411603cbc30d6140e66a9cafd37e3faa706d5",
     "requirements-torch-cpu.txt": "1d7163adbadfe000aee8b7e40b84ad3c67e2cac42d6b1479319366a82f8c0e5e",
-    "requirements.txt": "835443b22d9df062c48522e0193a2c5b01631e208163422177722b20c6be45b1"
+    "requirements.txt": "76490d6849c056f59ba7861938fc2d35d434b4aeb4bebc10d346d39e12517859"
   },
   "profile": "qa-py312-linux-amd64",
   "python": "3.12",
-  "requirements_sha256": "acb5f6d373caeee6fed7ba1323508b17e737c6ad874370d6793c45324450bf0a",
+  "requirements_sha256": "07364d47da805c3efef4397782529c6f62f1d44fc9e028c9387ae07fff07156e",
   "resolver": "pip==26.2.1",
   "schema_version": 1
 }

@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- A focused repository AI skill for dependency migrations, with native graph review, compatibility boundaries and separate design/outcome records.
 - Recurring native Windows validation for private setup, remote-child/shared-batch cleanup and HTTP response lifetimes, with complete platform locks, mandatory outcome gates and separate graph audits.
 - A focused repository AI skill for native platform validation, with separate research, design and outcome records.
 - Concurrent inline/remote and detached-owner capacity probes with task/thread, anonymous temporary-storage and CUDA allocator measurements.
@@ -30,6 +31,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Migrated API test clients to HTTPX2 with explicit lifespan/state cleanup checks and a gate against the deprecated Starlette fallback; production dependency graphs remain unchanged.
+- Raised the declared Transformers minimum to 5.17.0 through local PR 53 adoption while retaining the reviewed 5.18.0 runtime.
 - Raise the NumPy minimum to the reviewed 2.5.3 version; preserve complete locked wheel graphs.
 - Extend manual CPU/OpenVINO calibration with concurrent mixed inputs and bounded temporary storage/task experiments.
 - Adopt open PR #46's renewed FastAPI minimum of 0.142.2 while retaining the reviewed wheel graphs.

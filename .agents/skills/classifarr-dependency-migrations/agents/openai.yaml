@@ -1,0 +1,4 @@
+interface:
+  display_name: "Classifarr Dependency Migrations"
+  short_description: "Review native dependency graphs and compatibility"
+  default_prompt: "Use $classifarr-dependency-migrations to scope a dependency change, validate native locks and prove the affected contracts."

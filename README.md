@@ -375,6 +375,8 @@ python -m image_embedder.server
 
 ## Reviewed Dependency Environments
 
+API QA uses HTTPX2 for Starlette TestClient and authored asynchronous ASGI clients. The shared managed fixture preserves lifespan state and closes clients before shutdown. The specific legacy fallback warning fails QA. Hugging Face and bundled production/capacity probes keep their separate HTTPX dependencies and response classes. See the [migration design, tradeoffs and outcomes](docs/httpx2-test-clients.md).
+
 Native boundary CI runs weekly and for relevant changes on Windows Server 2025 with conventional Python 3.13/3.14. Fresh, complete hash-locked venvs exercise private setup/rotation, supervised remote-child/shared-batch cleanup and real HTTP response transports without model downloads. Missing critical cases or unexpected skips fail the gate. Separate OSV jobs audit the complete Windows graphs without cross-platform resolution. See the [Windows design, commands and local results](docs/windows-native-validation.md); Windows production inference remains outside these tests.
 
 Container builds and Linux CI install complete target-specific wheel locks with required SHA-256 hashes, no index resolution and binary-only installation. CPU amd64/arm64, modern/legacy CUDA amd64, OpenVINO amd64, QA amd64 and isolated audit-tool profiles include their transitive dependencies and reviewed pip installer. Input ranges remain update intent; changing them without regenerating affected locks fails validation. Runtime smoke checks require an exact installed inventory without extra, missing, substituted or duplicate packages.
@@ -627,6 +629,11 @@ pytest
 ```
 
 ## Engineering Decisions
+
+Use the checked-in [dependency-migration skill](.agents/skills/classifarr-dependency-migrations/SKILL.md), `$classifarr-dependency-migrations`, for dependency PR adoption or client/framework compatibility changes. Its [design/evaluation record](docs/project-dependency-migration-skill.md) explains native graph ownership and evidence limits.
+
+- [HTTPX2 API test-client migration](docs/httpx2-test-clients.md)
+- [PR 53 local Transformers floor adoption](docs/pr-53-local-validation.md)
 
 Use the checked-in [native-validation skill](.agents/skills/classifarr-native-validation/SKILL.md), `$classifarr-native-validation`, for OS boundary checks or their CI. Its [design/evaluation record](docs/project-native-validation-skill.md) explains the required native evidence and platform limits.
 

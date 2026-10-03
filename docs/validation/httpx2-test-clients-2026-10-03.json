@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "baseline": "2f19545409758ac524e4c3703e11ea55b8e26524",
+  "delivery": {
+    "branch": "master",
+    "original_pr_merge": false,
+    "release": false,
+    "tag": false,
+    "version_bump": false
+  },
+  "pr": {
+    "number": 53,
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/53",
+    "head": "d9100e430be2fa312ce5a8ff837698873d97b874",
+    "base": "3b9573ba9ef156fa45c898e611ecc04a4d64bf09",
+    "eligible_pool": [
+      53
+    ],
+    "random_draw": 0.5933955162861888,
+    "state_after_validation": "open",
+    "merged_after_validation": false,
+    "floor_before": "5.10.1",
+    "floor_after": "5.17.0",
+    "locked_version": "5.18.0"
+  },
+  "qa": {
+    "image": "sha256:90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803",
+    "base_image": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+    "metadata": {
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "platform": "linux",
+      "machine": "x86_64",
+      "versions": {
+        "pip": "26.2.1",
+        "httpx": "0.28.1",
+        "httpx2": "2.13.1",
+        "httpcore2": "2.13.1",
+        "truststore": "0.10.4",
+        "starlette": "1.7.0",
+        "fastapi": "0.142.2",
+        "transformers": "5.18.0",
+        "pytest": "9.1.1",
+        "anyio": "4.15.1"
+      }
+    },
+    "wheel_count": 70,
+    "graph_delta": {
+      "unchanged_artifacts": 67,
+      "added": [
+        {
+          "name": "httpcore2",
+          "sha256": "e1e05d4f25f7d7d496bfb96748f6f4b67657b03da069b3a68c36069f3db73d0a",
+          "url": "https://files.pythonhosted.org/packages/09/ba/a4568248771ce81957bfb7cc600264a40fbcda092391ee1c415c50be4bea/httpcore2-2.13.1-py3-none-any.whl",
+          "version": "2.13.1"
+        },
+        {
+          "name": "httpx2",
+          "sha256": "6dff50fabc270ee5fd25d845d0b078ed20564579744d6d962850975996d2f9a4",
+          "url": "https://files.pythonhosted.org/packages/d8/9c/6fe8931fd9f381042a9e4c7d5a7b4cbf7016b252bec0c99a49fce42c3326/httpx2-2.13.1-py3-none-any.whl",
+          "version": "2.13.1"
+        },
+        {
+          "name": "truststore",
+          "sha256": "adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981",
+          "url": "https://files.pythonhosted.org/packages/19/97/56608b2249fe206a67cd573bc93cd9896e1efb9e98bce9c163bcdc704b88/truststore-0.10.4-py3-none-any.whl",
+          "version": "0.10.4"
+        }
+      ]
+    },
+    "other_profile_graphs_unchanged": 12,
+    "native_resolution": {
+      "backend": "qa",
+      "constraints": "all 67 baseline artifact versions",
+      "resolver": "pip==26.2.1",
+      "binary_only": true
+    },
+    "installation": "Complete required-hash/no-index lock in isolated image derived from immutable baseline; pip and exact inventory passed."
+  },
+  "commands": {
+    "resolve": "python scripts/lock_dependencies.py --backend qa --root <isolated-source> --constraints <67-reviewed-versions> --cache-dir <cache>",
+    "install": "python scripts/install_dependencies.py --backend qa --root <isolated-source>",
+    "inventory": "python scripts/install_dependencies.py --backend <profile> --root /workspace --verify-only",
+    "full_qa": "python -m pytest --cov-report=term --cov-report=xml:/validation/coverage.xml -p no:cacheprovider -o faulthandler_timeout=45",
+    "audit": "PYTHONPATH=/audit-tools python -m pip_audit --strict --vulnerability-service osv --path /opt/venv/lib/python3.12/site-packages --cache-dir /validation/audit-cache --format json --output /validation/qa-audit.json"
+  },
+  "tests": {
+    "focused_passed": 67,
+    "new_client_contracts": 6,
+    "full_passed": 953,
+    "full_skipped": 7,
+    "skip_scope": {
+      "opt_in_production_models": 2,
+      "windows_only_setup": 5
+    },
+    "seconds": 102.06,
+    "legacy_client_warnings": 0,
+    "network": "none; native local sockets allowed",
+    "memory_bytes": 4294967296,
+    "swap_bytes": 0,
+    "temporary_filesystem": "256 MiB; exec/nosuid/nodev",
+    "negative_control": {
+      "baseline_image_missing_httpx2": true,
+      "collection_exit": 2,
+      "warning": "StarletteDeprecationWarning",
+      "expected_rejection": true
+    }
+  },
+  "coverage": {
+    "lines_valid": 2363,
+    "lines_covered": 2250,
+    "line_percent": 95.22,
+    "branches_valid": 658,
+    "branches_covered": 593,
+    "branch_percent": 90.12,
+    "unchanged_floors": {
+      "lines": 89.42,
+      "branches": 79.37
+    }
+  },
+  "native_inventories": [
+    {
+      "profile": "cpu-amd64",
+      "image": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile cpu-py312-linux-amd64: 56 hashed wheels\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "cpu",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    },
+    {
+      "profile": "cpu-arm64",
+      "image": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile cpu-py312-linux-arm64: 56 hashed wheels\nWARNING: The requested image's platform (linux/arm64) does not match the detected host platform (linux/amd64/v3) and no specific platform was requested\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "cpu",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    },
+    {
+      "profile": "openvino-amd64",
+      "image": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile openvino-py312-linux-amd64: 58 hashed wheels",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "openvino",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    },
+    {
+      "profile": "cuda-amd64",
+      "image": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile cuda-py312-linux-amd64: 75 hashed wheels\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "cuda",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    },
+    {
+      "profile": "cuda-legacy-amd64",
+      "image": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile cuda-legacy-py312-linux-amd64: 75 hashed wheels\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "cuda-legacy",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    },
+    {
+      "profile": "qa-amd64",
+      "image": "sha256:90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803",
+      "exit_code": 0,
+      "output": "No broken requirements found.\nVerified dependency profile qa-py312-linux-amd64: 70 hashed wheels\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--mount",
+        "type=bind,source=<validation-dir>/tracked-repo,target=/workspace,readonly",
+        "--workdir",
+        "/workspace",
+        "--entrypoint",
+        "python",
+        "sha256:90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803",
+        "scripts/install_dependencies.py",
+        "--backend",
+        "qa",
+        "--root",
+        "/workspace",
+        "--verify-only"
+      ]
+    }
+  ],
+  "security": {
+    "qa_advisory_audit": {
+      "tool_graph_packages": 29,
+      "tool_inventory_and_pip_check": "passed",
+      "service": "OSV",
+      "strict": true,
+      "installed_packages": 70,
+      "known_vulnerabilities": 0,
+      "skipped_packages": 0
+    },
+    "gitleaks": {
+      "version": "8.30.1",
+      "approved_archive_sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "fresh_native_installer": "passed",
+      "version_execution": "8.30.1",
+      "source_findings": 0,
+      "history_commits_before_delivery": 85,
+      "history_findings": 0,
+      "configuration": ".gitleaks.toml unchanged",
+      "public_digest_false_matches": "Separated path and SHA-256 fields; no scanner-rule or allowlist modifications."
+    },
+    "codeql_scope": "No runtime Python or workflow source changed; no new CodeQL scan claimed."
+  },
+  "quality": {
+    "ruff": {
+      "files": [
+        "tests/test_batch_admission.py",
+        "tests/test_batch_endpoint.py",
+        "tests/test_execution_batch_window.py",
+        "tests/test_execution_integration.py",
+        "tests/test_ingress.py",
+        "tests/test_integration.py",
+        "tests/test_p1_invariants.py",
+        "tests/test_queueing.py",
+        "tests/test_remote_api_boundary.py",
+        "tests/test_remote_batch_api.py",
+        "tests/test_request_input_limits.py",
+        "tests/asgi_clients.py",
+        "tests/test_asgi_clients.py"
+      ],
+      "rules": [
+        "E",
+        "F",
+        "I"
+      ],
+      "ignore": [
+        "E501"
+      ],
+      "target": "py312",
+      "result": "passed"
+    },
+    "pyright": {
+      "files": [
+        "tests/asgi_clients.py",
+        "tests/test_asgi_clients.py"
+      ],
+      "errors": 0,
+      "warnings": 0,
+      "config": "existing project policy; temporary include/paths only"
+    },
+    "copyright": "passed",
+    "skill_validator": "passed",
+    "skill_evaluation": "Maintainer artifact/routing evaluation; not independent agent benchmark.",
+    "whitespace": "Passed with cr-at-eol for existing CRLF files; no scanner or repository configuration changed."
+  },
+  "limits": [
+    "ASGI tests do not prove socket/TLS/proxy behavior.",
+    "Model performance and GPU capacity were not rerun for unchanged production graphs.",
+    "Windows profiles unchanged; no new hosted Server 2025 or local Windows inference claim."
+  ],
+  "evidence_sha256": {
+    "resolve.log": "c9d410671ed91c92b17925b96ff488496b87c9f45483d5d09100fffa75cfb2b3",
+    "build-qa.log": "275bf8964dade2b7d9c0ad8f5793e6147f13bc82c14aa640b53fe45a84df4393",
+    "missing-httpx2.log": "60dd8b937dcee0da1f7a4864ba63c829deea638e53bbbf0a30c557c1aa09d29c",
+    "focused-qa.log": "dd27a74c49eefc5cb985bd348884537d227f2405f17de23f84a25fecd34e2e95",
+    "full-qa.log": "86816e4321b635c167e53c371e709c3e68b91118c996618476f3096c2ef4ae47",
+    "qa-audit.log": "4e4757ff226a44b5c448b1c4624619419c22d5272463dc19510b4754871a72f9",
+    "qa-audit.json": "427d53c4efa5c20c27a4eaee2686a86cc5485e12af0cec9150ee5d84fbbc8e45",
+    "audit-tool-inventory.log": "ff2de6c026e235c8643668276783146bf26eb31676de1213e8fc7a6132c261f0",
+    "ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "pyright.log": "c584b21ee012de391dc2799d5455db619d3fefbb192ab07ea4ba83fb0d704c14",
+    "coverage.xml": "59a73b61cc79b1589c948b3cf93ddc59e1253e77173c678bc1b10f293277202c",
+    "gitleaks-install.log": "13f7b301d4d950dc8236ced49cc4331e9c89217b170bea4614c160c87df2e906"
+  },
+  "tested_source_sha256": [
+    {
+      "sha256": "aaf86cc52a570ad18979fdf8369ad9a1c26b57f0b04209832cc7da64c47c476e",
+      "path": "tests/test_batch_admission.py"
+    },
+    {
+      "sha256": "d9ce701314b521064c8e4c423499f4bb5bd7f4ece1e2c38db693dc53d29bedc0",
+      "path": "tests/test_batch_endpoint.py"
+    },
+    {
+      "sha256": "e8b980b489a0b315983068c8b590df9b95ac5a2ed7df0defda6d1f25dfac1e3a",
+      "path": "tests/test_execution_batch_window.py"
+    },
+    {
+      "sha256": "cc07b3ca22c5292233bafacc5ff55c4057634db8d16cdad63a04376c1d3e9d71",
+      "path": "tests/test_execution_integration.py"
+    },
+    {
+      "sha256": "4fbb22bb808817d7e276684d6212406b56bd2a3d6b8d84b2c7fd8993dc3ae48b",
+      "path": "tests/test_ingress.py"
+    },
+    {
+      "sha256": "90a1912d4fe82fece18e637a6bcbdc1751110a09cb593f2959e2f454286d6a88",
+      "path": "tests/test_integration.py"
+    },
+    {
+      "sha256": "5177b2282be3cbae6cca91c7c1eb1f3a28447503c183621d7d1ed95d3cf57b14",
+      "path": "tests/test_p1_invariants.py"
+    },
+    {
+      "sha256": "33aeaa0483c70896ba360fcc29d59e298aea7ced718c818b9867f4de2472e8e3",
+      "path": "tests/test_queueing.py"
+    },
+    {
+      "sha256": "44a829e461d16bc5f37a6ab3e2cc44be412dc873a2fbd4bd2ce3fe8433b02d1c",
+      "path": "tests/test_remote_api_boundary.py"
+    },
+    {
+      "sha256": "782f4ea3f169e98c7c3857cf58695a809e2728257f83593fc571a96746389622",
+      "path": "tests/test_remote_batch_api.py"
+    },
+    {
+      "sha256": "3b57b968591e61fe6eb0973541653fa0bd3b41e6ad5fec23a612ad0efda45f80",
+      "path": "tests/test_request_input_limits.py"
+    },
+    {
+      "sha256": "28a58cea606eb8d18ec9696379fec6b86483699c82d08478e15c9d6e530cc45a",
+      "path": "tests/asgi_clients.py"
+    },
+    {
+      "sha256": "1d3030e46c6eaf6eeb54a977510c03ad3ddf60d89f5b36fcb98650acb683b38c",
+      "path": "tests/test_asgi_clients.py"
+    }
+  ],
+  "sources": [
+    "https://pypi.org/project/httpx2/",
+    "https://pypi.org/project/httpcore2/",
+    "https://pypi.org/project/truststore/",
+    "https://pydantic.dev/docs/httpx2/get-started/migration/",
+    "https://pydantic.dev/docs/httpx2/advanced/transports/",
+    "https://pydantic.dev/docs/httpx2/advanced/timeouts/",
+    "https://starlette.dev/testclient/",
+    "https://starlette.dev/release-notes/",
+    "https://github.com/Kludex/starlette/blob/main/starlette/testclient.py",
+    "https://docs.pytest.org/en/latest/how-to/capture-warnings.html",
+    "https://github.com/huggingface/transformers/releases",
+    "https://learn.chatgpt.com/docs/build-skills?translationFallback=ja-JP"
+  ]
+}

@@ -17,8 +17,9 @@ import base64
 import threading
 import time
 
-import httpx
+import httpx2
 import pytest
+from asgi_clients import lifespan_client
 from asgi_lifespan import LifespanManager
 from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
 
@@ -81,14 +82,12 @@ class WarmupTracker(FakeEmbedder):
 async def test_embed_success_through_full_lifespan():
     """Startup → authenticated POST /embed-image → queue headers → shutdown."""
     app = create_app(embedder=FakeEmbedder(), settings=_auth_settings())
-    async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-            resp = await client.post(
-                "/embed-image",
-                json=_EMBED_BODY,
-                headers={"X-Api-Key": _API_KEY},
-            )
+    async with lifespan_client(app) as client:
+        resp = await client.post(
+            "/embed-image",
+            json=_EMBED_BODY,
+            headers={"X-Api-Key": _API_KEY},
+        )
 
     assert resp.status_code == 200
     body = resp.json()
@@ -111,8 +110,8 @@ async def test_embed_success_through_full_lifespan():
 async def test_embed_rejects_unauthenticated_request():
     app = create_app(embedder=FakeEmbedder(), settings=_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post("/embed-image", json=_EMBED_BODY)
 
     assert resp.status_code == 401
@@ -124,8 +123,8 @@ async def test_embed_rejects_unauthenticated_request():
 async def test_embed_rejects_wrong_api_key():
     app = create_app(embedder=FakeEmbedder(), settings=_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post(
                 "/embed-image",
                 json=_EMBED_BODY,
@@ -141,8 +140,8 @@ async def test_embed_rejects_wrong_api_key():
 async def test_bearer_token_accepted_through_full_stack():
     app = create_app(embedder=FakeEmbedder(), settings=_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.get(
                 "/models",
                 headers={"Authorization": f"Bearer {_API_KEY}"},
@@ -159,8 +158,8 @@ async def test_bearer_token_accepted_through_full_stack():
 async def test_health_and_ready_are_public_with_auth_enabled():
     app = create_app(embedder=FakeEmbedder(), settings=_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             health = await client.get("/health")
             ready = await client.get("/ready")
 
@@ -177,8 +176,8 @@ async def test_invalid_model_name_returns_422():
     """The `pattern` constraint on EmbedImageRequest.model rejects path-traversal."""
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post(
                 "/embed-image",
                 json={"image_url": "https://example.com/img.jpg", "model": "../../../etc/passwd"},
@@ -194,8 +193,8 @@ async def test_missing_image_input_returns_422():
     """Neither image_url nor image_base64 provided → HTTP 422."""
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post("/embed-image", json={"model": "ViT-L-14"})
 
     assert resp.status_code == 422
@@ -207,8 +206,8 @@ async def test_dual_image_input_returns_422():
     png_b64 = base64.b64encode(_png_bytes()).decode()
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post(
                 "/embed-image",
                 json={
@@ -228,8 +227,8 @@ async def test_embed_base64_image_path():
     png_b64 = base64.b64encode(_png_bytes()).decode()
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post(
                 "/embed-image",
                 json={"image_base64": png_b64, "model": "ViT-B-16"},
@@ -249,8 +248,8 @@ async def test_request_timeout_returns_504():
     settings.embedding_timeout_seconds = 0.1
     app = create_app(embedder=SlowEmbedder(delay=0.5), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=5.0) as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test", timeout=5.0) as client:
             resp = await client.post("/embed-image", json=_EMBED_BODY)
 
     assert resp.status_code == 504
@@ -271,8 +270,8 @@ async def test_queue_full_returns_429():
     settings.embedding_timeout_seconds = 10
     app = create_app(embedder=SlowEmbedder(delay=1.0, started=started), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=15.0) as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test", timeout=15.0) as client:
             # First request occupies the single concurrency slot.
             task = asyncio.create_task(client.post("/embed-image", json=_EMBED_BODY))
             # Wait until the embedder has actually started (slot is taken).
@@ -292,8 +291,8 @@ async def test_unhandled_embedder_exception_returns_500():
     """Global exception handler converts unexpected RuntimeError into HTTP 500."""
     app = create_app(embedder=RaisingEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             resp = await client.post("/embed-image", json=_EMBED_BODY)
 
     assert resp.status_code == 500
@@ -310,8 +309,8 @@ async def test_admin_cleanup_always_requires_auth():
     settings.service_api_key = _API_KEY
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             no_key = await client.post("/admin/cleanup")
             with_key = await client.post("/admin/cleanup", headers={"X-Api-Key": _API_KEY})
 
@@ -340,8 +339,8 @@ async def test_rate_limit_returns_429_after_quota_exceeded():
     settings = _no_auth_settings(rate_limit_embed="2/minute")
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             r1 = await client.post("/embed-image", json=_EMBED_BODY)
             r2 = await client.post("/embed-image", json=_EMBED_BODY)
             r3 = await client.post("/embed-image", json=_EMBED_BODY)  # over quota
@@ -364,8 +363,8 @@ async def test_concurrent_requests_all_succeed():
     settings.embedding_timeout_seconds = 10
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=15.0) as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test", timeout=15.0) as client:
             responses = await asyncio.gather(
                 *[client.post("/embed-image", json=_EMBED_BODY) for _ in range(6)]
             )

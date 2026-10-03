@@ -6,12 +6,13 @@
 
 import base64
 
-import httpx
+import httpx2
 import pytest
+from asgi_clients import lifespan_client
 from asgi_lifespan import LifespanManager
+from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
 
 from image_embedder.main import create_app
-from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
 
 pytestmark = pytest.mark.anyio
 
@@ -23,10 +24,8 @@ def _b64() -> str:
 @pytest.fixture
 async def client():
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
-    async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
-            yield c
+    async with lifespan_client(app) as c:
+        yield c
 
 
 # ---------------------------------------------------------------------------
@@ -155,8 +154,8 @@ class _PartialRaisingEmbedder(FakeEmbedder):
 async def test_embed_batch_per_item_exception_is_error_result():
     app = create_app(embedder=_PartialRaisingEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}, {"image_base64": _b64()}]},
@@ -200,8 +199,8 @@ async def test_embed_batch_exceeds_max_returns_413():
     settings = _no_auth_settings(embed_batch_api_max_items=2)
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={
@@ -220,8 +219,8 @@ async def test_embed_batch_exactly_at_max_succeeds():
     settings = _no_auth_settings(embed_batch_api_max_items=2)
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}, {"image_base64": _b64()}]},
@@ -239,8 +238,8 @@ async def test_embed_batch_requires_auth():
     settings.service_api_key = "test-key-123"
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}]},
@@ -254,8 +253,8 @@ async def test_embed_batch_valid_api_key_accepted():
     settings.service_api_key = "test-key-123"
     app = create_app(embedder=FakeEmbedder(), settings=settings)
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}]},
@@ -272,8 +271,8 @@ class _ShortBatchResultEmbedder(FakeEmbedder):
 async def test_embed_batch_returns_500_when_embedder_result_count_is_wrong():
     app = create_app(embedder=_ShortBatchResultEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app, raise_app_exceptions=False)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app, raise_app_exceptions=False)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}, {"image_base64": _b64()}]},

@@ -8,7 +8,7 @@ import asyncio
 import signal
 from unittest.mock import Mock
 
-import httpx
+import httpx2
 import pytest
 from asgi_lifespan import LifespanManager
 from fakes import FakeEmbedder, _no_auth_settings
@@ -49,8 +49,8 @@ async def test_http_timeout_retains_real_concurrency_and_retry_rejects_until_wor
     app = gated_app(gate)
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 task = asyncio.create_task(client.post(path, json=body))
                 await gate.wait_started()
@@ -80,8 +80,8 @@ async def test_http_caller_cancellation_does_not_release_running_work(path, body
     app = gated_app(gate, embedding_timeout_seconds=5)
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 task = asyncio.create_task(client.post(path, json=body))
                 await gate.wait_started()
@@ -104,8 +104,8 @@ async def test_http_expired_queue_admission_is_removed(path, body):
     app = gated_app(gate, embed_max_queue=1)
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 first = asyncio.create_task(client.post(path, json=body))
                 await gate.wait_started()
@@ -128,8 +128,8 @@ async def test_http_expired_queue_admission_is_removed(path, body):
 async def test_closed_executor_returns_503(path, body):
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     assert await app.state.executor.close(1)
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app=app), base_url="http://test"
     ) as client:
         response = await client.post(path, json=body)
     assert response.status_code == 503
@@ -162,8 +162,8 @@ async def test_lifespan_drain_precedes_memory_cleanup(monkeypatch):
     release_task = asyncio.create_task(release_during_drain())
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 assert (
                     await client.post(ENDPOINTS[0][0], json=ENDPOINTS[0][1])
@@ -185,8 +185,8 @@ async def test_lifespan_skips_gpu_cleanup_when_drain_budget_expires(monkeypatch)
     monkeypatch.setattr("image_embedder.lifecycle.force_cleanup", cleanup)
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 assert (
                     await client.post(ENDPOINTS[0][0], json=ENDPOINTS[0][1])
@@ -218,8 +218,8 @@ async def test_lifespan_preserves_signal_handlers_and_tears_down_after_body_erro
             raise RuntimeError("body error")
     registration.assert_not_called()
     assert signal.getsignal(signal.SIGTERM) == original
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app=app), base_url="http://test"
     ) as client:
         assert (
             await client.post(ENDPOINTS[0][0], json=ENDPOINTS[0][1])

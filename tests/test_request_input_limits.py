@@ -9,7 +9,7 @@ import base64
 import json
 import threading
 
-import httpx
+import httpx2
 import numpy as np
 import pytest
 from asgi_lifespan import LifespanManager
@@ -123,8 +123,8 @@ async def test_inline_oversize_rejected_before_single_admission(batch_window):
         embedder,
         _no_auth_settings(max_image_bytes=3, embed_batch_window_ms=batch_window),
     )
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app), base_url="http://test"
     ) as client:
         response = await client.post("/embed-image", json={"image_base64": "YWJjZA=="})
     assert response.status_code == 413
@@ -136,8 +136,8 @@ async def test_inline_oversize_rejected_before_single_admission(batch_window):
 async def test_inline_batch_aggregate_rejected_before_worker():
     embedder = CountingEmbedder()
     app = create_app(embedder, _no_auth_settings(max_batch_image_bytes=5))
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app), base_url="http://test"
     ) as client:
         response = await client.post(
             "/embed-batch", json={"items": [{"image_base64": "YWJj"}] * 2}
@@ -156,8 +156,8 @@ async def test_real_pixel_refusal_does_not_load_model(monkeypatch):
         embedder, "_load_model", lambda *_a: pytest.fail("rejected image loaded model")
     )
     app = create_app(embedder, settings)
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app), base_url="http://test"
     ) as client:
         response = await client.post(
             "/embed-image",
@@ -184,8 +184,8 @@ async def test_coalesced_pixel_budget_preserves_single_response_mapping(monkeypa
     )
     app = create_app(embedder, settings)
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app), base_url="http://test"
         ) as client:
             responses = await asyncio.gather(
                 *(
@@ -227,8 +227,8 @@ async def test_timed_out_worker_keeps_image_until_native_work_finishes(monkeypat
     )
     app = create_app(embedder, settings)
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app), base_url="http://test"
         ) as client:
             try:
                 request = asyncio.create_task(

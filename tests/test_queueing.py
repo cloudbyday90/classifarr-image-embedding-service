@@ -3,15 +3,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import asyncio
-import time
 import threading
+import time
 
-import httpx
+import httpx2
 import pytest
 from asgi_lifespan import LifespanManager
+from fakes import _no_auth_settings
 
 from image_embedder.main import create_app
-from fakes import _no_auth_settings
 
 
 class SlowEmbedder:
@@ -85,9 +85,9 @@ async def test_queue_serializes_when_waiting_allowed(monkeypatch):
     app = create_app(embedder=SlowEmbedder(delay_seconds=0.20), settings=_no_auth_settings(
         embed_concurrency=1, embed_max_queue=10, embed_max_wait_seconds=2
     ))
-    transport = httpx.ASGITransport(app=app)
+    transport = httpx2.ASGITransport(app=app)
 
-    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+    async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
         async def call():
             return await client.post("/embed-image", json={"image_base64": "AA==", "model": "ViT-L-14"})
 
@@ -112,9 +112,9 @@ async def test_queue_fail_fast_when_no_waiting(monkeypatch):
     app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started), settings=_no_auth_settings(
         embed_concurrency=1, embed_max_queue=0, embed_max_wait_seconds=60
     ))
-    transport = httpx.ASGITransport(app=app)
+    transport = httpx2.ASGITransport(app=app)
 
-    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+    async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
         task1 = asyncio.create_task(
             client.post("/embed-image", json={"image_base64": "AA==", "model": "ViT-L-14"})
         )
@@ -148,9 +148,9 @@ async def test_queue_wait_timeout_returns_504(monkeypatch):
     app = create_app(embedder=SlowEmbedder(delay_seconds=0.50, started_event=started), settings=_no_auth_settings(
         embed_concurrency=1, embed_max_queue=10, embed_max_wait_seconds=0
     ))
-    transport = httpx.ASGITransport(app=app)
+    transport = httpx2.ASGITransport(app=app)
 
-    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+    async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
         task1 = asyncio.create_task(
             client.post("/embed-image", json={"image_base64": "AA==", "model": "ViT-L-14"})
         )
@@ -183,8 +183,8 @@ async def test_batch_window_coalesces_parallel_requests():
     assert app.state.batch_window is not None
 
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             async def call():
                 return await client.post(
                     "/embed-image",
@@ -215,8 +215,8 @@ async def test_batch_window_disabled_uses_single_request_path():
     assert app.state.batch_window is None
 
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
             r = await client.post(
                 "/embed-image",
                 json={"image_base64": "AA==", "model": "ViT-L-14"},

@@ -8,7 +8,7 @@ import asyncio
 import json
 from concurrent.futures import ThreadPoolExecutor
 
-import httpx
+import httpx2
 import pytest
 from fakes import FakeEmbedder, _no_auth_settings
 from test_request_input_limits import raw_request
@@ -188,8 +188,8 @@ async def test_complete_upload_blocks_mixed_paths_but_health_and_other_apps_work
         await finish.wait()
         yield b'{"image_url":"https://example.com/x"}'
 
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app), base_url="http://test"
+    async with httpx2.AsyncClient(
+        transport=httpx2.ASGITransport(app), base_url="http://test"
     ) as client:
         upload = asyncio.create_task(
             client.post(

@@ -12,22 +12,20 @@ Covers:
   - P1.5  image_size frozen to spec default
 """
 
+import base64
 import math
-import sys
-import types
 
-import httpx
+import httpx2
 import numpy as np
 import pytest
-from PIL import Image
 from asgi_lifespan import LifespanManager
+from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
 from fastapi.testclient import TestClient
+from PIL import Image
 
 from image_embedder.config import Settings
-from image_embedder.embedder import BatchItem, ImageEmbedder, MODEL_CATALOG
+from image_embedder.embedder import MODEL_CATALOG, BatchItem, ImageEmbedder
 from image_embedder.main import create_app
-from fakes import FakeEmbedder, _no_auth_settings, _png_bytes
-import base64
 
 
 def _b64() -> str:
@@ -231,28 +229,29 @@ class TestImageSizeFreeze:
     def test_none_image_size_uses_spec_default(self, monkeypatch):
         spec = MODEL_CATALOG["ViT-L-14"]
         monkeypatch.setattr(self.embedder, "_resolve_image_bytes", lambda *_a, **_k: b"img")
+        monkeypatch.setattr(
+            self.embedder, "_image_from_bytes",
+            lambda _data, **_kwargs: Image.new("RGB", (1, 1)),
+        )
+        sizes = []
 
-        def _fake_load(s):
-            class _M:
-                def __call__(self, **kw):
-                    class _O:
-                        image_embeds = [
-                            _make_fake_tensor([0.5] * spec.dims)
-                        ]
-                    return _O()
-            import types
-            proc = types.SimpleNamespace(
-                __call__=lambda *a, **kw: {"pixel_values": _FakePtInput()}
-            )
-            return (_M(), proc, "cpu")
+        def processor(images, return_tensors, size):
+            sizes.append(size)
+            return {"pixel_values": np.ones((1, 3, spec.image_size, spec.image_size))}
 
-        monkeypatch.setattr(self.embedder, "_load_model", _fake_load)
-        # Should not raise; image_size=None maps to spec default
-        with pytest.raises(Exception):  # will fail at torch import or similar, that's fine
-            self.embedder.embed(
-                image_url=None, image_base64="AA==",
-                model="ViT-L-14", normalize=False, image_size=None,
-            )
+        def model(inputs):
+            return [np.full((1, spec.dims), 0.5, dtype=np.float32)]
+
+        monkeypatch.setattr(
+            self.embedder, "_load_model", lambda _spec: (model, processor, "ov:CPU")
+        )
+        embedding, dims, _, _, _ = self.embedder.embed(
+            image_url=None, image_base64="AA==",
+            model=spec.name, normalize=False, image_size=None,
+        )
+        assert sizes == [{"shortest_edge": spec.image_size}]
+        assert dims == spec.dims
+        assert embedding == [0.5] * spec.dims
 
     def test_spec_default_image_size_accepted(self, monkeypatch):
         """Passing image_size equal to spec.image_size is allowed."""
@@ -297,8 +296,8 @@ async def test_embed_batch_route_non_default_image_size_returns_422():
     """The batch route rejects non-default image_size with HTTP 422."""
     app = create_app(embedder=FakeEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}], "image_size": 512},
@@ -351,8 +350,8 @@ def test_embed_route_uses_canonical_image_size_not_embedder_returned():
 async def test_batch_route_per_item_uses_canonical_metadata():
     app = create_app(embedder=_MismatchEmbedder(), settings=_no_auth_settings())
     async with LifespanManager(app):
-        transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
+        transport = httpx2.ASGITransport(app=app)
+        async with httpx2.AsyncClient(transport=transport, base_url="http://test") as c:
             resp = await c.post(
                 "/embed-batch",
                 json={"items": [{"image_base64": _b64()}, {"image_base64": _b64()}]},
@@ -380,7 +379,6 @@ class _FakeOvProcessorFixed:
 def test_embed_route_wrong_model_output_dims_returns_400(monkeypatch):
     """When the real ImageEmbedder gets a wrong-width output, it raises ValueError
     which the route maps to HTTP 400."""
-    spec = MODEL_CATALOG["ViT-L-14"]
     processor = _FakeOvProcessorFixed()
 
     def _model_wrong_dims(inputs):

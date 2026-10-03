@@ -2,6 +2,8 @@
 
 Assessment date: 2026-10-02. Baseline: `eb61eb63167438cb1c14f18a600d56574552c937`. Python and direct delivery on master remain user decisions.
 
+Current follow-up, 2026-10-03: [native Windows contract validation](windows-native-validation.md) adds four separate platform/bootstrap profiles. The [HTTPX2 QA migration](httpx2-test-clients.md) adds three reviewed wheels to QA, now 70, while preserving every original QA artifact and all twelve other profile graphs. The current thirteen profiles contain 517 artifact records. [PR 53](pr-53-local-validation.md) renews the Transformers floor without refreshing production wheels. The [dependency-migration skill](project-dependency-migration-skill.md) guides these scoped changes; the original delivery measurements below retain their own dates and evidence.
+
 ## Evidence and official research
 
 Existing backend files pin Torch flavor, but shared runtime/dev dependencies and installer tooling still resolve from ranges. The capacity record already provides reviewed installed versions; repeated resolution can change the numerical/artifact environment without a deliberate update.

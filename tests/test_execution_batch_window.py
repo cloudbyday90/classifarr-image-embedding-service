@@ -6,7 +6,7 @@
 
 import asyncio
 
-import httpx
+import httpx2
 import pytest
 from asgi_lifespan import LifespanManager
 from fakes import FakeEmbedder, _no_auth_settings
@@ -110,8 +110,8 @@ async def test_coalesced_http_timeouts_keep_capacity_shared_with_explicit_batch_
     body = {"image_url": "https://example.com/image.png"}
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 requests = [
                     asyncio.create_task(client.post("/embed-image", json=body))

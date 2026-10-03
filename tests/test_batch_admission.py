@@ -6,7 +6,7 @@
 
 import asyncio
 
-import httpx
+import httpx2
 import pytest
 from asgi_lifespan import LifespanManager
 from fakes import FakeEmbedder, _no_auth_settings
@@ -277,8 +277,8 @@ async def test_http_burst_is_bounded_and_pending_is_visible_in_headers_and_healt
     requests = []
     try:
         async with LifespanManager(app):
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 requests = [
                     asyncio.create_task(
@@ -341,8 +341,8 @@ async def test_http_queue_deadline_maps_504_without_dispatching_expired_payload(
         async with LifespanManager(app):
             blocker = asyncio.create_task(app.state.executor.run(gate.run, lambda: 42))
             await gate.wait_started()
-            async with httpx.AsyncClient(
-                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            async with httpx2.AsyncClient(
+                transport=httpx2.ASGITransport(app=app), base_url="http://test"
             ) as client:
                 response = await client.post(
                     "/embed-image", json={"image_url": job().image_url}

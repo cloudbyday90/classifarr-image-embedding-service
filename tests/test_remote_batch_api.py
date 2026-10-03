@@ -7,7 +7,7 @@
 import asyncio
 import base64
 
-import httpx
+import httpx2
 import pytest
 from asgi_lifespan import LifespanManager
 from fakes import _png_bytes
@@ -52,8 +52,8 @@ async def test_explicit_batch_returns_ordered_partial_results(monkeypatch):
     remote = {"image_url": "https://images.example/a?token=test-private-detail"}
     inline = {"image_base64": inline_item().image_base64}
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app=app), base_url="http://test"
         ) as client:
             response = await client.post(
                 "/embed-batch",
@@ -119,8 +119,8 @@ async def test_http_timeout_retains_native_batch_owner_then_recovers_capacity(
     remote = {"image_url": "https://images.example/a"}
     inline = {"image_base64": base64.b64encode(_png_bytes()).decode()}
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app=app), base_url="http://test"
         ) as client:
             response = await client.post("/embed-batch", json={"items": [remote] * 32})
             assert response.status_code == 504

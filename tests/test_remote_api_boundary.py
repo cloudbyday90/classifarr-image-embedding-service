@@ -8,7 +8,7 @@ import asyncio
 import base64
 import traceback
 
-import httpx
+import httpx2
 import numpy as np
 import pytest
 from asgi_lifespan import LifespanManager
@@ -50,8 +50,8 @@ async def test_unsafe_redirect_refusal_preserves_api_and_per_item_order(
     )
     app = create_app(embedder, settings)
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app), base_url="http://test"
         ) as client:
             bad = {"image_url": "http://images.example/x"}
             if mode == "batch":
@@ -112,8 +112,8 @@ async def test_download_failure_retains_status_and_sanitizes_logs(
     transport = RemoteTransport(monkeypatch, *responses)
     app = create_app(embedder, settings)
     async with LifespanManager(app):
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app), base_url="http://test"
+        async with httpx2.AsyncClient(
+            transport=httpx2.ASGITransport(app), base_url="http://test"
         ) as client:
             bad = {"image_url": f"http://images.example/x?token={secret}"}
             if mode == "batch":
