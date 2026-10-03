@@ -7,6 +7,8 @@ description: Design, run and interpret Classifarr deployment capacity experiment
 
 Read [measurement contracts](references/measurement-contracts.md) when designing or interpreting an experiment. Reuse the repository probes instead of creating another benchmark runner.
 
+For native upload pressure, also read [socket upload experiments](references/socket-upload-experiments.md). Require observed server receipt before EOF, disconnect settlement and recovered vectors; distinguish authentication after body receipt from early header rejection.
+
 Establish the deployment question and tested configuration before choosing limits: backend/device, model revisions, workers/owners, byte/pixel ceilings, deadlines, thread settings and available hardware. Keep application behavior stable unless measurements justify a specific change.
 
 Use verified offline assets and the matching locked image. Run fresh bounded non-root containers; retain flushed journals outside Git. Require actual loaded devices and vector parity, including canceled owners whose failures cannot reach the caller. Record child reaping and settled admission, not just HTTP success.

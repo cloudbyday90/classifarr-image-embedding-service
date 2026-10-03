@@ -1,6 +1,6 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current HTTPX2/dependency-skill iteration starts from `2f19545409758ac524e4c3703e11ea55b8e26524` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current socket-capacity/skill iteration starts from `6d4221715bf9a4a9820077fd8a550503c22ebc6d` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
@@ -34,16 +34,18 @@ Assessment date: 2026-10-03. The current HTTPX2/dependency-skill iteration start
 | Task/storage/CUDA capacity extension and focused calibration skill | Real mixed inputs, child/owner settlement and accelerator allocation evidence | Shared host and sampled peaks remain workload-specific; socket/proxy buffering is separate | Implemented; [capacity](deployment-capacity.md), [skill](project-capacity-skill.md), random [NumPy PR 48](pr-48-local-validation.md) |
 | Recurring Windows ACL/process/socket matrix and native-validation skill | Current framework graph, mandatory execution and complete OSV inventory gates | Separate target locks; hosted Server 2025/latest patches remain unobserved locally | Implemented; [Windows outcomes](windows-native-validation.md), [skill](project-native-validation-skill.md), random [renewed PR 46 floor](pr-46-floor-followup.md) |
 | HTTPX2 API test clients and dependency-migration skill | Current Starlette client, explicit lifecycle/state and constrained QA artifacts | SDK/probe clients remain separate; ASGI tests do not prove socket/TLS behavior | Implemented; [migration](httpx2-test-clients.md), [skill](project-dependency-migration-skill.md), random [PR 53](pr-53-local-validation.md) |
+| Real socket uploads and focused calibration skill reference | Server-observed body pressure, excess rejection, disconnect settlement and recovered real vectors | Shared client overhead; direct HTTP/1, padded PNGs and host-specific observations | Implemented on CPU/OpenVINO; [socket outcome](socket-upload-capacity.md), [skill](project-socket-capacity-skill.md); [no suitable unapplied PR](open-pr-availability.md) |
 | Retain modular Python and measure before language changes | Builds on native inference and tested contracts | Python footprint remains; Rust benefit is unmeasured here | User confirmed; [language decision](language-platform-decision.md) |
 
 ## Next items
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Measure real socket-upload capacity at configured body/image ceilings on CPU/OpenVINO | Captures parser buffering, concurrent inline/remote requests, decoded pixels and task/storage peaks missing from in-process probes | Controlled container/proxy setup; measurements are host and codec specific |
-| Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
+| Next 1 | Reject invalid API keys before body receipt | Removes observed 16 MiB unauthenticated body consumption; reduces avoidable parsing/ingress pressure | Preserve public probes, constant-time comparison, error/API contracts and ownership |
+| Next 2 | Measure actual reverse-proxy request buffering and target workload headroom | Covers another body/temp-storage owner before concurrency tuning | Requires the operator configuration, TLS/HTTP version and hardware evidence |
+| Next 3 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-Next add a bounded real-socket upload capacity workload to the existing probes and measure it under current memory/PID/storage containment before changing limits or owner counts. Record direct-server buffering first and reverse-proxy behavior separately. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+Next implement early API-key rejection after the real socket probe observed complete 16 MiB body receipt before 401. Preserve public health/model behavior and current resource contracts. Then measure actual reverse-proxy buffering separately before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
 
@@ -62,6 +64,21 @@ Use a total 30-second upload budget that stops at complete body/disconnect/respo
 Use a separate total 30-second HTTP/1 response-send budget through the shipped asyncio launcher. Include terminal user-space and TLS ciphertext buffer drain; abort and confirm connection loss before cancellation releases ingress. Keep httptools/h11 parser selection automatic. Retest the narrow Uvicorn/CPython adapter on upgrades, use asyncio for TLS, and keep edge/HTTP2/WebSocket/background-work contracts explicit. Adopt the immutable Trivy v0.36.0 wrapper with the verified native binary selected by absolute path, disabled setup/cache and existing report/failure gates.
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
+
+## Real socket delivery outcome
+
+Both native CPU/OpenVINO profiles pass held-upload, header-only excess/overflow,
+disconnect recovery, ordered real vectors, mixed queueing and child-reaping gates.
+All eight ingress slots receive 16 MiB minus one byte before completion. Sampled
+socket-phase RSS reaches 2.94 GiB CPU / 4.55 GiB OpenVINO; these combined
+client/server/model observations leave actual proxy and target-hardware gates.
+Full QA passes **963 tests / seven existing skips**, with unchanged **95.22% lines /
+90.12% branches** and all thirteen locks unchanged. CodeQL has no new findings;
+verified Gitleaks source/history scans find no secrets. Separate [design and
+outcome](socket-upload-capacity.md), [skill extension](project-socket-capacity-skill.md)
+and [archive](validation/socket-upload-capacity-2026-10-03.json) retain evidence.
+The [PR availability review](open-pr-availability.md) records no suitable unapplied
+PR, following the user's instruction to continue without an adoption.
 
 ## HTTPX2 migration outcome
 

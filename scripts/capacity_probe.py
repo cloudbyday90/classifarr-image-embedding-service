@@ -38,7 +38,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--scenario",
-        choices=["serial", "overlap", "detached", "api", "mixed"],
+        choices=["serial", "overlap", "detached", "api", "mixed", "socket"],
         default="serial",
     )
     parser.add_argument(
@@ -82,9 +82,13 @@ def main() -> None:
         cleanup_on_shutdown=False,
         embed_concurrency=1,
         embed_batch_window_ms=0,
-        allow_remote_urls=args.scenario == "mixed",
-        allowed_remote_hosts=["capacity.example"] if args.scenario == "mixed" else [],
+        allow_remote_urls=args.scenario in {"mixed", "socket"},
+        allowed_remote_hosts=["capacity.example"] if args.scenario in {"mixed", "socket"} else [],
     )
+    if args.scenario == "socket":
+        from capacity_upload_body import validate_socket_limits
+
+        validate_socket_limits(settings)
     sizes = sorted(
         {1, settings.embed_batch_max_size, settings.embed_batch_api_max_items}
     )

@@ -44,3 +44,12 @@ Measurements exercised native cgroup v1; v2 and independently mounted v1 PID con
 Keep Python and modular service/probe files, one worker/owner, existing ingress/byte/pixel and upload/remote budgets, 4 GiB CPU/CUDA and 8 GiB OpenVINO containment, with operator overrides based on target measurements. The 1024-task/128-MiB bounds have substantial headroom for these experiments but are not a new production default. Preserve exact dependency/model/IR contracts and monitor temporary capacity independently of persistent cache storage. Next add recurring native Windows setup, fetch-worker and response-transport validation.
 
 The complete locked Python 3.12 QA suite passes **928 tests / 7 existing optional skips**, with **95.22% lines / 90.12% branches** coverage above unchanged floors. Fourteen new cases cover split controller discovery, missing counters, reserved filesystem capacity/inodes, anonymous-file allocation, aggregate minima/peaks, unavailable CUDA, synchronized allocator boundaries, mixed native children and hidden detached failures. Scoped Ruff/Pyright, workflow syntax, copyright, Markdown links and both skill validators pass. Native CodeQL reports only the same two existing setup-context alerts (explicit key display and nonsecret 0644 publication); no probe finding or suppression was added. Configured native Gitleaks source/history scans find no secrets. The final QA filesystem explicitly permits the setup test's executable local stub; earlier tmpfs execution-denied failures were test-container configuration errors.
+
+## Real socket follow-up
+
+The [separate socket design and outcome](socket-upload-capacity.md) now extends
+these historical ASGI measurements with native CPU/OpenVINO HTTP/1 uploads at
+configured body/image ceilings, server receive counters, disconnect settlement
+and real vector recovery. Keep the original observations above intact; direct
+socket evidence still leaves the operator's proxy buffering and target hardware
+as separate gates. The next fix is API-key rejection before body ingestion.

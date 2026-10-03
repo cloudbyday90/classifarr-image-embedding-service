@@ -418,7 +418,7 @@ docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
   classifarr-image-embedder:cpu-smoke scripts/production_model_probe.py --backend cpu --model ViT-L-14
 ```
 
-Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. The [capacity calibration](docs/capacity-calibration.md) and [deployment extension](docs/deployment-capacity.md) exercise both resident models, maximum batches, mixed inputs and detached owners on CPU/OpenVINO CPU/NVIDIA CUDA. Other devices, socket/proxy buffering and broader concurrent-input combinations remain hardware/workload gates. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
+Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. The [capacity calibration](docs/capacity-calibration.md) and [deployment extension](docs/deployment-capacity.md) exercise both resident models, maximum batches, mixed inputs and detached owners on CPU/OpenVINO CPU/NVIDIA CUDA. Direct HTTP/1 upload capacity is now measured on CPU/OpenVINO in the [socket record](docs/socket-upload-capacity.md). Other devices, reverse-proxy buffering and broader input combinations remain hardware/workload gates. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
 
 ### Capacity calibration
 
@@ -434,7 +434,7 @@ docker run --rm --network none --no-healthcheck \
   --backend cpu --scenario api --image-edge 974 --repeats 1
 ```
 
-Run `serial`, `overlap`, `api`, `detached` and `mixed` in separate fresh containers. For OpenVINO use its image, `--backend openvino` and an 8 GiB/no-swap limit; add `--cold-ir` to measure private export without invalidating the original cache. CUDA requires its image, Docker `--gpus all` and `--backend cuda`; GPU absence or a mismatched loaded device fails the probe. The CLI emits flushed JSONL memory, task/thread, temporary-filesystem and CUDA allocator records. The manual **Production Capacity Calibration** workflow includes mixed concurrent inline/remote inputs and detached owners on CPU/OpenVINO. Its PID/tmpfs bounds are experiment settings; tmpfs consumes the memory budget. See [measured headroom and limitations](docs/deployment-capacity.md) and the [capacity AI skill](docs/project-capacity-skill.md). Retain one worker/owner until target-host evidence supports tuning.
+Run `serial`, `overlap`, `api`, `detached` and `mixed` in separate fresh containers. Run `socket` on CPU/OpenVINO to hold all ingress slots one byte before EOF at the body ceiling, observe excess rejection and disconnect cleanup, then verify retained and concurrent mixed vectors. The single fixture also reaches current image byte/pixel ceilings; clients and server share the measured container. For OpenVINO use its image, `--backend openvino` and an 8 GiB/no-swap limit; add `--cold-ir` to measure private export without invalidating the original cache. CUDA requires its image, Docker `--gpus all` and `--backend cuda`; GPU absence or a mismatched loaded device fails the probe. The CLI emits flushed JSONL memory, task/thread, temporary-filesystem and CUDA allocator records. The manual **Production Capacity Calibration** workflow includes direct socket uploads, mixed concurrent inline/remote inputs and detached owners on CPU/OpenVINO. Its PID/tmpfs bounds are experiment settings; tmpfs consumes the memory budget. See [measured headroom and limitations](docs/deployment-capacity.md) and the [capacity AI skill](docs/project-capacity-skill.md). Retain one worker/owner until target-host evidence supports tuning.
 
 ## API
 ### GET /health
@@ -663,6 +663,9 @@ The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-re
 - [Local PR 42 implementation and validation](docs/pr-42-local-validation.md)
 - [Backend build design and validation](docs/backend-build-recommendation.md)
 - [Local PR 40 implementation and validation](docs/pr-40-local-validation.md)
+- [Socket-upload capacity design and outcomes](docs/socket-upload-capacity.md)
+- [Socket-capacity AI skill extension](docs/project-socket-capacity-skill.md)
+- [Open PR availability](docs/open-pr-availability.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
 - [Total upload and supervised remote-fetch design and validation](docs/request-lifetimes.md)
 - [Open PR 52 local pytest adoption and validation](docs/pr-52-local-validation.md)

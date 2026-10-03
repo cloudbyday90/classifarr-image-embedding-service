@@ -270,3 +270,11 @@ class CapacityWorkload:
                 lambda: asyncio.run(check_mixed_capacity(self)),
             )
             self.emit({"event": "mixed_inputs", "result": result})
+        elif scenario == "socket":
+            from capacity_socket import check_socket_capacity
+
+            result = self.measure(
+                "native_socket_upload_capacity",
+                lambda: asyncio.run(check_socket_capacity(self)),
+            )
+            self.emit({"event": "socket_upload_capacity", "result": result})
