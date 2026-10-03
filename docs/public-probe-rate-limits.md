@@ -140,3 +140,8 @@ then observe hosted Windows execution and remaining accelerator/platform gates.
 The [early-authentication outcome](early-api-key-authentication.md) retains the
 earlier body-order evidence; the [quota skill design](project-quota-identity-skill.md)
 records the focused workflow extension separately.
+
+The operator confirmed direct Docker publishing in the next iteration. The
+[direct deployment follow-up](direct-deployment-trust.md) makes forwarding trust
+explicit and disables it by default, without adding a reverse proxy. Actual
+operator workload headroom and remote-client address preservation remain next.

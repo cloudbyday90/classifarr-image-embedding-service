@@ -43,6 +43,8 @@ async def socket_server(app: ASGIApp, settings: Settings):
             ),
             limit_concurrency=settings.server_concurrency,
             backlog=settings.server_backlog,
+            proxy_headers=bool(settings.server_forwarded_allow_ips),
+            forwarded_allow_ips=settings.server_forwarded_allow_ips,
             timeout_graceful_shutdown=settings.shutdown_timeout_seconds,
         )
         server = uvicorn.Server(config)

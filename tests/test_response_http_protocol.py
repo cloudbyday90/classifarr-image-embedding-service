@@ -38,7 +38,7 @@ async def wait_until(predicate):
 
 
 @asynccontextmanager
-async def running_server(app, admission, protocol, tmp_path, tls=False, forwarded_allow_ips=None):
+async def running_server(app, admission, protocol, tmp_path, tls=False, forwarded_allow_ips=None, proxy_headers=True):
     instances, lost = [], []
 
     class ObservedProtocol(protocol):
@@ -85,6 +85,7 @@ async def running_server(app, admission, protocol, tmp_path, tls=False, forwarde
         log_config=None,
         timeout_graceful_shutdown=1,
         forwarded_allow_ips=forwarded_allow_ips,
+        proxy_headers=proxy_headers,
         **tls_settings,
     )
     server = uvicorn.Server(config)

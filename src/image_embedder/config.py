@@ -7,6 +7,7 @@ import tomllib
 from dataclasses import dataclass, field
 
 from .deadlines import embedding_deadline, positive_duration
+from .forwarding import validated_proxy_peers
 
 # ---------------------------------------------------------------------------
 # Optional TOML config file — loaded once at import time.
@@ -98,6 +99,16 @@ def _get_csv_list(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def _forwarded_peers() -> list[str]:
+    raw = os.getenv("IMAGE_EMBEDDER_FORWARDED_ALLOW_IPS")
+    if raw is not None:
+        value = raw.split(",") if raw.strip() else []
+    else:
+        configured = _c("server", "forwarded_allow_ips")
+        value = [] if configured is None else configured
+    return validated_proxy_peers(value)
+
+
 @dataclass
 class Settings:
     host: str = field(default_factory=lambda: _str("IMAGE_EMBEDDER_HOST", "server", "host", "0.0.0.0"))
@@ -106,6 +117,7 @@ class Settings:
     server_workers: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_WORKERS", "server", "workers", 1))
     server_concurrency: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_SERVER_CONCURRENCY", "server", "limit_concurrency", 64))
     server_backlog: int = field(default_factory=lambda: _positive_int("IMAGE_EMBEDDER_SERVER_BACKLOG", "server", "backlog", 128))
+    server_forwarded_allow_ips: list[str] = field(default_factory=_forwarded_peers)
     default_model: str = field(default_factory=lambda: _str("DEFAULT_MODEL", "model", "default_model", "ViT-L-14"))
     device: str = field(default_factory=lambda: _str("DEVICE", "model", "device", "auto"))
     allow_remote_urls: bool = field(default_factory=lambda: _bool("ALLOW_REMOTE_IMAGE_URLS", "image", "allow_remote_urls", False))
@@ -170,6 +182,7 @@ class Settings:
     rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))
 
     def __post_init__(self) -> None:
+        self.server_forwarded_allow_ips = validated_proxy_peers(self.server_forwarded_allow_ips)
         for name in ("request_body_timeout_seconds", "response_send_timeout_seconds", "remote_fetch_timeout_seconds", "remote_batch_fetch_timeout_seconds", "request_timeout_seconds"):
             setattr(self, name, positive_duration(getattr(self, name), name))
         self.embedding_timeout_seconds = embedding_deadline(

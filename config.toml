@@ -12,6 +12,7 @@ request_body_timeout_seconds = 30 # total admitted upload budget; JSON 408 on ex
 workers = 1                 # each process owns separate ingress, models, caches and queues
 limit_concurrency = 64       # Uvicorn connections/tasks, including health; launcher setting
 backlog = 128                # socket listen backlog; launcher setting
+forwarded_allow_ips = []     # direct Docker port: ignore forwarding headers; explicit proxy peers only
 
 [model]
 default_model = "ViT-L-14"

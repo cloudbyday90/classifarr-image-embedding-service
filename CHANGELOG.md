@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Explicit trusted proxy peers with forwarding disabled by default for direct Docker deployments, plus native parser regressions, published-port validation and separate design/outcome records.
+- Direct-port transport guidance for the capacity-calibration AI skill and refreshed bounded CPU/OpenVINO capacity evidence.
 - A quota-identity reference for the resource-contract AI skill, with separate design/outcome records and native forwarding-trust regressions.
 - A focused authentication/body-order reference for the resource-contract AI skill, with native parser/TLS regressions and separate design/outcome records.
 - Real HTTP/1 upload-capacity calibration at body/image ceilings, with observed ingress rejection, disconnect recovery and native CPU/OpenVINO vector checks.

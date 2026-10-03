@@ -2,7 +2,7 @@
 
 Assessment: 2026-10-03. GitHub MCP returned eight open PRs; their fetched diffs and
 immutable heads were compared with the local master baseline
-`65597eaa3e1e925abcecb02b3a1b6f22727cb455`.
+`e9bc00bb1e06b967951bf98a3b572f6920944d34`.
 
 ## Design and decision
 
@@ -31,11 +31,11 @@ These URLs were discovered and fetched through web services rather than construc
 ## Outcome and recommendation
 
 There is no suitable unapplied open PR to choose. Continuing the recommended
-quota-identity work avoids replaying already delivered changes or weakening the
+direct-deployment work avoids replaying already delivered changes or weakening the
 platform. Recheck the current open list in the next iteration; PR state and heads
-can change. The [quota design and outcome](public-probe-rate-limits.md) records
+can change. The [direct deployment design and outcome](direct-deployment-trust.md) records
 this iteration's actual implementation and validation. The eight heads were
 refetched through GitHub MCP's repository-provided pull collection and individual
-diff services and remain unchanged from the authentication iteration. The generic
+diff services and remain unchanged from the quota-identity iteration. The generic
 issue search returned issues despite its PR qualifier; it was not used as the
 authoritative PR inventory.

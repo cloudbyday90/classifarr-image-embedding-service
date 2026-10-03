@@ -53,3 +53,9 @@ configured body/image ceilings, server receive counters, disconnect settlement
 and real vector recovery. Keep the original observations above intact; direct
 socket evidence still leaves the operator's proxy buffering and target hardware
 as separate gates. The [authentication follow-up](early-api-key-authentication.md) now rejects before body ingestion and [quota identities](public-probe-rate-limits.md) are stable across unverified headers. Next measure actual operator proxy buffering, effective-address trust and target workload headroom.
+
+The operator subsequently confirmed direct Docker port publishing with no reverse
+proxy. The [direct deployment follow-up](direct-deployment-trust.md) makes address
+trust explicit, validates the published port and refreshes bounded socket
+headroom. No proxy is added; actual workload and remote-client address behavior
+remain deployment-specific measurements.

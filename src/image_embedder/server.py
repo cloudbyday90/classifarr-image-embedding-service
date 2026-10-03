@@ -23,6 +23,8 @@ def main() -> None:
         workers=settings.server_workers,
         limit_concurrency=settings.server_concurrency,
         backlog=settings.server_backlog,
+        proxy_headers=bool(settings.server_forwarded_allow_ips),
+        forwarded_allow_ips=settings.server_forwarded_allow_ips,
         # uvloop's opaque TLS transport hides queued ciphertext from final drain.
         loop="asyncio",
         # Config accepts a callable protocol factory; partial remains spawn-pickleable.

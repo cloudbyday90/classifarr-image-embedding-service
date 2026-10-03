@@ -144,7 +144,7 @@ docker compose up -d
 
 Early 401/503 authentication errors close unread HTTP/1 connections. Existing ingress and declared-body limits still apply first; authenticated requests retain upload deadlines and body/image limits. Documentation/OpenAPI routes remain public. See [the design and native outcomes](docs/early-api-key-authentication.md).
 
-Each of `/health` and `/ready` has a separate client-address quota, regardless of credential headers. Embedding routes share one verified service-key identity across callers, with separate single/batch counters. Missing or invalid credentials use the client address in dev mode; rotating headers and empty Bearer values cannot create fresh quota identities. Raw API keys are not retained in limiter storage or exhaustion logs. Client addresses come from the server's existing forwarding policy; trust only actual proxy peers. NAT clients share address quotas. See [quota design, tradeoffs and outcomes](docs/public-probe-rate-limits.md).
+Each of `/health` and `/ready` has a separate client-address quota, regardless of credential headers. Embedding routes share one verified service-key identity across callers, with separate single/batch counters. Missing or invalid credentials use the client address in dev mode; rotating headers and empty Bearer values cannot create fresh quota identities. Raw API keys are not retained in limiter storage or exhaustion logs. Client addresses follow the launcher's explicit trusted-peer configuration; direct Docker deployments ignore forwarded headers. NAT clients share address quotas. See [quota design, tradeoffs and outcomes](docs/public-probe-rate-limits.md).
 
 ### Modes
 
@@ -588,9 +588,12 @@ Sequential explicit and coalesced batches also share a 30-second fetch-phase dea
 - `IMAGE_EMBEDDER_WORKERS` (default `1` - explicit launcher process count)
 - `IMAGE_EMBEDDER_SERVER_CONCURRENCY` (default `64` - launcher connection/task limit, including health)
 - `IMAGE_EMBEDDER_SERVER_BACKLOG` (default `128` - launcher socket backlog)
+- `IMAGE_EMBEDDER_FORWARDED_ALLOW_IPS` (default empty - explicit trusted proxy IPs/networks; direct deployments ignore forwarded headers)
 - `IMAGE_EMBEDDER_MEMORY_LIMIT` (Compose interpolation only; default `4g` for CPU/CUDA, `8g` for OpenVINO - memory and combined memory/swap ceiling)
 
 The admission/worker/concurrency/backlog controls map to `[server]` keys `max_http_requests`, `workers`, `limit_concurrency` and `backlog`; all require positive integers. Upload and response send durations map to `[server].request_body_timeout_seconds` and `[server].response_send_timeout_seconds`; both require positive finite seconds and accept fractional values.
+
+Direct Docker publishing needs no HTTP reverse proxy. The shipped launcher ignores `X-Forwarded-For` and `X-Forwarded-Proto` unless `[server].forwarded_allow_ips` lists trusted peers. The environment override accepts comma-separated IP addresses or canonical CIDR networks; an empty override disables trust. Wildcards, `/0` networks, hostnames and malformed values fail startup. Migrate any intentional proxy from `FORWARDED_ALLOW_IPS` to this explicit setting; the shipped launcher no longer inherits that ambient variable. Alternative ASGI launchers need their own forwarding policy. Docker/NAT may cause callers to share the server-observed address quota. See [direct deployment design, tradeoffs and evidence](docs/direct-deployment-trust.md).
 
 ### Startup
 - `WARMUP_ON_STARTUP` (default `true` - preload default model)

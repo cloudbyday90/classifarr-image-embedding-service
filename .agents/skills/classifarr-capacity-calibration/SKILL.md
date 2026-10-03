@@ -1,13 +1,15 @@
 ---
 name: classifarr-capacity-calibration
-description: Design, run and interpret Classifarr deployment capacity experiments with real pinned models, concurrent inputs, detached owners, cgroup tasks, temporary storage and CUDA allocator evidence. Use for resource sizing or changes to capacity probes; not dependency-only updates, generic GPU advice or release operations.
+description: Design, run and interpret Classifarr deployment capacity experiments with real pinned models, direct-port or proxy trust boundaries, concurrent inputs, detached owners, cgroup tasks, temporary storage and CUDA allocator evidence. Use for resource sizing, deployment transport or changes to capacity probes; not dependency-only updates, generic GPU advice or release operations.
 ---
 
 # Classifarr capacity calibration
 
 Read [measurement contracts](references/measurement-contracts.md) when designing or interpreting an experiment. Reuse the repository probes instead of creating another benchmark runner.
 
-For native upload pressure, also read [socket upload experiments](references/socket-upload-experiments.md). Require observed server receipt before EOF, disconnect settlement and recovered vectors; distinguish authentication after body receipt from early header rejection.
+For native upload pressure, also read [socket upload experiments](references/socket-upload-experiments.md). Require observed server receipt before EOF, disconnect settlement and recovered vectors; require header-only authentication rejection with zero application body receipt.
+
+For direct-port or proxy questions, read [deployment transport](references/deployment-transport.md). Establish the actual topology before adding infrastructure. Verify effective-address trust through that transport and label Docker/NAT address collapse; never infer real client preservation from a loopback test.
 
 Establish the deployment question and tested configuration before choosing limits: backend/device, model revisions, workers/owners, byte/pixel ceilings, deadlines, thread settings and available hardware. Keep application behavior stable unless measurements justify a specific change.
 

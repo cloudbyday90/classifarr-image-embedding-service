@@ -1,11 +1,12 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current quota-identity/skill iteration starts from `65597eaa3e1e925abcecb02b3a1b6f22727cb455` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current direct-deployment/skill iteration starts from `e9bc00bb1e06b967951bf98a3b572f6920944d34` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
+| Explicit forwarding trust, disabled for direct Docker deployment | Caller headers cannot rotate public quota identities; ambient wildcard trust is ignored | Intentional proxies must configure controlled peers; Docker/NAT may share address quotas | Implemented; [direct deployment design](direct-deployment-trust.md), [skill extension](project-deployment-transport-skill.md) |
 | Stable public-probe and verified embedding quota identities | Closes rotated/empty-header bypasses; removes raw credentials from storage/logs | NAT clients share probe limits; a shared service credential shares embedding quota | Implemented; [identity design](public-probe-rate-limits.md), [skill extension](project-quota-identity-skill.md) |
 | Track inference owners beyond HTTP deadlines; preserve server signals and drain work | Preserves accounting during cancellation; cleanup cannot race workers | Running Python threads cannot be forcibly killed; supervisor deadlines must align | Implemented; [execution design](inference-execution.md) |
 | Shared FIFO admission for batch-window members and explicit batches | One waiting budget; prompt cancellation and live-client dispatch | Separate byte/pixel limits still matter | Implemented; [admission design](bounded-batch-admission.md) |
@@ -43,12 +44,20 @@ Assessment date: 2026-10-03. The current quota-identity/skill iteration starts f
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Measure actual reverse-proxy request buffering and target workload headroom | Covers another body/temp-storage owner before concurrency tuning | Requires the operator configuration, TLS/HTTP version, trusted peers, NAT traffic and hardware evidence |
+| Next 1 | Measure representative workload headroom and remote-client addresses on the actual direct deployment | Tests available margin and address sharing before concurrency tuning | Requires operator hardware, representative codecs/clients and real network traffic; no proxy is needed |
 | Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. Next measure actual reverse-proxy buffering, effective-address trust and operator workload headroom before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. The [direct deployment follow-up](direct-deployment-trust.md) disables implicit forwarding trust after the operator confirmed that no proxy is used. Next measure representative workload and address preservation on that direct topology before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
+
+Keep the operator's direct Docker topology. The shipped launcher disables
+forwarding by default and accepts only explicit controlled IP peers/networks
+when a proxy is intentionally configured. Keep one worker, current admission
+budgets and backend memory containment. Next measure representative workload
+headroom and remote-client address preservation on the actual deployment host;
+loopback Docker evidence does not establish either for every network. No proxy
+infrastructure is needed for the current deployment.
 
 Keep Python/FastAPI/AnyIO with small authenticated-router, credential, quota-identity, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Public probes use effective addresses; protected quotas use one verified nonsecret service principal or address fallback. Preserve separate counters, application-owned storage and server-owned proxy trust. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
 
