@@ -26,6 +26,7 @@ host = "0.0.0.0"
 port = 8000
 shutdown_timeout_seconds = 30
 request_body_timeout_seconds = 30 # total upload budget; JSON 408 on expiry
+response_send_timeout_seconds = 30 # total response send/drain budget; abort on expiry
 
 [model]
 default_model = "ViT-L-14"

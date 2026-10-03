@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Configurable total HTTP response-send lifetimes, with modular server/transport services, native slow-reader/disconnect regressions and separate design/outcome records.
 - Configurable total upload and remote-fetch lifetimes, with modular ASGI deadline, disposable-worker protocol and supervision services; separate design/outcome records and native cancellation/network regressions.
 - Modular private setup/publication and Windows ACL helpers, with separate design/outcome records and cross-platform setup regressions.
 - Reviewed native CI tool contracts, modular verification and release-retention helpers, with separate design/outcome records and workflow boundary regressions.
@@ -23,6 +24,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopted PR 27's Trivy action update through a verified immutable v0.36.0 commit and explicit native scanner path, preserving disabled setup/cache paths and existing scan/report gates.
+- The shared launcher uses asyncio so response completion accounts for TLS ciphertext buffers before releasing capacity.
 - Adopt open PR #52 locally by raising the pytest development minimum to the already hash-locked 9.1.1 release.
 - Adopt open PR #34 locally by raising the HTTPX development minimum to the already hash-locked 0.28.1 release.
 - Keep generated API keys out of setup/startup console output by default; provide explicit new-key display and rotation controls while preserving existing configuration.

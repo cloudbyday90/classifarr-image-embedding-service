@@ -4,9 +4,14 @@
 
 """Shared container entrypoint with explicit worker and connection budgets."""
 
+import asyncio
+from functools import partial
+from typing import cast
+
 import uvicorn
 
 from .config import Settings
+from .response_http_protocol import ResponseDeadlineHTTPProtocol
 
 
 def main() -> None:
@@ -18,6 +23,16 @@ def main() -> None:
         workers=settings.server_workers,
         limit_concurrency=settings.server_concurrency,
         backlog=settings.server_backlog,
+        # uvloop's opaque TLS transport hides queued ciphertext from final drain.
+        loop="asyncio",
+        # Config accepts a callable protocol factory; partial remains spawn-pickleable.
+        http=cast(
+            type[asyncio.Protocol],
+            partial(
+                ResponseDeadlineHTTPProtocol,
+                timeout_seconds=settings.response_send_timeout_seconds,
+            ),
+        ),
     )
 
 

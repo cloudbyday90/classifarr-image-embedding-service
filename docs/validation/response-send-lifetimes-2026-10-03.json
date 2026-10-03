@@ -1,0 +1,607 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline": "c2f78ef16d02775a12b97b7ff4bc12c53975e135",
+  "delivery": {
+    "branch": "master",
+    "new_branch": false,
+    "release": false,
+    "version_bump": false,
+    "upstream_pr_merged": false
+  },
+  "designs": [
+    "docs/response-send-lifetimes.md",
+    "docs/pr-27-local-validation.md",
+    "docs/recommendation-stack.md"
+  ],
+  "configuration": {
+    "RESPONSE_SEND_TIMEOUT_SECONDS": 30.0,
+    "toml": "server.response_send_timeout_seconds",
+    "positive_finite": true,
+    "loop": "asyncio",
+    "parsers": "httptools automatic / h11 fallback",
+    "worker_default": 1
+  },
+  "qa": {
+    "passed": 888,
+    "skipped": 7,
+    "new_cases": 56,
+    "warnings": [
+      "Upstream Starlette TestClient HTTPX deprecation; migration deferred to its own reviewed contract"
+    ],
+    "coverage": {
+      "lines_percent": 95.15,
+      "branches_percent": 89.91,
+      "unchanged_floors": {
+        "lines": 89.42,
+        "branches": 79.37
+      }
+    },
+    "inventory": "67 exact hashed QA wheels; pip check passed"
+  },
+  "native_windows": {
+    "passed": 31,
+    "skipped": 18,
+    "skip_reason": "uvloop is unsupported on Windows",
+    "python": "3.14.5",
+    "uvicorn": "0.54.0",
+    "anyio": "4.12.1",
+    "fastapi": "0.136.0",
+    "starlette": "1.0.0",
+    "deployed_locked_graph": false,
+    "terminal_write": "Winsock loopback may empty local buffers without peer receipt; successful drain is allowed",
+    "repeated_tls_cleanup": "idempotent after connection loss"
+  },
+  "socket_contracts": [
+    "total header/body/drain budget",
+    "slow-reader abort before ingress release",
+    "terminal single writes and streaming writes",
+    "producer gaps and trickle without budget reset",
+    "disconnect and external cancellation",
+    "ordinary errors preserved",
+    "no replacement status after headers",
+    "real FastAPI request-resource cleanup during Starlette streaming",
+    "successful byte/header preservation and keep-alive reuse",
+    "opaque TLS transport fails closed",
+    "monotonic expiry despite delayed watcher",
+    "no server request-task/connection/ingress leaks"
+  ],
+  "native_launchers": [
+    {
+      "profile": "cpu",
+      "workers": 2,
+      "python": "3.12.3",
+      "uvicorn": "0.54.0",
+      "anyio": "4.15.1",
+      "loop": "asyncio",
+      "response_send_timeout_seconds": 0.3,
+      "responses": [
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        }
+      ],
+      "shutdown_exit": 0,
+      "warmup": false,
+      "source_overlay": true,
+      "production_model_inference": "not repeated"
+    },
+    {
+      "profile": "openvino",
+      "workers": 2,
+      "python": "3.12.3",
+      "uvicorn": "0.54.0",
+      "anyio": "4.15.1",
+      "loop": "asyncio",
+      "response_send_timeout_seconds": 0.3,
+      "responses": [
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        }
+      ],
+      "shutdown_exit": 0,
+      "warmup": false,
+      "source_overlay": true,
+      "production_model_inference": "not repeated"
+    },
+    {
+      "profile": "cuda",
+      "workers": 2,
+      "python": "3.12.3",
+      "uvicorn": "0.54.0",
+      "anyio": "4.15.1",
+      "loop": "asyncio",
+      "response_send_timeout_seconds": 0.3,
+      "responses": [
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        },
+        {
+          "path": "/health",
+          "status": 200
+        },
+        {
+          "path": "/models",
+          "status": 200
+        }
+      ],
+      "shutdown_exit": 0,
+      "warmup": false,
+      "source_overlay": true,
+      "production_model_inference": "not repeated"
+    }
+  ],
+  "image_identities": [
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-qa-amd64"
+      ],
+      "id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cpu-amd64"
+      ],
+      "id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-openvino-amd64"
+      ],
+      "id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cuda-amd64"
+      ],
+      "id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba"
+    }
+  ],
+  "random_pr": {
+    "selection": {
+      "excluded": {
+        "33": "Adopted",
+        "34": "Adopted",
+        "35": "Superseded by locked Torch 2.14.1",
+        "40": "Adopted",
+        "41": "Adopted; native scanner now used",
+        "42": "Adopted",
+        "44": "Ubuntu 25.10 EOL",
+        "53": "Superseded by locked Transformers 5.18.0"
+      },
+      "pool": [
+        {
+          "number": 48,
+          "title": "build(deps): update numpy requirement from >=2.4 to >=2.5.3",
+          "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/48"
+        },
+        {
+          "number": 46,
+          "title": "build(deps): update fastapi requirement from <1,>=0.135 to >=0.142.1,<1",
+          "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/46"
+        },
+        {
+          "number": 27,
+          "title": "build(deps): bump aquasecurity/trivy-action from 0.35.0 to 0.36.0",
+          "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/27"
+        }
+      ],
+      "draw": 0.9980073941223363,
+      "selected": {
+        "number": 27,
+        "title": "build(deps): bump aquasecurity/trivy-action from 0.35.0 to 0.36.0",
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/27"
+      }
+    },
+    "pr": {
+      "number": 27,
+      "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/27",
+      "state": "open",
+      "merged": false,
+      "head_sha": "e640f0807906bd12705b311b101c80b753ee41e0",
+      "base_sha": "a764ad47d9ba29d5bb674ed07c04134283811292"
+    },
+    "action": {
+      "commit": "ed142fd0673e97e23eac54620cfb913e5ce36c25",
+      "sources": [
+        {
+          "path": "action.yaml",
+          "blob_sha": "68fe476463fc44d8448f55bd11e10733bf4ab5e0",
+          "url": "https://github.com/aquasecurity/trivy-action/blob/ed142fd0673e97e23eac54620cfb913e5ce36c25/action.yaml"
+        },
+        {
+          "path": "entrypoint.sh",
+          "blob_sha": "f0fbfb45f45abc8b8e1d87527ffb3d980f2cf2e3",
+          "url": "https://github.com/aquasecurity/trivy-action/blob/ed142fd0673e97e23eac54620cfb913e5ce36c25/entrypoint.sh"
+        }
+      ]
+    }
+  },
+  "trivy": {
+    "version": "Version: 0.69.3",
+    "cases": [
+      {
+        "case": "clean-sarif",
+        "exit_code": 0,
+        "findings": 0
+      },
+      {
+        "case": "leak-sarif",
+        "exit_code": 0,
+        "findings": 1
+      },
+      {
+        "case": "leak-gate",
+        "exit_code": 1,
+        "findings": null
+      },
+      {
+        "case": "clean-gate",
+        "exit_code": 0,
+        "findings": null
+      },
+      {
+        "case": "repository-secrets",
+        "exit_code": 0,
+        "findings": 0
+      },
+      {
+        "case": "vulnerability-sarif",
+        "exit_code": 0,
+        "findings": 25
+      },
+      {
+        "case": "vulnerability-gate",
+        "exit_code": 1,
+        "findings": null
+      },
+      {
+        "case": "repository-sarif",
+        "exit_code": 0,
+        "findings": 0
+      },
+      {
+        "case": "repository-gate",
+        "exit_code": 0,
+        "findings": null
+      },
+      {
+        "case": "config-sarif",
+        "exit_code": 0,
+        "findings": 1
+      },
+      {
+        "case": "config-gate",
+        "exit_code": 1,
+        "findings": null
+      },
+      {
+        "case": "repository-config",
+        "exit_code": 0,
+        "findings": 0
+      }
+    ],
+    "quoted_exports": "passed",
+    "cleanup": "passed",
+    "setup_cache_disabled": "passed"
+  },
+  "codeql": {
+    "bundle_version": "2.27.1",
+    "bundle_sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+    "suite": "security-extended",
+    "findings": {
+      "python": [
+        {
+          "rule": "py/clear-text-logging-sensitive-data",
+          "file": "scripts/generate_env.py",
+          "line": 57
+        },
+        {
+          "rule": "py/overly-permissive-file",
+          "file": "scripts/secret_publication.py",
+          "line": 105
+        }
+      ],
+      "actions": []
+    },
+    "runtime_source_hashes_match": [
+      "src/image_embedder/response_send_deadline.py",
+      "src/image_embedder/response_http_protocol.py",
+      "src/image_embedder/server.py",
+      "src/image_embedder/config.py"
+    ],
+    "actions_scanned": 9,
+    "suppression_added": false,
+    "existing_python_alert_context": [
+      "Explicit --show-key output",
+      "Nonsecret POSIX configuration mode 0644"
+    ]
+  },
+  "official_sources": [
+    "https://uvicorn.dev/server-behavior/",
+    "https://uvicorn.dev/settings/",
+    "https://uvicorn.dev/concepts/http-protocols/",
+    "https://asgi.readthedocs.io/en/latest/specs/www.html",
+    "https://docs.python.org/3.12/library/asyncio-protocol.html",
+    "https://anyio.readthedocs.io/en/latest/cancellation.html",
+    "https://github.com/aquasecurity/trivy-action/releases/tag/v0.36.0"
+  ],
+  "limitations": [
+    "Cooperative cancellation and OS closure are not hard real-time",
+    "Local drain is not peer acknowledgment and excludes kernel-owned bytes",
+    "Adapter depends on locked Uvicorn/CPython boundaries; upgrades require native validation",
+    "Use asyncio for TLS; opaque alternate TLS transports fail closed",
+    "Stock alternate launch, Uvicorn-generated parser/concurrency errors, HTTP2 and WebSockets have separate contracts",
+    "Completed-response background work and detached iterators require explicit resource ownership",
+    "Hosted composite orchestration and SARIF publication were not exercised",
+    "No production-model inference or dependency graph rebuild required for this change",
+    "Per-image remote budgets still accumulate across sequential batches"
+  ],
+  "next_stack": [
+    "Shared total remote batch budget with ordered outcomes and kill/reap ownership",
+    "Target accelerator/concurrent-input/PID/temp-storage calibration and CUDA ARM metadata repair",
+    "Recurring native Windows setup/fetch/response validation",
+    "Separate reviewed Starlette TestClient HTTPX2 migration"
+  ],
+  "changed_source_sha256": [
+    {
+      "path": ".github/workflows/trivy.yml",
+      "sha256": "c8e48a77d57d2611b7bb03983095b75f265e514fb446529481d63984b6d8e2d8"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "50c3f2306ce871380a367b7965e306979e22b8a69994f9899e0c7cfc4a0cddab"
+    },
+    {
+      "path": "docs/ci-execution-contracts.md",
+      "sha256": "2d0614eeb648a4ac54de455e9612ddb37074266bd98d6c5e3ae5251cb5d32478"
+    },
+    {
+      "path": "docs/pr-27-local-validation.md",
+      "sha256": "64af82dacc09e920e0374107efaa9357a3ebab72574ef5539efe6d1521203330"
+    },
+    {
+      "path": "docs/recommendation-stack.md",
+      "sha256": "11262d61f999f3dd2cf2b4ffcbfe1390a28a01aca5ecfdf9e77eacf8b84f16bf"
+    },
+    {
+      "path": "docs/request-lifetimes.md",
+      "sha256": "3b040f49a58b934787e38b9017618ddeac86d2730323412fb2eb8e44ac5c4a04"
+    },
+    {
+      "path": "docs/response-send-lifetimes.md",
+      "sha256": "243f696b01e8f671c85f0f1b36a70764a3f764693f0b818d0242faf7d2bbcc69"
+    },
+    {
+      "path": "IMPLEMENTATION_PLAN.md",
+      "sha256": "478b84d829203abd2695f14a4d0ad2034ea9a38473716138597804b0c7e81084"
+    },
+    {
+      "path": "README.md",
+      "sha256": "dca758a942823772773dc4d499de438b067247ace7da76a87a4158c9ba63e9ba"
+    },
+    {
+      "path": "scripts/setup_templates.py",
+      "sha256": "51c5976f8424a3b92a903d8892b6c4aa10ebefdc92503141818b401e44fabe98"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "f409114f318b55ed09c0be224a13da833fcfab98c9495eb8aa7fdfae0d14d191"
+    },
+    {
+      "path": "src/image_embedder/response_http_protocol.py",
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+    },
+    {
+      "path": "src/image_embedder/response_send_deadline.py",
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+    },
+    {
+      "path": "src/image_embedder/server.py",
+      "sha256": "3d802717237af543c28224df24786a1f51805bb4b70afe97a1f9389f2eca0fb3"
+    },
+    {
+      "path": "tests/test_ci_workflows.py",
+      "sha256": "88de8c255373afda8b3c25774d123abca70bfbeb946126d2eae5e1846c72d19e"
+    },
+    {
+      "path": "tests/test_request_lifetimes.py",
+      "sha256": "f7b1e39f6b3a7d76519d904d9db6509c07d7ee5603d1fd09e553cc9d7e4054f5"
+    },
+    {
+      "path": "tests/test_response_http_protocol.py",
+      "sha256": "a3763c4870c3154f0cba410feb2a1112670228aaf941c2d6a5413da4f8b93d15"
+    },
+    {
+      "path": "tests/test_response_send_deadline.py",
+      "sha256": "15aae3d8b7bbeedd21b5903b4e90cf37f148c7031c0d43dca77a79d7bff8de89"
+    }
+  ],
+  "upstream_source_sha256": [
+    {
+      "path": "entrypoint.sh",
+      "sha256": "5d35de70292a3461e55874ca658b3d8f6a56acc4d7098c64e546d965c34a0067"
+    },
+    {
+      "path": "trivy-action.yaml",
+      "sha256": "c3cc09c5daa296bc02a1651f6ad1205c6839ac9f0f317ffb204bd5e641a57d73"
+    }
+  ],
+  "evidence_sha256": [
+    {
+      "path": "actionlint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "copyright.log",
+      "sha256": "78842fdfb8e860ad94338c2ed788f1fb2838f51506ea2cd7bfc53908734bf413"
+    },
+    {
+      "path": "coverage-gate.log",
+      "sha256": "e2c7f1d8ec8dbc9defd77ddeefc6a9edc754e3659c27e080ad12e4000cb1e001"
+    },
+    {
+      "path": "cpu-probe.log",
+      "sha256": "f98cffac7a0cbe1a4cca944709ab5cdd23faf7aab0b94aba140dab14be3f0dd2"
+    },
+    {
+      "path": "cuda-probe.log",
+      "sha256": "3c63b869ee85f7d87f03c182760801edce0129a033fda68795dcf23e3508ade1"
+    },
+    {
+      "path": "gitleaks-files.log",
+      "sha256": "28b1772af406f98c735da06486622fcaea8a41624e83022d98d7af64ad72c543"
+    },
+    {
+      "path": "gitleaks-history.log",
+      "sha256": "dcc6f05b147581ba65297073a7a8fcc4b70a55b8249c1e17f1daaade4867dc1d"
+    },
+    {
+      "path": "install-gitleaks.log",
+      "sha256": "13f7b301d4d950dc8236ced49cc4331e9c89217b170bea4614c160c87df2e906"
+    },
+    {
+      "path": "install-trivy.log",
+      "sha256": "14c2ebed748f13d09708f7af0be89b388140c6217e09506cdf7cfd384a038794"
+    },
+    {
+      "path": "native-codeql-final.log",
+      "sha256": "5a2caec132fe2bca9aa85a8543631da1d30589bfde2a13424df0f5014522d285"
+    },
+    {
+      "path": "native-trivy.log",
+      "sha256": "a8709e9420cfc1bb8a6956a2f22c4369e218d7b0fd651aaff547d7d547514815"
+    },
+    {
+      "path": "openvino-probe.log",
+      "sha256": "54eafe22d9ae73b17b81c5f0ec889bd1fad771ebeac89d9c44cd1df52fd3f3c8"
+    },
+    {
+      "path": "pyright.log",
+      "sha256": "c584b21ee012de391dc2799d5455db619d3fefbb192ab07ea4ba83fb0d704c14"
+    },
+    {
+      "path": "pytest-focused-final.log",
+      "sha256": "f9bac0e98d952f1eec3fa4629d757169c0bd5e3a1077cc10a96bda71231fa6c3"
+    },
+    {
+      "path": "pytest-full-final.log",
+      "sha256": "8a99b0ea82ed72652cfd3c59841e73d4e4777ea2c7c42e24b8f9d68580708b60"
+    },
+    {
+      "path": "pytest-windows.log",
+      "sha256": "bbd0b23469276b3e872ed351382744441d64dc801514a1b86d06ebf19aaff354"
+    },
+    {
+      "path": "qa-inventory.log",
+      "sha256": "944d5448532723e825a6718ba4ef7a0e4362f099140de2493e1cc4b1f3f75fa0"
+    },
+    {
+      "path": "ruff.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "path": "uvicorn-contract-source.log",
+      "sha256": "e69345ca7e49a9174d0e7b4fd652925014b666970940d60b97c64e5851d9827f"
+    },
+    {
+      "path": "uvicorn-factory-source.log",
+      "sha256": "cd603fbd6fbc3812957aa30dbeb9145e0cf3bb6cab1f48e9e58361e5f1c4abe5"
+    }
+  ],
+  "local_reproduction_scripts_sha256": [
+    {
+      "path": "prepare_sources.py",
+      "sha256": "42e301698f04f7a8f14eae1c31e9a993715f702dbd07e43653d01e1997f625ab"
+    },
+    {
+      "path": "probe_launcher.py",
+      "sha256": "66c5ac78359c0728d3c57a7a31925cde5c87f6bf7425b0eaaa80030abc4f3fe3"
+    },
+    {
+      "path": "run_codeql.py",
+      "sha256": "bf9a7dd226e628a860efd77705e3695553a0d8e074752a5c9062c094da087bae"
+    },
+    {
+      "path": "validate_trivy.py",
+      "sha256": "534a67e1623e7ab6cdbb15e1edb665c57b756b8f4a12d449509f29565d9f5f0d"
+    }
+  ]
+}

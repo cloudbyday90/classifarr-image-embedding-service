@@ -41,7 +41,9 @@ jobs:
 
       # SARIF pass: upload all HIGH/CRITICAL findings to the Security tab
       - name: Run Trivy (SARIF upload)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_CMD: ${{ runner.temp }}/verified-tools/trivy
         with:
           cache: false
           skip-setup-trivy: true
@@ -64,7 +66,9 @@ jobs:
 
       # Table pass: gate the PR/push on exit code (fail on HIGH/CRITICAL)
       - name: Run Trivy (PR gate)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_CMD: ${{ runner.temp }}/verified-tools/trivy
         with:
           cache: false
           skip-setup-trivy: true
@@ -99,7 +103,9 @@ jobs:
 
       # Scans Dockerfile and docker-compose*.yml against CIS Docker Benchmark
       - name: Run Trivy (IaC misconfig)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        env:
+          TRIVY_CMD: ${{ runner.temp }}/verified-tools/trivy
         with:
           cache: false
           skip-setup-trivy: true

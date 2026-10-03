@@ -4,10 +4,10 @@
 
 import json
 import re
+import tomllib
 from pathlib import Path
 
 import pytest
-import tomllib
 import yaml
 from check_osv_reports import check_report
 
@@ -109,6 +109,8 @@ def test_scanners_and_build_setup_use_reviewed_native_contracts():
             if step.get("uses", "").startswith("aquasecurity/trivy-action@"):
                 assert step["with"]["skip-setup-trivy"] is True
                 assert step["with"]["cache"] is False
+                assert step["uses"].endswith("@ed142fd0673e97e23eac54620cfb913e5ce36c25")
+                assert step["env"]["TRIVY_CMD"] == "${{ runner.temp }}/verified-tools/trivy"
     codeql = yaml.safe_load((ROOT / ".github/workflows/codeql.yml").read_text())
     init = next(
         s for s in codeql["jobs"]["analyze"]["steps"] if "/init@" in s.get("uses", "")
