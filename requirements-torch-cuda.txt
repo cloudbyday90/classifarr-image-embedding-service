@@ -1,3 +1,3 @@
-# Linux container profile. Install from the official cu130 index first, then use
-# this file as a constraint while installing requirements.txt from PyPI.
+# Linux CUDA lock-generation input; select Torch only from its official cu130 index.
+# Deploy the complete reviewed profile with scripts/install_dependencies.py.
 torch==2.14.1+cu130

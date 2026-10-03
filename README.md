@@ -356,11 +356,31 @@ $env:PYTHONPATH = "src"
 python -m image_embedder.server
 ```
 
-On Linux/macOS, activate with `source .venv/bin/activate` and set `export PYTHONPATH=src` before running the same install/server commands.
+macOS contributors can activate with `source .venv/bin/activate` and set `export PYTHONPATH=src` before running the same install/server commands. These contributor commands resolve ranges and are separate from the reviewed Linux deployment environments.
+
+For Linux CPython 3.12, install the complete CPU lock (amd64/arm64) or QA lock (amd64):
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python scripts/lock_dependencies.py --check
+python scripts/install_dependencies.py --backend bootstrap
+python scripts/install_dependencies.py --backend qa  # use cpu for runtime only
+export PYTHONPATH=src
+python -m image_embedder.server
+```
+
+## Reviewed Dependency Environments
+
+Container builds and Linux CI install complete target-specific wheel locks with required SHA-256 hashes, no index resolution and binary-only installation. CPU amd64/arm64, modern/legacy CUDA amd64, OpenVINO amd64, QA amd64 and isolated audit-tool profiles include their transitive dependencies and reviewed pip installer. Input ranges remain update intent; changing them without regenerating affected locks fails validation. Runtime smoke checks require an exact installed inventory without extra, missing, substituted or duplicate packages.
+
+Regenerate inside the actual Linux CPython 3.12 target interpreter using `python scripts/lock_dependencies.py --backend cpu` (or the corresponding backend). Bootstrap the reviewed installer first. `--constraints /path/to/reviewed-versions.txt` preserves selected tested versions; omitting or deliberately changing constraints performs a reviewed refresh. ARM profiles require an ARM interpreter, native or emulated. Never use cross-platform pip flags as a substitute for native environment-marker resolution. `--cache-dir` optionally reuses a writable wheel cache; hashes still protect installation.
+
+The [dependency design and outcome](docs/dependency-locks.md) explains artifact origins, lock regeneration and tradeoffs. The separate [runtime/base update policy](docs/runtime-update-policy.md) requires weekly reviewed updates and prompt advisory response. Weekly CI rechecks the committed environments and audits both runtime and isolated tooling through strict OSV. Python locks preserve wheel selection; apt repositories and host drivers have their own refresh and validation requirements.
 
 ## Offline Container Validation
 
-PRs and default-branch pushes build and smoke CPU on amd64 and arm64, plus modern CUDA, legacy CUDA, and OpenVINO on amd64, without publishing images. Each check audits the actual installed packages through OSV and runs the native libraries, tiny CLIP projection, non-root cache access, and service startup/authentication/shutdown without model downloads. OpenVINO also exports and reloads IR. Release publishing remains tag-only and depends on these checks.
+PRs, default-branch pushes and weekly validation build and smoke CPU on amd64 and arm64, plus modern CUDA, legacy CUDA, and OpenVINO on amd64, without publishing images. Each check verifies the complete lock/inventory, audits the actual installed packages and isolated audit tooling through OSV, and runs the native libraries, tiny CLIP projection, non-root cache access, and service startup/authentication/shutdown without model downloads. OpenVINO also exports and reloads IR. Release publishing remains tag-only and depends on these checks.
 
 CUDA ARM is deferred: the selected upstream cuSPARSELt 0.8.1 aarch64 wheel contains an incompatible internal SBSA platform tag and fails `pip check`. The build retains this failure; see the [backend design and outcome](docs/backend-build-recommendation.md) for the exact evidence and restoration criteria.
 

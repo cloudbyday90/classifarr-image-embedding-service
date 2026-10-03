@@ -1,0 +1,2 @@
+# Isolated security tooling; never added to the shipped application environment.
+pip-audit>=2.10.1

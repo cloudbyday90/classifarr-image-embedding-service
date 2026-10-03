@@ -19,6 +19,9 @@ on:
       - 'scripts/production_model_probe.py'
       - 'tests/fixtures/models/**'
       - 'requirements*.txt'
+      - 'requirements/locks/**'
+      - 'scripts/dependency_*.py'
+      - 'scripts/install_dependencies.py'
       - 'Dockerfile*'
       - '.github/workflows/model-contracts.yml'
   push:
@@ -37,6 +40,9 @@ on:
       - 'scripts/production_model_probe.py'
       - 'tests/fixtures/models/**'
       - 'requirements*.txt'
+      - 'requirements/locks/**'
+      - 'scripts/dependency_*.py'
+      - 'scripts/install_dependencies.py'
       - 'Dockerfile*'
       - '.github/workflows/model-contracts.yml'
   schedule:

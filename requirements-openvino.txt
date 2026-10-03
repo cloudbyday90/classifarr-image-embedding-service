@@ -1,5 +1,4 @@
-# Shared runtime dependencies. Install the CPU Torch profile first, then use
-# requirements-torch-cpu.txt as a constraint for this PyPI installation.
+# Shared runtime intent for the complete OpenVINO hash-locked profile.
 -r requirements.txt
 
 # Match Python bindings in our venv to the pinned Intel runtime base.

@@ -1,0 +1,2 @@
+# Reviewed installer used by the Linux CPython 3.12 lock workflow.
+pip==26.2.1

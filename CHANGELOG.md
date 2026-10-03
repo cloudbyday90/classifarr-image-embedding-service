@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Complete hash-locked Linux dependency profiles, modular generation/installation validation, and separate dependency, refresh-policy and PR 50 design/outcome records.
 - Modular offline capacity probes with process/cgroup memory, batch parity, authenticated deadline and detached-owner checks; a manual CPU/OpenVINO calibration workflow and separate design/outcome records.
 - Modular pinned model catalog, verified source loading and atomic versioned OpenVINO artifact services, with separate model/PR 41 design records.
 - Offline publisher preprocessing and cache-integrity regressions, plus opt-in production-weight probes and change-scoped/weekly CPU/OpenVINO validation CI.
@@ -19,6 +20,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopt open PR #50 locally by raising the Uvicorn minimum to the tested 0.54.0 release.
+- Install reviewed binary wheels in Docker and Linux QA; run weekly validation with isolated, hash-locked audit tooling and exact runtime inventories.
 - Separate the embedding HTTP deadline from the remote-hop timeout: default to 45 seconds for embeddings while preserving explicit legacy overrides and the 15-second remote default.
 - Apply open PR #45 locally by raising the Pydantic minimum to the tested stable 2.13.5 release.
 - Raise the OpenVINO Compose default to a tunable 8 GiB/no-swap ceiling after measured large-model cold export exceeded 4 GiB; CPU/CUDA retain their existing default.
@@ -46,6 +49,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Reject stale dependency inputs, unapproved wheel origins, altered artifacts and unexpected installed packages; require hashes for all transitive Python dependencies without index fallback or source builds.
 - Verify publisher asset digests before model loading; restrict PyTorch weight deserialization and remote code, and rebuild corrupted or incomplete generated artifacts under finite process locks.
 - Reject excess complete HTTP requests before body receive/JSON retention with retryable 503 responses, while preserving health access and detached inference ownership.
 - Adopt OSV's report-completion guard and locally verify missing-report failure and native differential vulnerability reporting.

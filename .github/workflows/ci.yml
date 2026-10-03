@@ -4,6 +4,9 @@ name: CI/CD Pipeline
 permissions: {}
 
 on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
   pull_request:
     branches: [ main, master ]
   push:
@@ -33,22 +36,26 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirements.txt
-            requirements-torch-cpu.txt
-            requirements-dev.txt
+            requirements*.txt
+            requirements/locks/*.txt
+            requirements/locks/*.json
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-torch-cpu.txt --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt -r requirements-dev.txt -c requirements-torch-cpu.txt
-          pip check
+          python scripts/lock_dependencies.py --check
+          python -m venv .venv
+          .venv/bin/python scripts/install_dependencies.py --backend bootstrap
+          .venv/bin/python scripts/install_dependencies.py --backend qa
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
 
       - name: Audit Python runtime dependencies
         run: |
-          pip install "pip-audit>=2.10.1"
+          python scripts/install_dependencies.py --backend audit --target "$RUNNER_TEMP/audit-tools"
           # OSV can audit vendor Torch local versions that are absent from PyPI.
-          pip-audit --local --strict --vulnerability-service osv
+          PYTHONPATH="$RUNNER_TEMP/audit-tools" python -m pip_audit --strict --vulnerability-service osv \
+            --path "$PWD/.venv/lib/python3.12/site-packages" --cache-dir "$RUNNER_TEMP/audit-cache"
+          PYTHONPATH="$RUNNER_TEMP/audit-tools" python -m pip_audit --strict --vulnerability-service osv \
+            --path "$RUNNER_TEMP/audit-tools" --cache-dir "$RUNNER_TEMP/audit-cache"
 
       - name: Run tests
         run: pytest
@@ -111,6 +118,10 @@ jobs:
           LEGACY_PROFILE: ${{ matrix.backend == 'cuda-legacy' }}
         run: |
           build_args=()
+          refresh_args=()
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            refresh_args=(--pull --no-cache)
+          fi
           if [ "$LEGACY_PROFILE" = "true" ]; then
             build_args=(
               --build-arg CUDA_BASE=nvidia/cuda:12.6.3-base-ubuntu24.04@sha256:c87e78933f4c16e3272123bf2f75537306596d0fbaa395a29696a22786e5ee0e
@@ -118,14 +129,16 @@ jobs:
               --build-arg TORCH_INDEX=https://download.pytorch.org/whl/cu126
             )
           fi
-          docker build --platform "linux/$ARCH" "${build_args[@]}" -f "$DOCKERFILE" -t backend-smoke:local .
+          docker build --platform "linux/$ARCH" "${refresh_args[@]}" "${build_args[@]}" -f "$DOCKERFILE" -t backend-smoke:local .
       - name: Audit the actual runtime packages without changing the image
         run: >-
           docker run --rm --user root --read-only --tmpfs /tmp:rw,exec,nosuid,nodev,size=512m
           --cap-drop ALL --security-opt no-new-privileges --entrypoint sh backend-smoke:local -c
-          'python -m pip install -q --root-user-action=ignore --target /tmp/audit-tools "pip-audit>=2.10.1" &&
+          'python scripts/install_dependencies.py --backend audit --target /tmp/audit-tools &&
           PYTHONPATH=/tmp/audit-tools python -m pip_audit --strict --vulnerability-service osv
-          --path /opt/venv/lib/python3.12/site-packages --cache-dir /tmp/audit-cache'
+          --path /opt/venv/lib/python3.12/site-packages --cache-dir /tmp/audit-cache &&
+          PYTHONPATH=/tmp/audit-tools python -m pip_audit --strict --vulnerability-service osv
+          --path /tmp/audit-tools --cache-dir /tmp/audit-cache'
       - name: Check dependencies and offline startup as non-root
         env:
           BACKEND: ${{ matrix.backend }}

@@ -25,24 +25,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     python3-venv \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 ARG TORCH_PROFILE=requirements-torch-cuda.txt
 ARG TORCH_INDEX=https://download.pytorch.org/whl/cu130
-COPY ${TORCH_PROFILE} /tmp/requirements-torch.txt
-
-# Select Torch from one official index, then constrain the PyPI installation so
-# a newer shared requirement cannot silently replace the chosen backend wheel.
-RUN python3 -m venv /opt/venv \
-    && /opt/venv/bin/pip install --upgrade pip \
-    && /opt/venv/bin/pip install -r /tmp/requirements-torch.txt \
-        --index-url "${TORCH_INDEX}"
-
-COPY requirements.txt /tmp/
-RUN /opt/venv/bin/pip install -r /tmp/requirements.txt \
-        -c /tmp/requirements-torch.txt \
-    && /opt/venv/bin/pip check
+COPY requirements*.txt /tmp/
+COPY requirements/locks /tmp/requirements/locks/
+COPY scripts/dependency_*.py scripts/install_dependencies.py /tmp/dependencies/
+# Preserve the documented legacy build arguments; reject arbitrary/mixed profiles.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    case "${TORCH_PROFILE}|${TORCH_INDEX}" in \
+      'requirements-torch-cuda.txt|https://download.pytorch.org/whl/cu130') backend=cuda ;; \
+      'requirements-torch-cuda-legacy.txt|https://download.pytorch.org/whl/cu126') backend=cuda-legacy ;; \
+      *) echo 'Unsupported Torch profile/index pair' >&2; exit 1 ;; \
+    esac \
+    && python3 -m venv /opt/venv \
+    && /opt/venv/bin/python /tmp/dependencies/install_dependencies.py --root /tmp --backend bootstrap \
+    && /opt/venv/bin/python /tmp/dependencies/install_dependencies.py --root /tmp --backend "$backend"
 
 # ── Runtime stage: minimal CUDA base, no build tools ──────────────────────
 # Torch's wheel dependencies supply CUDA libraries and cuDNN. The host driver
@@ -75,11 +74,17 @@ WORKDIR /app
 COPY src ./src
 COPY scripts/backend_probe.py scripts/smoke_backend.py scripts/production_model_probe.py ./scripts/
 COPY scripts/capacity_metrics.py scripts/capacity_workload.py scripts/capacity_api.py scripts/capacity_probe.py ./scripts/
+COPY scripts/dependency_*.py scripts/install_dependencies.py ./scripts/
+COPY requirements*.txt ./
+COPY requirements/locks ./requirements/locks/
 
 # CIS Docker Benchmark 4.1: do not run as root
 RUN groupadd --gid 1001 appgroup \
     && useradd --uid 1001 --gid 1001 --no-create-home --shell /sbin/nologin appuser \
     && mkdir -p /app/.cache \
+    && chmod 644 /app/requirements*.txt \
+    && find /app/requirements -type d -exec chmod 755 {} + \
+    && find /app/requirements -type f -exec chmod 644 {} + \
     && chown -R appuser:appgroup /app/.cache
 USER appuser
 

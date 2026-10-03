@@ -104,7 +104,10 @@ def main() -> None:
     if getuid is None or getuid() == 0:
         raise RuntimeError("Container smoke must run as the shipped non-root user")
     os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-    subprocess.run([sys.executable, "-m", "pip", "check"], check=True)
+    subprocess.run([
+        sys.executable, str(Path(__file__).with_name("install_dependencies.py")),
+        "--backend", args.backend, "--verify-only",
+    ], check=True)
     cache = Path(os.environ.get("OV_MODEL_CACHE") or os.environ["HF_HOME"])
     result = probe_backend(args.backend, cache, require_gpu=args.require_gpu)
     device = "openvino:CPU" if args.backend == "openvino" else "cuda" if result["gpu_inference"] else "cpu"
