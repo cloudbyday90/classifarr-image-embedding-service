@@ -16,6 +16,10 @@ def install_remote_response(monkeypatch, response):
     """Exercise real destination validation while replacing outbound transport."""
     from image_embedder import remote_fetch
 
+    # Transport unit fakes exercise the worker's direct policy. Fresh-child tests
+    # independently verify production supervision; this seam is never automatic.
+    monkeypatch.setattr("image_embedder.embedder.fetch_remote_image", remote_fetch.fetch_remote_image)
+
     monkeypatch.setattr(
         socket, "getaddrinfo", lambda host, port, **_kwargs: [
             (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP, "", ("8.8.8.8", port))

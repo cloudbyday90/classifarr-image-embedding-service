@@ -21,6 +21,7 @@ from .ingress_middleware import IngressAdmissionMiddleware
 from .lifecycle import make_lifespan
 from .logging_config import get_logger, setup_logging
 from .queue import EmbedQueue
+from .request_body_deadline import RequestBodyDeadlineMiddleware
 from .routes import admin as admin_routes
 from .routes import batch as batch_routes
 from .routes import embed as embed_routes
@@ -88,6 +89,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
     # FastAPI preserves HTTP 413 instead of translating an exception group to 400.
     app.add_middleware(RequestBodyLimitMiddleware, max_body_size=settings.max_request_body_bytes)
     app.add_middleware(SlowAPIMiddleware)
+    app.add_middleware(RequestBodyDeadlineMiddleware, timeout_seconds=settings.request_body_timeout_seconds)
     app.add_middleware(IngressAdmissionMiddleware, admission=ingress)
 
     def rate_limit_handler(request: Request, exc: Exception):

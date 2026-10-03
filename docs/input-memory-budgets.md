@@ -53,3 +53,7 @@ Strict OSV audits of the actual CPU runtime (56 packages) and pytest-cov test en
 ## Next recommendation
 
 The subsequent [remote destination iteration](remote-image-destinations.md) validates redirects and pins connections to approved public addresses; its separate record contains reproduction and verification evidence. Remote access remains disabled by default. The [aggregate ingress iteration](aggregate-ingress.md) bounds concurrent HTTP retention and adds deployment controls. The [production model/artifact iteration](model-artifact-contracts.md) supplies pinned fixtures, versioned IR and native peak measurements, followed by [maximum-batch/multi-model capacity calibration](capacity-calibration.md) on CPU/OpenVINO CPU. Next complete hash-locked dependency profiles. This document's 315-test results describe the earlier input-budget iteration; current results and remaining hardware gates are in the [recommendation stack](recommendation-stack.md). No release or upstream PR merge is created.
+
+## Subsequent total input lifetime delivery
+
+The separate [upload and supervised remote-fetch design](request-lifetimes.md) now bounds upload gaps, DNS, TLS, redirects and trickled downloads while preserving complete ingress/inference ownership. It records October 2026 official research, native Linux/Windows outcomes, per-fetch overhead and remaining response/batch lifetime work. The measurements above retain their original scope.

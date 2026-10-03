@@ -7,17 +7,15 @@
 import math
 
 
-def positive_duration(value: object) -> float:
+def positive_duration(value: object, name: str = "embedding_timeout_seconds") -> float:
     if isinstance(value, bool) or not isinstance(value, (str, int, float)):
-        raise ValueError("embedding_timeout_seconds must be positive finite seconds")
+        raise ValueError(f"{name} must be positive finite seconds")
     try:
         seconds = float(value)
     except (ValueError, OverflowError) as error:
-        raise ValueError(
-            "embedding_timeout_seconds must be positive finite seconds"
-        ) from error
+        raise ValueError(f"{name} must be positive finite seconds") from error
     if not math.isfinite(seconds) or seconds <= 0:
-        raise ValueError("embedding_timeout_seconds must be positive finite seconds")
+        raise ValueError(f"{name} must be positive finite seconds")
     return seconds
 
 

@@ -21,7 +21,7 @@ from .model_catalog import MODEL_CATALOG, ModelSpec
 from .model_initialization import initialization_guard
 from .model_loading import load_processor, load_vision_model
 from .openvino_models import load_openvino_model
-from .remote_fetch import fetch_remote_image
+from .remote_process import fetch_remote_image
 from .remote_url import is_public_address, resolve_remote_url
 
 ModelTuple = Tuple[Any, Any, str]

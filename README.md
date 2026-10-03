@@ -518,6 +518,8 @@ Queue deadlines start at admission, before collection; a queued group's members 
 
 HTTP bodies have a 16 MiB ceiling, counting received bytes even without Content-Length. Oversized bodies return HTTP 413 before JSON parsing completes. Known oversized inline images/batches are refused before queue admission. Starlette's header-based body refusal may use plain text; image refusals use JSON `detail`. Successful response schemas are unchanged.
 
+Admitted uploads also have a total 30-second budget (`REQUEST_BODY_TIMEOUT_SECONDS` or `[server].request_body_timeout_seconds`). Chunks do not reset it. Expiry cancels body parsing, waits for cooperative cleanup and sends JSON HTTP 408; HTTP/1 connections close. The upload budget stops at complete body, disconnect or response start, so completed uploads keep their independent embedding deadline. Ingress ownership spans cleanup and response sending. Response backpressure still needs a separate deployment/application budget.
+
 Each compressed image remains limited to 10 MiB. Source and projected CLIP pre-crop resize each allow at most 16,000,000 pixels; this also refuses extreme aspect ratios that would create a large resize intermediate. A batch resolves at most 32 MiB of compressed image data, including cache hits, and retains uncached images within a 32,000,000-pixel budget counting source plus projected resize. Items refused during worker processing remain ordered per-item batch errors; a coalesced single request receives HTTP 413 for its own refused image. Decoded images close after work or errors, including when the HTTP caller has already timed out.
 
 All ceilings must be positive integers. Configure them in `[image]` or the environment variables below. The default raw body ceiling permits one near-10-MiB base64 image, but large inline batches may need smaller images or a deliberately raised ceiling. These limits do not impose an exact RSS quota: size model/tensor memory with the ingress and deployment controls below. See the [input budget design and outcome](docs/input-memory-budgets.md).
@@ -528,13 +530,15 @@ Each application admits at most `MAX_HTTP_REQUESTS` complete ordinary HTTP reque
 
 The shared container/local launcher explicitly defaults to one worker, 64 server connections/tasks and a 128-connection listen backlog. It reads `[server]` and the environment settings below. `WEB_CONCURRENCY` does not change the shipped worker count. Each additional worker duplicates ingress/queue budgets, model memory and caches. An alternative direct ASGI launcher must configure its own server limits. If you change the listener port, adjust Docker's published container port to match; the shipped healthcheck follows the configured listener.
 
-Compose sets both memory and total memory/swap to `IMAGE_EMBEDDER_MEMORY_LIMIT`, disabling additional swap. CPU/CUDA default to `4g`; the OpenVINO override defaults to `8g` after the production large-model cold export exceeded 4 GiB. An explicit environment override applies to either profile. These are containment policies: measure peak production model/tensor/cache/input memory with representative batches and headroom before increasing workers or admission. They do not cap GPU VRAM. Raw body allowance alone is approximately workers × ingress slots × body ceiling (128 MiB at defaults), with parsed copies and native memory additional. Slow uploads can occupy finite slots, so deployment upload timeouts remain useful. See the [ingress design](docs/aggregate-ingress.md) and [production model measurements](docs/model-artifact-contracts.md).
+Compose sets both memory and total memory/swap to `IMAGE_EMBEDDER_MEMORY_LIMIT`, disabling additional swap. CPU/CUDA default to `4g`; the OpenVINO override defaults to `8g` after the production large-model cold export exceeded 4 GiB. An explicit environment override applies to either profile. These are containment policies: measure peak production model/tensor/cache/input memory with representative batches and headroom before increasing workers or admission. They do not cap GPU VRAM. Raw body allowance alone is approximately workers × ingress slots × body ceiling (128 MiB at defaults), with parsed copies and native memory additional. Align proxy upload timeouts with the application budget. Enabled remote fetching adds a disposable process and temporary image storage per active inference owner; measure PID, storage and memory headroom on the target deployment. See the [ingress design](docs/aggregate-ingress.md), [input lifetimes](docs/request-lifetimes.md) and [production model measurements](docs/model-artifact-contracts.md).
 
 ## Remote Image URLs
 
 Remote fetching remains disabled by default. When enabled, each HTTP/HTTPS hop must resolve exclusively to public addresses and match `ALLOWED_REMOTE_IMAGE_HOSTS` when configured. Use exact canonical ASCII/punycode hosts in the allowlist; redirects must also match it. Fetching connects to the validated numeric addresses while preserving the URL's Host and verified TLS hostname. Before a connection succeeds it can try up to four approved addresses, alternating IPv4/IPv6 when both are available.
 
-At most three redirects are followed. Credentialed URLs, raw controls/backslashes, unsafe DNS results and HTTPS-to-HTTP redirects are refused. Fetching uses the installed certificate bundle and direct connections; ambient proxy, netrc, cookie and Requests CA-bundle overrides are ignored. Final decoded response bytes are bounded by `MAX_IMAGE_BYTES`; response/pool resources close on every exit. Policy refusals return 400, oversized images 413, and HTTP/network failures retain 500 with sanitized details. Explicit batches retain ordered per-item errors. The socket timeout is not a total DNS/download deadline. See the [design and validation](docs/remote-image-destinations.md).
+At most three redirects are followed. Credentialed URLs, raw controls/backslashes, unsafe DNS results and HTTPS-to-HTTP redirects are refused. Fetching uses the installed certificate bundle and direct connections; ambient proxy, netrc, cookie and Requests CA-bundle overrides are ignored. Final decoded response bytes are bounded by `MAX_IMAGE_BYTES`; response/pool resources close on every exit. Policy refusals return 400, oversized images 413, and HTTP/network failures retain 500 with sanitized details. Explicit batches retain ordered per-item errors. See the [destination design and validation](docs/remote-image-destinations.md).
+
+Each remote fetch now has a total 15-second budget (`REMOTE_FETCH_TIMEOUT_SECONDS` or `[image].remote_fetch_timeout_seconds`) covering fresh-interpreter startup, DNS, all approved address attempts, TLS, redirects and decoded body reads. `REQUEST_TIMEOUT_SECONDS` remains a separate socket/hop setting; raising it does not raise the total budget. URL text permits at most 8192 characters; the bounded stdin message permits at most 64 KiB including fetch options. The child receives no service key or ambient Python/proxy/CA overrides. On timeout it is killed and reaped before its inference owner releases capacity; the existing sanitized server-error contract is retained. OS launch/reaping can add latency. Batches fetch sequentially with one total budget per image. See the [lifetime alternatives, measurements and limits](docs/request-lifetimes.md).
 
 ## Environment Variables
 
@@ -551,6 +555,7 @@ At most three redirects are followed. Credentialed URLs, raw controls/backslashe
 - `MAX_BATCH_IMAGE_BYTES` (default `33554432` - 32 MiB aggregate compressed inputs)
 - `MAX_BATCH_IMAGE_PIXELS` (default `32000000` - aggregate source + pre-crop resize pixels)
 - `REQUEST_TIMEOUT_SECONDS` (remote-hop default `15`; explicit legacy values also apply to embedding deadlines if the new setting is absent)
+- `REMOTE_FETCH_TIMEOUT_SECONDS` (default `15` - total remote fetch including startup, DNS and all redirects; positive finite seconds)
 - `EMBEDDING_TIMEOUT_SECONDS` (embedding response default `45`; positive finite seconds, including fractions)
 
 ### Concurrency & Queue
@@ -564,12 +569,13 @@ At most three redirects are followed. Credentialed URLs, raw controls/backslashe
 ### HTTP Server and Deployment
 
 - `MAX_HTTP_REQUESTS` (default `8` - complete ordinary HTTP lifetimes per app/worker)
+- `REQUEST_BODY_TIMEOUT_SECONDS` (default `30` - total admitted upload; positive finite seconds, including fractions)
 - `IMAGE_EMBEDDER_WORKERS` (default `1` - explicit launcher process count)
 - `IMAGE_EMBEDDER_SERVER_CONCURRENCY` (default `64` - launcher connection/task limit, including health)
 - `IMAGE_EMBEDDER_SERVER_BACKLOG` (default `128` - launcher socket backlog)
 - `IMAGE_EMBEDDER_MEMORY_LIMIT` (Compose interpolation only; default `4g` for CPU/CUDA, `8g` for OpenVINO - memory and combined memory/swap ceiling)
 
-The first four map to `[server]` keys `max_http_requests`, `workers`, `limit_concurrency` and `backlog`; all require positive integers.
+The admission/worker/concurrency/backlog controls map to `[server]` keys `max_http_requests`, `workers`, `limit_concurrency` and `backlog`; all require positive integers. The upload duration maps to `[server].request_body_timeout_seconds`.
 
 ### Startup
 - `WARMUP_ON_STARTUP` (default `true` - preload default model)
@@ -633,6 +639,8 @@ pytest
 - [Backend build design and validation](docs/backend-build-recommendation.md)
 - [Local PR 40 implementation and validation](docs/pr-40-local-validation.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
+- [Total upload and supervised remote-fetch design and validation](docs/request-lifetimes.md)
+- [Open PR 52 local pytest adoption and validation](docs/pr-52-local-validation.md)
 - [Production model and generated artifact design and validation](docs/model-artifact-contracts.md)
 - [OpenVINO runtime environment design and validation](docs/openvino-runtime-environment.md)
 - [Open PR 41 local implementation and validation](docs/pr-41-local-validation.md)

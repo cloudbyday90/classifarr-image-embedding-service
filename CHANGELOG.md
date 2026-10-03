@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Configurable total upload and remote-fetch lifetimes, with modular ASGI deadline, disposable-worker protocol and supervision services; separate design/outcome records and native cancellation/network regressions.
 - Modular private setup/publication and Windows ACL helpers, with separate design/outcome records and cross-platform setup regressions.
 - Reviewed native CI tool contracts, modular verification and release-retention helpers, with separate design/outcome records and workflow boundary regressions.
 - Complete hash-locked Linux dependency profiles, modular generation/installation validation, and separate dependency, refresh-policy and PR 50 design/outcome records.
@@ -22,6 +23,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopt open PR #52 locally by raising the pytest development minimum to the already hash-locked 9.1.1 release.
 - Adopt open PR #34 locally by raising the HTTPX development minimum to the already hash-locked 0.28.1 release.
 - Keep generated API keys out of setup/startup console output by default; provide explicit new-key display and rotation controls while preserving existing configuration.
 - Freeze remaining workflow actions and nested scanner/builder dependencies; narrow credentials, remove Gitleaks PR-write access and require completed OSV scans.
@@ -56,6 +58,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Bound remote DNS, TLS, redirects and trickled responses with one parent-owned fetch budget; strip ambient credentials and terminate/reap expired workers before releasing inference capacity.
+- Expire stalled/trickled uploads with HTTP 408 while retaining ingress ownership through downstream cleanup and response completion.
 - Retain default secret-scanning rules with exact path/value exceptions for two verified historical log digests, validated against negative native scanner controls.
 - Publish complete `.env` data with owner-only permissions established before writing; refuse linked targets, serialize setup/rotation and preserve existing keys on handled publication failures.
 - Reject stale dependency inputs, unapproved wheel origins, altered artifacts and unexpected installed packages; require hashes for all transitive Python dependencies without index fallback or source builds.

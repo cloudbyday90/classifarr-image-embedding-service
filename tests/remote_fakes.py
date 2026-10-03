@@ -55,6 +55,7 @@ class RemoteTransport:
         self.calls = []
         self.closed = []
         monkeypatch.setattr(remote_fetch, "_pool", self.pool)
+        monkeypatch.setattr("image_embedder.embedder.fetch_remote_image", remote_fetch.fetch_remote_image)
 
     def pool(self, destination, address, timeout):
         owner = self

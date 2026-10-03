@@ -25,6 +25,7 @@ CONFIG_TEMPLATE = """\
 host = "0.0.0.0"
 port = 8000
 shutdown_timeout_seconds = 30
+request_body_timeout_seconds = 30 # total upload budget; JSON 408 on expiry
 
 [model]
 default_model = "ViT-L-14"
@@ -36,6 +37,7 @@ allow_remote_urls = false
 allowed_remote_hosts = []   # when allow_remote_urls = true, restrict to these hosts
 max_image_bytes = 10485760  # 10 MiB
 request_timeout_seconds = 15
+remote_fetch_timeout_seconds = 15 # total fetch including DNS, TLS and redirects
 
 [queue]
 concurrency = 1

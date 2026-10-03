@@ -1,0 +1,594 @@
+{
+  "architecture": {
+    "embedding_seconds": 45,
+    "error_bytes": 1024,
+    "image_bytes_default": 10485760,
+    "remote_fetch_seconds": 15,
+    "remote_process": "isolated fresh interpreter, bounded protocol, minimal environment, kill and reap before ownership release",
+    "remote_url_characters": 8192,
+    "socket_hop_seconds": 15,
+    "stdin_bytes": 65536,
+    "upload": "cooperative AnyIO deadline, stop on body/disconnect/response start; owner spans cleanup and 408 send",
+    "upload_seconds": 30
+  },
+  "assessment_date": "2026-10-03",
+  "baseline": "8f57c727c7f8efbcaf72c27df716bffc5e4eb16c",
+  "coverage": {
+    "branches_percent": 89.34,
+    "floors": {
+      "branches_percent": 79.37,
+      "lines_percent": 89.42
+    },
+    "lines_percent": 94.65,
+    "ratchet": "pass"
+  },
+  "delivery": {
+    "branch": "master",
+    "original_pr_merge": false,
+    "release": false,
+    "version_bump": false
+  },
+  "evidence_hashes": [
+    {
+      "path": "pytest-focused.log",
+      "sha256": "c493ada2aefa62640efecb10a48ec91e8c17428ec29e6b57affb0272024a3204"
+    },
+    {
+      "path": "pytest-cleanup.log",
+      "sha256": "d187939e620d8fb43fd3b92c84c2b3b7fde28d3552fae4913549974d08e09a88"
+    },
+    {
+      "path": "pytest-full-first.log",
+      "sha256": "e137bbb476ecf13faa017b49cb7d567af55b4200fc02cb9af7d1b283db09b970"
+    },
+    {
+      "path": "pytest-full-final.log",
+      "sha256": "30eff737e7136f2c8895503773a7f411c390af34c7b7462f56743ec27b671fd4"
+    },
+    {
+      "path": "pytest-windows-final.log",
+      "sha256": "58e0496f32beacdd5adf51b968086a083384df172150911d0a05ae0e4221d072"
+    },
+    {
+      "path": "qa-inventory.log",
+      "sha256": "944d5448532723e825a6718ba4ef7a0e4362f099140de2493e1cc4b1f3f75fa0"
+    },
+    {
+      "path": "native-codeql.log",
+      "sha256": "445da03ea53ccad3330655b3d39462b490511adb1a0defa05ec8e81b6e481bea"
+    },
+    {
+      "path": "codeql-python.sarif",
+      "sha256": "4d068c54d16e569f77590510ae3188ffb5b6777a7e264610091fcbbcab710946"
+    },
+    {
+      "path": "gitleaks-changes.log",
+      "sha256": "d9653db6748952617643523bc1582e7a0bec27886cdfe83752f4f7405fc962fe"
+    },
+    {
+      "path": "gitleaks-changes.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "gitleaks-install.log",
+      "sha256": "13f7b301d4d950dc8236ced49cc4331e9c89217b170bea4614c160c87df2e906"
+    },
+    {
+      "path": "gitleaks-history.log",
+      "sha256": "9a93d67b254ccde406b781eee87d9b1a4b9cbb6644f2dfc51a1381ed893308eb"
+    },
+    {
+      "path": "gitleaks-history.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "pyright.log",
+      "sha256": "c584b21ee012de391dc2799d5455db619d3fefbb192ab07ea4ba83fb0d704c14"
+    },
+    {
+      "path": "ruff.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "path": "cpu-native-probe.log",
+      "sha256": "a55b5365bb321c1fd005d784d6303238a7118ba654ff695a0a5fa948268fca87"
+    },
+    {
+      "path": "openvino-native-probe.log",
+      "sha256": "020382546721988b95405a2f466a0ef412d9af79a2e4771b555eb2c5872da319"
+    },
+    {
+      "path": "cuda-native-probe.log",
+      "sha256": "3c58b23c222e6bccc7b6b0818ae53e491408a142defec42ac9b14abb5467d0af"
+    },
+    {
+      "path": "native_probe.py",
+      "sha256": "2cf4ea0a45473388d01e83855aafdfa9c28f3597df51a923a21f114524d089e1"
+    },
+    {
+      "path": "selection.json",
+      "sha256": "658361e945d49d091c96d2ff51ce61d21d9aece29f3df9b112c52cb320a0175c"
+    }
+  ],
+  "limitations": [
+    "Cooperative upload cleanup and OS process launch/reaping are not hard real-time interrupts.",
+    "Native inference remains owned after HTTP cancellation; it is not forcibly interrupted.",
+    "Sequential batches have per-image budgets; response sending has no separate total budget yet.",
+    "Process shares service UID, mounts, network and cgroup; it is a termination boundary, not hostile-code sandboxing.",
+    "Small-fetch local overhead samples do not replace production-weight/device/concurrent-input calibration."
+  ],
+  "native_images": {
+    "cpu": {
+      "id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "name": "classifarr-image-embedder:locked-cpu-amd64",
+      "user": "appuser"
+    },
+    "cuda": {
+      "id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "name": "classifarr-image-embedder:locked-cuda-amd64",
+      "user": "appuser"
+    },
+    "openvino": {
+      "id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "name": "classifarr-image-embedder:locked-openvino-amd64",
+      "user": "1001"
+    },
+    "qa": {
+      "id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+      "name": "classifarr-image-embedder:locked-qa-amd64",
+      "user": "appuser"
+    }
+  },
+  "native_probes": {
+    "cpu": {
+      "all_reaped": true,
+      "blocked_dns_seconds": 0.7021279940090608,
+      "children": 8,
+      "direct_seconds": [
+        0.0020517569791991264,
+        0.0013694670051336288,
+        0.0011954200163017958,
+        0.0009575320000294596,
+        0.0010718349949456751,
+        0.0009271610178984702,
+        0.0009251320152543485
+      ],
+      "median_direct_seconds": 0.0010718349949456751,
+      "median_supervised_seconds": 0.3653009810077492,
+      "parent_rss_kib": 239984,
+      "private_url_policy": "rejected by unmodified production worker",
+      "profile": "cpu",
+      "python": "3.12.3",
+      "supervised_samples": [
+        {
+          "exec_hwm_kib": 31104,
+          "rss_kib": 31104,
+          "rusage_hwm_kib": 239960,
+          "seconds": 0.41754748299717903
+        },
+        {
+          "exec_hwm_kib": 29136,
+          "rss_kib": 29136,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.3653452849830501
+        },
+        {
+          "exec_hwm_kib": 30980,
+          "rss_kib": 30980,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.3651990959770046
+        },
+        {
+          "exec_hwm_kib": 29112,
+          "rss_kib": 29112,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.36533367601805367
+        },
+        {
+          "exec_hwm_kib": 29228,
+          "rss_kib": 29228,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.36525713399169035
+        },
+        {
+          "exec_hwm_kib": 31196,
+          "rss_kib": 31196,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.3653009810077492
+        },
+        {
+          "exec_hwm_kib": 29208,
+          "rss_kib": 29208,
+          "rusage_hwm_kib": 239984,
+          "seconds": 0.36522290101856925
+        }
+      ],
+      "torch_version": "2.14.1+cpu",
+      "uid": 1001
+    },
+    "cuda": {
+      "all_reaped": true,
+      "blocked_dns_seconds": 0.702943708980456,
+      "children": 8,
+      "direct_seconds": [
+        0.0025412940012756735,
+        0.0014926919830031693,
+        0.0011757489992305636,
+        0.0011412780149839818,
+        0.0011200509907212108,
+        0.0010391939722467214,
+        0.000915896991500631
+      ],
+      "median_direct_seconds": 0.0011412780149839818,
+      "median_supervised_seconds": 0.31522678898181766,
+      "parent_rss_kib": 532904,
+      "private_url_policy": "rejected by unmodified production worker",
+      "profile": "cuda",
+      "python": "3.12.3",
+      "supervised_samples": [
+        {
+          "exec_hwm_kib": 28908,
+          "rss_kib": 28908,
+          "rusage_hwm_kib": 532884,
+          "seconds": 0.36589006101712584
+        },
+        {
+          "exec_hwm_kib": 28964,
+          "rss_kib": 28964,
+          "rusage_hwm_kib": 532900,
+          "seconds": 0.41543644497869536
+        },
+        {
+          "exec_hwm_kib": 28956,
+          "rss_kib": 28956,
+          "rusage_hwm_kib": 532900,
+          "seconds": 0.3652930580137763
+        },
+        {
+          "exec_hwm_kib": 28960,
+          "rss_kib": 28960,
+          "rusage_hwm_kib": 532900,
+          "seconds": 0.3149280970101245
+        },
+        {
+          "exec_hwm_kib": 30772,
+          "rss_kib": 30772,
+          "rusage_hwm_kib": 532904,
+          "seconds": 0.31522678898181766
+        },
+        {
+          "exec_hwm_kib": 30936,
+          "rss_kib": 30936,
+          "rusage_hwm_kib": 532904,
+          "seconds": 0.26474102700012736
+        },
+        {
+          "exec_hwm_kib": 30968,
+          "rss_kib": 30968,
+          "rusage_hwm_kib": 532904,
+          "seconds": 0.3148019959917292
+        }
+      ],
+      "torch_version": "2.14.1+cu130",
+      "uid": 1001
+    },
+    "openvino": {
+      "all_reaped": true,
+      "blocked_dns_seconds": 0.7022452600067481,
+      "children": 8,
+      "direct_seconds": [
+        0.001962965994607657,
+        0.0015395910013467073,
+        0.0012554519926197827,
+        0.0010082790104206651,
+        0.0012006750039290637,
+        0.0010229540057480335,
+        0.0010533159947954118
+      ],
+      "median_direct_seconds": 0.0012006750039290637,
+      "median_supervised_seconds": 0.36526355502428487,
+      "parent_rss_kib": 236728,
+      "private_url_policy": "rejected by unmodified production worker",
+      "profile": "openvino",
+      "python": "3.12.3",
+      "supervised_samples": [
+        {
+          "exec_hwm_kib": 28940,
+          "rss_kib": 28940,
+          "rusage_hwm_kib": 236704,
+          "seconds": 0.3683303729922045
+        },
+        {
+          "exec_hwm_kib": 30896,
+          "rss_kib": 30896,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.36526355502428487
+        },
+        {
+          "exec_hwm_kib": 29024,
+          "rss_kib": 29024,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.36529747300664894
+        },
+        {
+          "exec_hwm_kib": 30928,
+          "rss_kib": 30928,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.4155015840078704
+        },
+        {
+          "exec_hwm_kib": 28908,
+          "rss_kib": 28908,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.3651571180089377
+        },
+        {
+          "exec_hwm_kib": 29056,
+          "rss_kib": 29056,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.3150227729929611
+        },
+        {
+          "exec_hwm_kib": 28980,
+          "rss_kib": 28980,
+          "rusage_hwm_kib": 236728,
+          "seconds": 0.365102345997002
+        }
+      ],
+      "torch_version": "2.14.1+cpu",
+      "uid": 1001
+    }
+  },
+  "next_item": "Bound response-send/backpressure lifetime with real Uvicorn slow-reader/disconnect accounting tests.",
+  "official_sources": [
+    "https://urllib3.readthedocs.io/en/stable/reference/urllib3.util.html",
+    "https://docs.python.org/3/library/subprocess.html?highlight=universal_newlines",
+    "https://docs.python.org/3.12/using/cmdline.html",
+    "https://anyio.readthedocs.io/en/latest/cancellation.html",
+    "https://starlette.dev/middleware/",
+    "https://www.uvicorn.org/server-behavior/",
+    "https://docs.python.org/3.12/library/asyncio-task.html",
+    "https://docs.docker.com/reference/compose-file/services/",
+    "https://www.man7.org/linux/man-pages/man2/getrusage.2.html",
+    "https://docs.kernel.org/filesystems/proc.html?highlight=memavailable",
+    "https://docs.pytest.org/en/latest/changelog.html"
+  ],
+  "pull_request": {
+    "draw": 0.13429970412277215,
+    "excluded": {
+      "33": "Adopted",
+      "34": "Adopted in previous iteration",
+      "35": "Superseded by locked Torch 2.14.1",
+      "40": "Adopted",
+      "41": "Adopted; native scanner now used",
+      "42": "Adopted",
+      "44": "Ubuntu 25.10 EOL",
+      "53": "Superseded by locked Transformers 5.18.0"
+    },
+    "head_sha": "be852cf5df1e86701e7aadd50f3f6b4d94dd6648",
+    "merged": false,
+    "number": 52,
+    "pool": [
+      {
+        "number": 52,
+        "title": "build(deps-dev): update pytest requirement from >=9.0.3 to >=9.1.1",
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/52"
+      },
+      {
+        "number": 48,
+        "title": "build(deps): update numpy requirement from >=2.4 to >=2.5.3",
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/48"
+      },
+      {
+        "number": 46,
+        "title": "build(deps): update fastapi requirement from <1,>=0.135 to >=0.142.1,<1",
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/46"
+      },
+      {
+        "number": 27,
+        "title": "build(deps): bump aquasecurity/trivy-action from 0.35.0 to 0.36.0",
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/27"
+      }
+    ],
+    "selected": {
+      "number": 52,
+      "title": "build(deps-dev): update pytest requirement from >=9.0.3 to >=9.1.1",
+      "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/52"
+    },
+    "state": "open",
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/52"
+  },
+  "qa_dependency_contract": {
+    "all_lock_bytes_unchanged": true,
+    "artifacts_unchanged": true,
+    "exact_native_inventory_and_pip_check": "pass",
+    "input_hash_only": "requirements-dev.txt",
+    "profiles_verified": 9,
+    "pytest": "9.1.1",
+    "wheels": 67
+  },
+  "quality": {
+    "copyright": "pass",
+    "local_markdown_links": "checked after final archive publication",
+    "pyright": "1.1.414, scoped runtime modules, zero errors/warnings",
+    "ruff": "0.16.10, scoped E/F/I, target Python 3.12",
+    "whitespace": "pass"
+  },
+  "recorded_at_utc": "2026-10-03T08:51:15.594017+00:00",
+  "schema_version": 1,
+  "security": {
+    "codeql": {
+      "existing_contextual_alerts": [
+        {
+          "line": 57,
+          "path": "scripts/generate_env.py",
+          "rule": "py/clear-text-logging-sensitive-data"
+        },
+        {
+          "line": 105,
+          "path": "scripts/secret_publication.py",
+          "rule": "py/overly-permissive-file"
+        }
+      ],
+      "new_alerts": 0,
+      "scanned_snapshot_sources": [
+        {
+          "path": "scripts/setup_templates.py",
+          "sha256": "305d7d1b2d3df51fa0ee158a9e10f632e7eaa34ffa00f7ccef3ffc5200142662"
+        },
+        {
+          "path": "src/image_embedder/config.py",
+          "sha256": "9cdbba5c52da091307aa2a2822d087fd847b288cd4ae0310006a4e36ea93aeea"
+        },
+        {
+          "path": "src/image_embedder/deadlines.py",
+          "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+        },
+        {
+          "path": "src/image_embedder/embedder.py",
+          "sha256": "3fa1dce6b4c5a688e9132b265e5fccbc367cf2ddb302293981595b394b133293"
+        },
+        {
+          "path": "src/image_embedder/main.py",
+          "sha256": "dc067f77b967a9634180b63d3dffb78b7ec4d0bfce0ffe23aafd255689473500"
+        },
+        {
+          "path": "src/image_embedder/remote_fetch.py",
+          "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+        },
+        {
+          "path": "src/image_embedder/remote_process.py",
+          "sha256": "14991134e25a9676d40f2850eb497dd4347505198a92c2cf3bab2a078601576a"
+        },
+        {
+          "path": "src/image_embedder/remote_protocol.py",
+          "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+        },
+        {
+          "path": "src/image_embedder/remote_worker.py",
+          "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+        },
+        {
+          "path": "src/image_embedder/request_body_deadline.py",
+          "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+        }
+      ],
+      "suite": "python-security-extended",
+      "suppression_changes": false,
+      "version": "2.27.1"
+    },
+    "gitleaks": {
+      "binary_sha256": "88f91962aa2f93ac6ab281d553b9e125f5197bbbce38f9f2437f7299c32e5509",
+      "configured_baseline_history": "pass",
+      "configured_changed_files": "pass",
+      "fresh_reviewed_artifact_verification": "pass",
+      "historical_exceptions": "existing exact path/value only",
+      "redaction": "100",
+      "version": "8.30.1"
+    },
+    "not_a_full_security_audit": true
+  },
+  "source_hashes": [
+    {
+      "path": "config.toml",
+      "sha256": "14e595c8ed9f1cb35bb49cce3f4cf8758c6a0f7b7554d0848ef6d928303795cd"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "sha256": "fdbaf0a56d3d1a2f56f1127d0aec783286956097aa8476e0e3d275487bddbb7b"
+    },
+    {
+      "path": "requirements/locks/qa-py312-linux-amd64.json",
+      "sha256": "659e5a6f982d09789de1ced627e5657297efad74634c2155d160fe77a2bfa3ed"
+    },
+    {
+      "path": "scripts/setup_templates.py",
+      "sha256": "305d7d1b2d3df51fa0ee158a9e10f632e7eaa34ffa00f7ccef3ffc5200142662"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "9cdbba5c52da091307aa2a2822d087fd847b288cd4ae0310006a4e36ea93aeea"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "3fa1dce6b4c5a688e9132b265e5fccbc367cf2ddb302293981595b394b133293"
+    },
+    {
+      "path": "src/image_embedder/main.py",
+      "sha256": "dc067f77b967a9634180b63d3dffb78b7ec4d0bfce0ffe23aafd255689473500"
+    },
+    {
+      "path": "src/image_embedder/remote_fetch.py",
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "14991134e25a9676d40f2850eb497dd4347505198a92c2cf3bab2a078601576a"
+    },
+    {
+      "path": "src/image_embedder/remote_protocol.py",
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+    },
+    {
+      "path": "src/image_embedder/remote_worker.py",
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+    },
+    {
+      "path": "src/image_embedder/request_body_deadline.py",
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+    },
+    {
+      "path": "tests/fakes.py",
+      "sha256": "46255b921b9426c24e1e60a322d5a75dc97cc17a290f910f429edf8cb2d66bce"
+    },
+    {
+      "path": "tests/remote_fakes.py",
+      "sha256": "204e7b72c0579744f33a8a49376605174bde31832ab3961482533b8ecd7e6a1a"
+    },
+    {
+      "path": "tests/remote_process_harness.py",
+      "sha256": "1bb3085237b7ec65f2e24ae9521d070eb9eeffc7a9469f12eed0641eb208f9ad"
+    },
+    {
+      "path": "tests/test_remote_process.py",
+      "sha256": "65c0447ccb12b769edd68d0b7a88425cd77e0e044460d6270519ad9c10e15852"
+    },
+    {
+      "path": "tests/test_remote_process_network.py",
+      "sha256": "b31382111fb820a531ab4f5e08498668f43b4a9e83ea4d771ce478ee83c882de"
+    },
+    {
+      "path": "tests/test_request_lifetimes.py",
+      "sha256": "5b2c0e0e5f2a7228c4e02c12d6afc0505627748f245a9210a85867a033deebdd"
+    }
+  ],
+  "tests": {
+    "initial_failure": {
+      "cause": "rusage high-water assertion inherited parent history across exec; replace with separate proc RSS/HWM metrics",
+      "failed": 2,
+      "passed": 827,
+      "skipped": 7
+    },
+    "linux": {
+      "initial_focused_passed": 81,
+      "injected_cleanup_failures_passed": 2,
+      "network": "none except controlled loopback",
+      "new_cases": 74,
+      "passed": 832,
+      "pytest": "9.1.1",
+      "python": "3.12.3",
+      "skipped": 7,
+      "warning": "existing Starlette TestClient HTTPX deprecation"
+    },
+    "windows": {
+      "passed": 41,
+      "pytest": "9.1.1",
+      "python": "3.14.5",
+      "scope": "native process and HTTP/TLS boundary, temporary tooling; not the deployed Linux QA profile"
+    }
+  }
+}

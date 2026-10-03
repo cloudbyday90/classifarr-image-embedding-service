@@ -76,6 +76,12 @@ def _embedding_duration() -> float | None:
     return None if value is None else positive_duration(value)
 
 
+def _duration(env: str, section: str, key: str, default: float) -> float:
+    raw = os.getenv(env)
+    value = raw if raw is not None else _c(section, key)
+    return positive_duration(default if value is None else value, key)
+
+
 def _bool(env_key: str, section: str, cfg_key: str, default: bool) -> bool:
     v = os.getenv(env_key)
     if v is not None:
@@ -115,7 +121,9 @@ class Settings:
     max_image_pixels: int = field(default_factory=lambda: _input_limit("MAX_IMAGE_PIXELS", "max_image_pixels", 16_000_000))
     max_batch_image_bytes: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_BYTES", "max_batch_image_bytes", 32 * 1024 * 1024))
     max_batch_image_pixels: int = field(default_factory=lambda: _input_limit("MAX_BATCH_IMAGE_PIXELS", "max_batch_image_pixels", 32_000_000))
-    request_timeout_seconds: int = field(default_factory=lambda: _int("REQUEST_TIMEOUT_SECONDS", "image", "request_timeout_seconds", 15))
+    request_timeout_seconds: float = field(default_factory=lambda: _duration("REQUEST_TIMEOUT_SECONDS", "image", "request_timeout_seconds", 15.0))
+    request_body_timeout_seconds: float = field(default_factory=lambda: _duration("REQUEST_BODY_TIMEOUT_SECONDS", "server", "request_body_timeout_seconds", 30.0))
+    remote_fetch_timeout_seconds: float = field(default_factory=lambda: _duration("REMOTE_FETCH_TIMEOUT_SECONDS", "image", "remote_fetch_timeout_seconds", 15.0))
     embedding_timeout_seconds: float | None = field(default_factory=_embedding_duration)
 
     embed_concurrency: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_CONCURRENCY", "queue", "concurrency", 1))
@@ -160,6 +168,8 @@ class Settings:
     rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))
 
     def __post_init__(self) -> None:
+        for name in ("request_body_timeout_seconds", "remote_fetch_timeout_seconds", "request_timeout_seconds"):
+            setattr(self, name, positive_duration(getattr(self, name), name))
         self.embedding_timeout_seconds = embedding_deadline(
             self.embedding_timeout_seconds, self.request_timeout_seconds,
             legacy_env_set=os.getenv("REQUEST_TIMEOUT_SECONDS") is not None,

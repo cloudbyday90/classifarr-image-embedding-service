@@ -4,9 +4,12 @@
 
 """Direct numeric-address transport with independently validated redirects."""
 
+from __future__ import annotations
+
 from collections.abc import Iterator
 from contextlib import closing, contextmanager
 from itertools import zip_longest
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlsplit
 
 import certifi
@@ -17,6 +20,9 @@ from urllib3.response import BaseHTTPResponse
 from .config import Settings
 from .input_limits import InputLimitExceeded
 from .remote_url import RemoteDestination, check_url_text, resolve_remote_url
+
+if TYPE_CHECKING:
+    from .remote_protocol import RemoteFetchOptions
 
 MAX_REDIRECTS = 3
 MAX_CONNECT_ADDRESSES = 4
@@ -101,7 +107,9 @@ def _read_body(response: BaseHTTPResponse, max_bytes: int) -> bytes:
     return bytes(data)
 
 
-def fetch_remote_image(image_url: str, settings: Settings) -> bytes:
+def fetch_remote_image(
+    image_url: str, settings: Settings | "RemoteFetchOptions"
+) -> bytes:
     if not settings.allow_remote_urls:
         raise ValueError("Remote image URLs are disabled")
     current = image_url
