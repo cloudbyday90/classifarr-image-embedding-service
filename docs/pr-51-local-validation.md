@@ -43,3 +43,7 @@ These are local component, syntax and policy checks. GitHub-hosted checkout/cach
 ## Next recommendation
 
 Keep this minimal verified caller update. Add production-model/preprocessor and cached-IR revision contracts next, then complete dependency locks and review remaining workflow/nested container refs. Track the current priorities in the [recommendation stack](recommendation-stack.md).
+
+## Subsequent CI iteration
+
+The [CI execution](ci-execution-contracts.md), [native artifact](ci-native-artifacts.md) and [release cleanup](release-cleanup.md) records now implement the remaining reference, tool-download and credential review. This document retains its original iteration outcomes; current priorities are in the [recommendation stack](recommendation-stack.md).

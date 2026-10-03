@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "platform": "linux-amd64",
+  "tools": {
+    "gitleaks": {
+      "version": "v8.30.1",
+      "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+      "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "kind": "tar-member",
+      "executable": "gitleaks",
+      "max_bytes": 134217728,
+      "source": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1"
+    },
+    "trivy": {
+      "version": "v0.69.3",
+      "url": "https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz",
+      "sha256": "1816b632dfe529869c740c0913e36bd1629cb7688bd5634f4a858c1d57c88b75",
+      "kind": "tar-member",
+      "executable": "trivy",
+      "max_bytes": 134217728,
+      "source": "https://github.com/aquasecurity/trivy/releases/tag/v0.69.3"
+    },
+    "buildx": {
+      "version": "v0.37.2",
+      "url": "https://github.com/docker/buildx/releases/download/v0.37.2/buildx-v0.37.2.linux-amd64",
+      "sha256": "982ca20490b45ed1ec8d99795974d3d874a358f75938c9c237305010e6b7e548",
+      "kind": "binary",
+      "executable": "docker-buildx",
+      "max_bytes": 134217728,
+      "source": "https://github.com/docker/buildx/releases/tag/v0.37.2"
+    },
+    "codeql": {
+      "version": "codeql-bundle-v2.27.1",
+      "url": "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-linux64.tar.gz",
+      "sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+      "kind": "archive",
+      "executable": "codeql-bundle-linux64.tar.gz",
+      "max_bytes": 3221225472,
+      "source": "https://github.com/github/codeql-action/releases/tag/codeql-bundle-v2.27.1"
+    }
+  }
+}

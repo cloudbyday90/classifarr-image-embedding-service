@@ -31,11 +31,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify native Trivy binary
+        run: |
+          python scripts/install_ci_tool.py trivy --directory "$RUNNER_TEMP/verified-tools"
+          echo "$RUNNER_TEMP/verified-tools" >> "$GITHUB_PATH"
 
       # SARIF pass: upload all HIGH/CRITICAL findings to the Security tab
       - name: Run Trivy (SARIF upload)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
+          cache: false
+          skip-setup-trivy: true
           scan-type: fs
           scan-ref: .
           scanners: vuln,secret
@@ -47,16 +56,18 @@ jobs:
           skip-dirs: .git,__pycache__,.venv,venv,.pytest_cache
 
       - name: Upload Trivy FS results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        if: always() && hashFiles('trivy-fs-results.sarif') != ''
         with:
           sarif_file: trivy-fs-results.sarif
           category: trivy-fs
 
       # Table pass: gate the PR/push on exit code (fail on HIGH/CRITICAL)
       - name: Run Trivy (PR gate)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
+          cache: false
+          skip-setup-trivy: true
           scan-type: fs
           scan-ref: .
           scanners: vuln,secret
@@ -65,7 +76,6 @@ jobs:
           exit-code: '1'
           format: table
           skip-dirs: .git,__pycache__,.venv,venv,.pytest_cache
-          skip-setup-trivy: true  # Trivy already installed by the previous step
 
   trivy-config:
     name: Dockerfile & Docker Compose Misconfig Scan
@@ -79,11 +89,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify native Trivy binary
+        run: |
+          python scripts/install_ci_tool.py trivy --directory "$RUNNER_TEMP/verified-tools"
+          echo "$RUNNER_TEMP/verified-tools" >> "$GITHUB_PATH"
 
       # Scans Dockerfile and docker-compose*.yml against CIS Docker Benchmark
       - name: Run Trivy (IaC misconfig)
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
         with:
+          cache: false
+          skip-setup-trivy: true
           scan-type: config
           scan-ref: .
           severity: HIGH,CRITICAL
@@ -91,8 +110,8 @@ jobs:
           output: trivy-config-results.sarif
 
       - name: Upload Trivy config results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        if: always() && hashFiles('trivy-config-results.sarif') != ''
         with:
           sarif_file: trivy-config-results.sarif
           category: trivy-config

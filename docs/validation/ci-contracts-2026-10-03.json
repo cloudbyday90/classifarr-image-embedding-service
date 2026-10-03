@@ -1,0 +1,442 @@
+{
+  "assessment_date": "2026-10-03",
+  "authored_language": "Python; no new JavaScript/CommonJS",
+  "baseline": "2e3813aa1b2da6caf2729ce9eea8d95946ba011f",
+  "delivery_branch": "master",
+  "evidence_log_sha256": {
+    "focused-tests-final.log": "6ddfa6f3a05fb23896553eb89c13667226a837962ab2565e12301c4f877315d9",
+    "install-buildx.log": "0e30e580e27dbf64e95c7905d37b293a0e4da4c30f54deccc54b749bf656bfb8",
+    "install-codeql.log": "c3f956079ffbc49620d2dcd820a0b1599773377ae3fecc7a60ee4e0bb8a172ef",
+    "install-gitleaks.log": "9677792a7c36ba54ab16407ca35521375b4b05026d9d7f9d7899c6567effc034",
+    "install-trivy.log": "3c7cdb6a4cf35f44798a0d24ea0e61262c1acb7b0496a68425af27c19ca5230d",
+    "native-codeql-final.log": "0a51ba78e97435972f0d7e5be36b5803128914cb3cb054d0bd7cb2c8ffefc602",
+    "native-gitleaks.log": "b7d8f91c95c181c92fbcb25310951c5f80a4c594a8dbc1442d9094d6c8e3c1ca",
+    "native-trivy-final.log": "0b2c67521322b337c20b945d215182e5c96eca63c8173b86cd9eb2178dd9fa16",
+    "osv-clean-clean.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "osv-clean-vulnerable.log": "4a3610b37db2b065367f31c9f2f21947a10cc056b54f6aaee696e7f7472e4d80",
+    "osv-clean.log": "2c7b580ed51b228482c5a493c150db8a6205c3aad2a05c0ad7ad62da5586257c",
+    "osv-dependabot-clean.log": "24ba958669129a10478b72af6809cab036e4668fcb3c55a5d441d1f66b1d1b32",
+    "osv-dependabot-empty.log": "3f8632a2e2945b4f7412fb304e8a8008747d96951511a201c259f2a7c5a337b0",
+    "osv-dependabot-vulnerable.log": "559d499a1d0e821c85c867c50f81f2b047bfca3586f241d14200ea16d8196996",
+    "osv-empty-guard.log": "b2196c453d9ff2143a5567330434ef6f6fef04884b863bf7a0ea3439715b636c",
+    "osv-empty.log": "614ea68229ac74104792b0f3d093349e6c88f7a78ea84e92ff2e845a79106604",
+    "osv-release-vulnerable.log": "4a3610b37db2b065367f31c9f2f21947a10cc056b54f6aaee696e7f7472e4d80",
+    "osv-vulnerable-unchanged.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "osv-vulnerable.log": "d27500d12d3e9f675a40a59db9333b49fc2137820b6070889655dc29d74b4b18",
+    "public-inventory.log": "25b82ba12a1b85aae7ae4e8b4705232cca8670baf23a9bb0aaa9e54dfc32a1cd",
+    "publisher-checksums.log": "e8ca0aa3c7a1a0cb5b323b1d01f19b0a889f5bcd7c65e899bdffd15808d3f51d",
+    "pytest-full-final.log": "43b29911739d35995dd047b46cf1358d47e893368a9c3176baf3a38ec19189d8",
+    "secret-changes.log": "fbb2c86971f90325d5a933774be9c90282882c56979d8145742e7b1a4de12117",
+    "secret-history-final.log": "77d1a96ce099533e6d588b6bea396512d566ff572e5e87fd4824d9ca167adc17"
+  },
+  "limits": [
+    "Hosted artifact/SARIF/cache integration and effective fork/Dependabot tokens were not exercised",
+    "No authenticated production registry cleanup or publication was performed",
+    "Privileged QEMU registration and complete hosted Buildx release jobs were not run locally",
+    "Checksums freeze reviewed bytes; publisher provenance signatures were not verified",
+    "GitHub runner/interpreter installation, apt and host drivers remain platform trust contracts",
+    "Pre-existing native environments were verified; no new backend image build is claimed"
+  ],
+  "native_inventories": [
+    {
+      "exit": 0,
+      "image": "cpu-amd64",
+      "image_id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "log_sha256": "38358e1a17548b89a0e5816aff6fe81229cd596582ff2deb3dfd9732e5de14ad"
+    },
+    {
+      "exit": 0,
+      "image": "cpu-arm64",
+      "image_id": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+      "log_sha256": "fd61502ce33778c5277b0cbcb7fbfe599932d5196dffb4542836e0d82b328508"
+    },
+    {
+      "exit": 0,
+      "image": "qa-amd64",
+      "image_id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+      "log_sha256": "70aeecbdb52c7969ade9f14335b4163e2ef5a36d3c4437cc28f51dbdd82201c8"
+    },
+    {
+      "exit": 0,
+      "image": "openvino-amd64",
+      "image_id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "log_sha256": "29c039c6a8aeba668260d5d8f15b7492d7e27ed80de6fd9503739843fafa2be5"
+    },
+    {
+      "exit": 0,
+      "image": "cuda-amd64",
+      "image_id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "log_sha256": "824d68b69503b57545bdaa05c0661a2ff378b9922251f9e2e61aee0dca451fef"
+    },
+    {
+      "exit": 0,
+      "image": "cuda-legacy-amd64",
+      "image_id": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+      "log_sha256": "51f2d4b19d2e8d4554c6e46ec61f2799b5a60766bc54498466b436a2615fa10d"
+    }
+  ],
+  "native_outcomes": {
+    "binfmt": {
+      "host_registrations_changed": false,
+      "image_digest": "sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0",
+      "native_version_exit": 0,
+      "version": "qemu/v10.2.3 go/1.26.4"
+    },
+    "buildkit": {
+      "daemon_flags": "--debug=false",
+      "image_digest": "sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea",
+      "native_version_exit": 0,
+      "version": "0.33.1"
+    },
+    "buildx": {
+      "native_version_exit": 0,
+      "version": "0.37.2"
+    },
+    "codeql_actions": {
+      "analysis_completed": true,
+      "bundle_version": "2.27.1",
+      "findings": 0,
+      "reported_paths": []
+    },
+    "codeql_python": {
+      "analysis_completed": true,
+      "bundle_version": "2.27.1",
+      "findings": 2,
+      "reported_paths": [
+        {
+          "path": "scripts/generate_env.py",
+          "rule": "py/clear-text-logging-sensitive-data"
+        },
+        {
+          "path": "scripts/generate_env.py",
+          "rule": "py/clear-text-storage-sensitive-data"
+        }
+      ]
+    },
+    "gitleaks": {
+      "clean": {
+        "exit": 0,
+        "findings": 0
+      },
+      "invalid": {
+        "exit": 1,
+        "findings": null
+      },
+      "leak": {
+        "exit": 2,
+        "findings": 1
+      }
+    },
+    "gitleaks_history": {
+      "commits": 78,
+      "exit": 0,
+      "findings": 0
+    },
+    "osv": {
+      "clean_clean_reporter_exit": 0,
+      "clean_exit": 0,
+      "missing_report_guard_exit": 1,
+      "new_vulnerability_reporter_exit": 1,
+      "no_lockfile_exit": 128,
+      "release_vulnerability_reporter_exit": 1,
+      "unchanged_vulnerability_reporter_exit": 0,
+      "version": "2.6.0",
+      "vulnerable_exit": 1
+    },
+    "osv_dependabot": {
+      "clean_exit": 0,
+      "no_lockfile_exit": 128,
+      "version": "2.3.8",
+      "vulnerable_exit": 1
+    },
+    "public_dockerhub_inventory": {
+      "authenticated": false,
+      "complete": true,
+      "count": 6,
+      "deleted": false
+    },
+    "trivy": {
+      "config_high_critical_findings": 0,
+      "filesystem_high_critical_findings": 0,
+      "ignore_unfixed": true,
+      "version": "0.69.3"
+    }
+  },
+  "pr": {
+    "head_sha": "f4e1c530c79bdce09961d1b6227a9fbf248d6457",
+    "merged": false,
+    "number": 54,
+    "state": "open"
+  },
+  "qa": {
+    "coverage": {
+      "branch-rate": "0.8871",
+      "branches-covered": "495",
+      "branches-valid": "558",
+      "line-rate": "0.9431",
+      "lines-covered": "1922",
+      "lines-valid": "2038"
+    },
+    "exit": 0,
+    "new_boundary_cases": 89,
+    "passed": 714,
+    "skipped": 2,
+    "warning": "existing Starlette 422 constant deprecation"
+  },
+  "quality": {
+    "actionlint": "pass; external ShellCheck/Pyflakes disabled",
+    "changed_file_secret_scan": {
+      "exit": 0,
+      "findings": 0
+    },
+    "copyright": "pass",
+    "coverage_ratchet": "pass; unchanged floors",
+    "local_markdown_links": {
+      "broken": 0,
+      "checked": 131
+    },
+    "post_fetch_history_secret_scan": {
+      "commits": 78,
+      "exit": 0,
+      "findings": 0
+    },
+    "remote_master_before_delivery": "same as baseline",
+    "ruff": "pass (E,F,I; E501 ignored)",
+    "scoped_pyright": "pass; Python 3.12",
+    "whitespace": "pass"
+  },
+  "refs": {
+    "actions/delete-package-versions": {
+      "sha": "e5bc658cc4c965c472efe991f8beea3981499c55",
+      "tag": "refs/tags/v5.0.0",
+      "url": "https://api.github.com/repos/actions/delete-package-versions/git/commits/e5bc658cc4c965c472efe991f8beea3981499c55"
+    },
+    "actions/upload-artifact": {
+      "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+      "tag": "refs/tags/v7.0.1",
+      "url": "https://api.github.com/repos/actions/upload-artifact/git/commits/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    },
+    "aquasecurity/trivy-action": {
+      "sha": "57a97c7e7821a5776cebc9bb87c984fa69cba8f1",
+      "tag": "refs/tags/0.35.0",
+      "url": "https://api.github.com/repos/aquasecurity/trivy-action/git/commits/57a97c7e7821a5776cebc9bb87c984fa69cba8f1"
+    },
+    "docker/build-push-action": {
+      "sha": "c3c9e263c25d99ce0380d002d59b67737d91b0dc",
+      "tag": "refs/tags/v7.4.0",
+      "url": "https://api.github.com/repos/docker/build-push-action/git/commits/c3c9e263c25d99ce0380d002d59b67737d91b0dc"
+    },
+    "docker/login-action": {
+      "sha": "dbcb813823bdd20940b903addbd779551569679f",
+      "tag": "refs/tags/v4.6.0",
+      "url": "https://api.github.com/repos/docker/login-action/git/commits/dbcb813823bdd20940b903addbd779551569679f"
+    },
+    "docker/metadata-action": {
+      "sha": "dc802804100637a589fabce1cb79ff13a1411302",
+      "tag": "refs/tags/v6.2.0",
+      "url": "https://api.github.com/repos/docker/metadata-action/git/commits/dc802804100637a589fabce1cb79ff13a1411302"
+    },
+    "docker/setup-buildx-action": {
+      "sha": "f87e5991a6d7451dcb8d9637bfbc97413f497069",
+      "tag": "refs/tags/v4.4.1",
+      "url": "https://api.github.com/repos/docker/setup-buildx-action/git/commits/f87e5991a6d7451dcb8d9637bfbc97413f497069"
+    },
+    "docker/setup-qemu-action": {
+      "sha": "99012661954931238ded8c8b007157a8430204e1",
+      "tag": "refs/tags/v4.4.0",
+      "url": "https://api.github.com/repos/docker/setup-qemu-action/git/commits/99012661954931238ded8c8b007157a8430204e1"
+    },
+    "github/codeql-action": {
+      "sha": "2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2",
+      "tag": "v4.38.2",
+      "url": "https://api.github.com/repos/github/codeql-action/git/commits/2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2"
+    },
+    "google/osv-scanner-action": {
+      "sha": "c51854704019a247608d928f370c98740469d4b5",
+      "tag": "refs/tags/v2.3.5",
+      "url": "https://api.github.com/repos/google/osv-scanner-action/git/commits/c51854704019a247608d928f370c98740469d4b5"
+    }
+  },
+  "release_created": false,
+  "research_started": "2026-10-02",
+  "selection": {
+    "eligible": [
+      {
+        "number": 54,
+        "title": "build(deps): update requests requirement from >=2.33.0 to >=2.34.2"
+      },
+      {
+        "number": 52,
+        "title": "build(deps-dev): update pytest requirement from >=9.0.3 to >=9.1.1"
+      },
+      {
+        "number": 48,
+        "title": "build(deps): update numpy requirement from >=2.4 to >=2.5.3"
+      },
+      {
+        "number": 47,
+        "title": "build(deps): bump google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml from 2.3.5 to 2.6.0"
+      },
+      {
+        "number": 46,
+        "title": "build(deps): update fastapi requirement from <1,>=0.135 to >=0.142.1,<1"
+      },
+      {
+        "number": 34,
+        "title": "build(deps-dev): update httpx requirement from >=0.28 to >=0.28.1"
+      },
+      {
+        "number": 27,
+        "title": "build(deps): bump aquasecurity/trivy-action from 0.35.0 to 0.36.0"
+      }
+    ],
+    "excluded": [
+      28,
+      33,
+      35,
+      40,
+      41,
+      42,
+      44,
+      45,
+      49,
+      50,
+      51,
+      53
+    ],
+    "selected": {
+      "number": 54,
+      "title": "build(deps): update requests requirement from >=2.33.0 to >=2.34.2",
+      "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/54"
+    }
+  },
+  "source_sha256": {
+    ".github/ci-tools.json": "adfdcc690c8d04ba3c4105b1743ba4be5102de302493836049a22fe33fd07526",
+    ".github/workflows/ci.yml": "0835392ae1999ef5ca89435ea9e11fc2271ff65add546ea2ba0bc270121a1274",
+    ".github/workflows/codeql.yml": "72c0e7575ee4e0add6dac10167fa08f11d9111351bde04d9a17e53100295af43",
+    ".github/workflows/copyright-compliance.yml": "56ba9092e2cc6a80aef85a491b8cde331c24f131861d5f0666f375c20b7c8eb3",
+    ".github/workflows/gitleaks.yml": "4dcce2e2dcf90a3c98faa84470ef7f7d2ddbcfaab78460bee9019355cde3f3ca",
+    ".github/workflows/model-contracts.yml": "770cf5014700f53c7d32929ab2f778b96387e6e6c69d1bae283f2eeb33efe951",
+    ".github/workflows/osv-pinned.yml": "3b1ac62dde76566862ab31dbc276c5792db89d6f62e5d4b6c04258810999c060",
+    ".github/workflows/osv-scanner.yml": "1496159d7d97ad20186578ec25de388355f1c73f6567bd1f7b3f769ca56ac1fd",
+    ".github/workflows/trivy.yml": "91d27d82b9009cd25384f0ca977e259c0d667e5b859d011e99377380aa41ea05",
+    "CHANGELOG.md": "db4e61ceecfca90d54d742113beef9fec3e3a01e86b163f151a132ca293b3a13",
+    "IMPLEMENTATION_PLAN.md": "9bc227556b510b66ab6c080f235fd9b243ebd2d5880856c010e0aa10b54848ef",
+    "README.md": "69c553864b605a55ebdbea5e74a4aeed956f14764eddf711a2c5d36c54ff581f",
+    "docs/ci-execution-contracts.md": "9323f2c29afc51d321b5f42b5f906f92d1f61ed07d4f7a3cc141e4d8c1751851",
+    "docs/ci-native-artifacts.md": "f2cadc42011dd3f6652aedbd3b18a47131d89465c8b351622b33ccf5d91ba099",
+    "docs/dependency-locks.md": "c1664cd8fe12c3253bedbef0de4e5fcafa7d4480a1a601faa930c8bcdbe8b3fa",
+    "docs/pr-41-local-validation.md": "9622f579fc36d2e15a0f4ff34e28be85108010c6b66aadb63061d15e26d45363",
+    "docs/pr-51-local-validation.md": "4aa4901d3432ce80b513298f05eb02cb6b1371571922c398dad85ff5fea4e636",
+    "docs/pr-54-local-validation.md": "5642192c799fbc0eb5306fc9bc273edf8e6cf020ac854ad65d7ed8cd9751172a",
+    "docs/recommendation-stack.md": "236fd86d926fffe68e69a58a349114bd537f471464bb43d4929b89fe9b8a9755",
+    "docs/release-cleanup.md": "122fee2c1f5cf5e8964085f60efc9f220627d94f085e60c4286b8f7842c54503",
+    "requirements.txt": "2676f8a67749ad3754bd566609c3ba0488758105c27d7d79efff861ae1de03fd",
+    "requirements/locks/cpu-py312-linux-amd64.json": "78b9181b0985bcee2187667fae81ff37a18423e95ac30576e2ba66729eb0c688",
+    "requirements/locks/cpu-py312-linux-arm64.json": "a08270c2b9ebd4aa65e861098cc067063d0ef773d3bd0e8f13c43de63f85aafd",
+    "requirements/locks/cuda-legacy-py312-linux-amd64.json": "8edb865d6e2dd015ec75bb485855e1fd40391813f5424a9c6e0a7f113e88ec78",
+    "requirements/locks/cuda-py312-linux-amd64.json": "9cdf4fa3a8f2a02829a0878aeaa30cbe6aec78713ab87508723e875fce6c1795",
+    "requirements/locks/openvino-py312-linux-amd64.json": "83bbad5a0a7714aef7a762a26ebdd1663b3e04e61dfd28152c9188d33e03aff2",
+    "requirements/locks/qa-py312-linux-amd64.json": "49c61e6ca7dbe5feae9b6cf128c3d4df50cb097444bb452367ddd51f4aa9ca90",
+    "scripts/check_osv_reports.py": "19a033a64bb4008aa28945eb604022fe5924fbc9549ef3d2465a501ab478435a",
+    "scripts/ci_downloads.py": "a9b2fd489efb8f8b2f85a4ff61286fe41414bf110771ebe16ab2fee830fd2743",
+    "scripts/ci_tool_contracts.py": "53db5a3b4d16f2a261cf0a543740c031cd8ac0383ba32603156949843f286ba0",
+    "scripts/cleanup_dockerhub.py": "381a23d4ebb1f864ab18897794198144722fa9eca182a3b53f5a4a45560de9d6",
+    "scripts/dockerhub_client.py": "2eb25b4c387e5f4fa129f5965f54a70e698a08181ce12be70cf8013ad5d300a3",
+    "scripts/dockerhub_retention.py": "74e50e0467dfee60af45502c5784fcb0b905a722c1ca54cf4c26cbf44b56882f",
+    "scripts/install_ci_tool.py": "07cfb6430bde2ee4e11e9ffeefbb392c48b5393232e09fca01caac4bd6e2c136",
+    "tests/test_ci_artifacts.py": "81e6488b580963920d0343fd0f3cb625b94ca877c8854ad5a57b40c0b1f13276",
+    "tests/test_ci_workflows.py": "641017f597f1bb930f40d4658187b66abe0a7bace5e81a07d6429bc6dde352e6",
+    "tests/test_dockerhub_retention.py": "6125fa641892d5c517657ff2734c7c02fc068ad756bc67f42aa51743d7f8d7eb"
+  },
+  "tools": {
+    "platform": "linux-amd64",
+    "schema_version": 1,
+    "tools": {
+      "buildx": {
+        "executable": "docker-buildx",
+        "kind": "binary",
+        "max_bytes": 134217728,
+        "sha256": "982ca20490b45ed1ec8d99795974d3d874a358f75938c9c237305010e6b7e548",
+        "source": "https://github.com/docker/buildx/releases/tag/v0.37.2",
+        "url": "https://github.com/docker/buildx/releases/download/v0.37.2/buildx-v0.37.2.linux-amd64",
+        "version": "v0.37.2"
+      },
+      "codeql": {
+        "executable": "codeql-bundle-linux64.tar.gz",
+        "kind": "archive",
+        "max_bytes": 3221225472,
+        "sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+        "source": "https://github.com/github/codeql-action/releases/tag/codeql-bundle-v2.27.1",
+        "url": "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-linux64.tar.gz",
+        "version": "codeql-bundle-v2.27.1"
+      },
+      "gitleaks": {
+        "executable": "gitleaks",
+        "kind": "tar-member",
+        "max_bytes": 134217728,
+        "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+        "source": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+        "url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+        "version": "v8.30.1"
+      },
+      "trivy": {
+        "executable": "trivy",
+        "kind": "tar-member",
+        "max_bytes": 134217728,
+        "sha256": "1816b632dfe529869c740c0913e36bd1629cb7688bd5634f4a858c1d57c88b75",
+        "source": "https://github.com/aquasecurity/trivy/releases/tag/v0.69.3",
+        "url": "https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz",
+        "version": "v0.69.3"
+      }
+    }
+  },
+  "unchanged_wheel_profiles": {
+    "audit-py312-linux-amd64": {
+      "input_attestation_changed": false,
+      "lock_sha256": "2c446f5cce69a2f8181403f9a0be62a9496bc36f9f2d67ed5591e58935e6c698",
+      "wheels": 29
+    },
+    "audit-py312-linux-arm64": {
+      "input_attestation_changed": false,
+      "lock_sha256": "bea376594b24d31ea107c8b624c1e0ffe9dbc1b874a967fe80aeb9838ce1a6cd",
+      "wheels": 29
+    },
+    "bootstrap": {
+      "input_attestation_changed": false,
+      "lock_sha256": "103ded5f0c5e8103512a9e92778de4303c326622947fbdb6c69c61e06a851833",
+      "wheels": 1
+    },
+    "cpu-py312-linux-amd64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "13a6fde075bba4532fe22cc62bf091548559fe711bc3cd5eb6828c8be13e47d3",
+      "wheels": 56
+    },
+    "cpu-py312-linux-arm64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "f4d3ae7279fa20160778d4264db8407fd891cee3b2af6a477f73965b2941d241",
+      "wheels": 56
+    },
+    "cuda-legacy-py312-linux-amd64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "c95c0ca65536dc787bcab630fa7b4b53ceac45c2cee6567717afff5bc6a4d34f",
+      "wheels": 75
+    },
+    "cuda-py312-linux-amd64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "8033d36c4c11d40e4bb54e841c584cb6cad3079fa4ecb43a823da1724dc65de4",
+      "wheels": 75
+    },
+    "openvino-py312-linux-amd64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "a4fb2a5fb344102de5ea6e8aa1ed9f830ecedb37a0054a3e4789ca750aa1090f",
+      "wheels": 58
+    },
+    "qa-py312-linux-amd64": {
+      "input_attestation_changed": true,
+      "lock_sha256": "acb5f6d373caeee6fed7ba1323508b17e737c6ad874370d6793c45324450bf0a",
+      "wheels": 67
+    }
+  },
+  "upstream_pr_merged": false
+}

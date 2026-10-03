@@ -20,13 +20,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: OSV scan (no SARIF upload for Dependabot)
         # PR 40's v2.3.8 image, pinned because the upstream wrapper uses a mutable image tag.
         uses: docker://ghcr.io/google/osv-scanner-action@sha256:48406c58197201fe55e56615ad9d414f85063da320e204d0b0ed460fb3908dba
         with:
-          args: >-
-            --recursive
-            ./
+          # Bypass the wrapper that changes no-lockfile exit 128 into success.
+          entrypoint: /root/osv-scanner
+          args: scan source --recursive ./ --allow-no-lockfiles=false
 
   pr-scan:
     name: OSV Scan (PR)
@@ -35,7 +37,9 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@a345acffa64b0eaede81a3d9aae6141214d9c8fc # v2.6.0
+    uses: ./.github/workflows/osv-pinned.yml
+    with:
+      differential: true
 
   release-scan:
     name: OSV Scan (Tag Release)
@@ -44,6 +48,6 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.5
+    uses: ./.github/workflows/osv-pinned.yml
     with:
-      fail-on-vuln: true
+      differential: false

@@ -1,0 +1,83 @@
+name: Owned OSV scanner and reporter
+
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      differential:
+        description: Compare the exact PR base and head; otherwise scan the current tag
+        type: boolean
+        required: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    steps:
+      - name: Checkout exact base for comparison
+        if: inputs.differential
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: osv-base
+          persist-credentials: false
+      - name: Checkout current head or tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: osv-head
+          persist-credentials: false
+      - name: Scan base
+        id: old
+        if: inputs.differential
+        continue-on-error: true
+        uses: docker://ghcr.io/google/osv-scanner-action@sha256:71ad04ab2f8798be47870f9b18817ad317c2f8f2f97aa6726ba10d5578bc174a # v2.6.0
+        with:
+          entrypoint: /root/osv-scanner
+          args: scan source -r ./osv-base --format=json --output=old-results.json
+      - name: Scan current code
+        id: new
+        continue-on-error: true
+        uses: docker://ghcr.io/google/osv-scanner-action@sha256:71ad04ab2f8798be47870f9b18817ad317c2f8f2f97aa6726ba10d5578bc174a # v2.6.0
+        with:
+          entrypoint: /root/osv-scanner
+          args: scan source -r ./osv-head --format=json --output=new-results.json
+      - name: Require valid completed reports and known scan outcomes
+        env:
+          DIFFERENTIAL: ${{ inputs.differential }}
+          OLD_OUTCOME: ${{ steps.old.outcome }}
+          NEW_OUTCOME: ${{ steps.new.outcome }}
+        run: python osv-head/scripts/check_osv_reports.py
+      - name: Compare complete reports
+        if: inputs.differential
+        uses: docker://ghcr.io/google/osv-scanner-action@sha256:71ad04ab2f8798be47870f9b18817ad317c2f8f2f97aa6726ba10d5578bc174a # v2.6.0
+        with:
+          entrypoint: /root/osv-reporter
+          args: >-
+            --old=old-results.json --new=new-results.json
+            --output-files=sarif:results.sarif --output-files=gh-annotations:#stderr --fail-on-vuln=true
+      - name: Report complete release scan
+        if: '!inputs.differential'
+        uses: docker://ghcr.io/google/osv-scanner-action@sha256:71ad04ab2f8798be47870f9b18817ad317c2f8f2f97aa6726ba10d5578bc174a # v2.6.0
+        with:
+          entrypoint: /root/osv-reporter
+          args: --new=new-results.json --output-files=sarif:results.sarif --fail-on-vuln=true
+      - name: Retain reports even when vulnerabilities fail the gate
+        if: '!cancelled()'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: osv-results
+          path: |
+            *-results.json
+            results.sarif
+          retention-days: 5
+      - name: Upload completed SARIF
+        if: "!cancelled() && hashFiles('results.sarif') != ''"
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: results.sarif
+          category: osv

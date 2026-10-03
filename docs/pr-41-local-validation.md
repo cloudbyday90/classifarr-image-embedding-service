@@ -30,3 +30,7 @@ The actual Node 24.19.0 bundle passed all three controls: clean action/native ex
 GitHub MCP reconfirmed PR 41 is open and unmerged. Hosted cache availability, actual runner permissions and GitHub reporting remain CI concerns. The published binary checksum protects this local validation download; the upstream wrapper itself does not implement that checksum check.
 
 The full application suite, installed-package audits and workflow lint also cover the accompanying model-contract iteration. See [model artifact contracts](model-artifact-contracts.md) and the [recommendation stack](recommendation-stack.md) for their separate design and outcomes. No release, tag or version bump is created.
+
+## Subsequent CI iteration
+
+The [CI execution](ci-execution-contracts.md), [native artifact](ci-native-artifacts.md) and [release cleanup](release-cleanup.md) records now implement the remaining reference, tool-download and credential review. This document retains its original iteration outcomes; current priorities are in the [recommendation stack](recommendation-stack.md).

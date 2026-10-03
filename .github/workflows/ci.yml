@@ -22,6 +22,7 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     permissions:
       contents: read
@@ -29,6 +30,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Setup Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -65,7 +68,7 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-xml
           path: coverage.xml
@@ -104,6 +107,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Make room for CUDA wheel layers on the disposable runner
         if: startsWith(matrix.backend, 'cuda')
         run: |
@@ -149,6 +154,7 @@ jobs:
   docker-release:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [build-and-test, backend-smoke]
 
@@ -159,29 +165,45 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify release Buildx binary
+        run: |
+          python scripts/install_ci_tool.py buildx --directory "$HOME/.docker/cli-plugins"
+          docker buildx version
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+        with:
+          image: tonistiigi/binfmt:qemu-v10.2.3-68@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+          platforms: arm64
+          cache-image: false
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          cache-binary: false
+          driver-opts: image=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
+          # A nonempty value replaces the action's implicit insecure entitlements.
+          buildkitd-flags: --debug=false
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: |
             ${{ env.REGISTRY }}/cloudbyday90/classifarr-image-embedder
@@ -190,7 +212,7 @@ jobs:
             type=ref,event=tag
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -203,50 +225,29 @@ jobs:
   cleanup-old-releases:
     name: Cleanup Old Container Images
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    timeout-minutes: 10
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: docker-release
 
     permissions:
+      contents: read
       packages: write
 
     steps:
+      - name: Checkout cleanup implementation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Delete old GHCR packages (keep last 5)
-        uses: actions/delete-package-versions@v5
+        uses: actions/delete-package-versions@e5bc658cc4c965c472efe991f8beea3981499c55 # v5.0.0
         with:
           package-name: 'classifarr-image-embedder'
           package-type: 'container'
           min-versions-to-keep: 5
           delete-only-untagged-versions: false
 
-      - name: Get Docker Hub token
-        id: docker-token
-        run: |
-          TOKEN=$(curl -s -H "Content-Type: application/json" -X POST \
-            -d '{"username": "${{ secrets.DOCKERHUB_USERNAME }}", "password": "${{ secrets.DOCKERHUB_TOKEN }}"}' \
-            https://hub.docker.com/v2/users/login/ | jq -r .token)
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
-
-      - name: Get and delete old Docker Hub tags (keep last 5)
-        run: |
-          TAGS=$(curl -s -H "Authorization: Bearer ${{ steps.docker-token.outputs.token }}" \
-            "https://hub.docker.com/v2/repositories/cloudbyday90/classifarr-image-embedder/tags?page_size=100" \
-            | jq -r '.results | sort_by(.last_updated) | .[].name')
-
-          TAG_COUNT=$(echo "$TAGS" | grep -v "^latest$" | wc -l)
-          KEEP_COUNT=5
-
-          if [ "$TAG_COUNT" -gt "$KEEP_COUNT" ]; then
-            DELETE_COUNT=$((TAG_COUNT - KEEP_COUNT))
-            echo "Deleting $DELETE_COUNT old tags from Docker Hub..."
-
-            TAGS_TO_DELETE=$(echo "$TAGS" | grep -v "^latest$" | head -n $DELETE_COUNT)
-
-            for TAG in $TAGS_TO_DELETE; do
-              echo "Deleting tag: $TAG"
-              curl -s -X DELETE \
-                -H "Authorization: Bearer ${{ steps.docker-token.outputs.token }}" \
-                "https://hub.docker.com/v2/repositories/cloudbyday90/classifarr-image-embedder/tags/$TAG/"
-            done
-          else
-            echo "Only $TAG_COUNT tags exist, keeping all (minimum is $KEEP_COUNT)"
-          fi
+      - name: Delete old Docker Hub tags after complete inventory validation
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: python scripts/cleanup_dockerhub.py

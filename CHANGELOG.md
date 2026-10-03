@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Reviewed native CI tool contracts, modular verification and release-retention helpers, with separate design/outcome records and workflow boundary regressions.
 - Complete hash-locked Linux dependency profiles, modular generation/installation validation, and separate dependency, refresh-policy and PR 50 design/outcome records.
 - Modular offline capacity probes with process/cgroup memory, batch parity, authenticated deadline and detached-owner checks; a manual CPU/OpenVINO calibration workflow and separate design/outcome records.
 - Modular pinned model catalog, verified source loading and atomic versioned OpenVINO artifact services, with separate model/PR 41 design records.
@@ -20,6 +21,9 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Freeze remaining workflow actions and nested scanner/builder dependencies; narrow credentials, remove Gitleaks PR-write access and require completed OSV scans.
+- Replace Docker Hub cleanup shell interpolation with bounded authenticated API handling, complete inventory validation and current-tag protection.
+- Adopt open PR #54 locally by raising the Requests minimum to the already hash-locked 2.34.2 release.
 - Adopt open PR #50 locally by raising the Uvicorn minimum to the tested 0.54.0 release.
 - Install reviewed binary wheels in Docker and Linux QA; run weekly validation with isolated, hash-locked audit tooling and exact runtime inventories.
 - Separate the embedding HTTP deadline from the remote-hop timeout: default to 45 seconds for embeddings while preserving explicit legacy overrides and the 15-second remote default.
