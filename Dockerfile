@@ -1,5 +1,5 @@
 # ── Build stage: install reviewed, hash-checked binary wheels ────────────────
-FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3 AS builder
+FROM ubuntu:25.10@sha256:7cc5e35f6567ee8c66d2abb4aab0fd866669e6207c237c3a8f0947a5c7f17092 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_NO_CACHE_DIR=1
@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     && /opt/venv/bin/python /tmp/dependencies/install_dependencies.py --root /tmp --backend cpu
 
 # ── Runtime stage: minimal image, no build tools, non-root user ──────────────
-FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
+FROM ubuntu:25.10@sha256:7cc5e35f6567ee8c66d2abb4aab0fd866669e6207c237c3a8f0947a5c7f17092
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
