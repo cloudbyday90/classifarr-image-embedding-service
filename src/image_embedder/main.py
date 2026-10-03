@@ -110,7 +110,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
 
     app.include_router(health_routes.make_router(limiter, settings.rate_limit_health))
     app.include_router(models_routes.make_router(auth))
-    app.include_router(admin_routes.make_router(auth))
+    app.include_router(admin_routes.make_router(make_auth_dependency(settings, always_required=True)))
     app.include_router(embed_routes.make_router(limiter, settings.rate_limit_embed, auth))
     app.include_router(batch_routes.make_router(limiter, settings.rate_limit_embed, auth))
 

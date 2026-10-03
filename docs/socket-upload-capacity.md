@@ -18,7 +18,7 @@ excess request and prove application rejection without body receipt. Disconnect
 all but one staged caller, require released ingress without native dispatch, then
 finish the retained request and validate its vector against direct inference.
 Check authentication with a complete valid body and record received bytes;
-the current route dependency runs after body receipt. Check declared overflow,
+at this baseline the route dependency runs after body receipt. Check declared overflow,
 queue settlement and server cleanup.
 Concurrent mixed requests reuse the existing probe-only remote child fixture;
 record that transport substitution and require all children reaped.
@@ -118,3 +118,10 @@ body temp storage and target hardware before changing admission or owner counts.
 Keep Python and the present resource/model/dependency stack. No suitable unapplied
 PR was available; none was adopted or merged. No limits were retuned and no release
 or version change was created.
+
+## Early authentication follow-up
+
+The [separate authentication design and outcome](early-api-key-authentication.md)
+implements the next fix identified above. The current probe requires header-only
+401 with zero body receipt; the measurements in this document retain the original
+baseline and its 16 MiB pre-authentication observation.

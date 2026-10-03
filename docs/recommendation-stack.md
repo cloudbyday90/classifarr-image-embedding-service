@@ -1,6 +1,6 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current socket-capacity/skill iteration starts from `6d4221715bf9a4a9820077fd8a550503c22ebc6d` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current early-authentication/skill iteration starts from `ded0a63843c728abfaed29e8a8e6c8a05e80ebb8` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
@@ -35,21 +35,22 @@ Assessment date: 2026-10-03. The current socket-capacity/skill iteration starts 
 | Recurring Windows ACL/process/socket matrix and native-validation skill | Current framework graph, mandatory execution and complete OSV inventory gates | Separate target locks; hosted Server 2025/latest patches remain unobserved locally | Implemented; [Windows outcomes](windows-native-validation.md), [skill](project-native-validation-skill.md), random [renewed PR 46 floor](pr-46-floor-followup.md) |
 | HTTPX2 API test clients and dependency-migration skill | Current Starlette client, explicit lifecycle/state and constrained QA artifacts | SDK/probe clients remain separate; ASGI tests do not prove socket/TLS behavior | Implemented; [migration](httpx2-test-clients.md), [skill](project-dependency-migration-skill.md), random [PR 53](pr-53-local-validation.md) |
 | Real socket uploads and focused calibration skill reference | Server-observed body pressure, excess rejection, disconnect settlement and recovered real vectors | Shared client overhead; direct HTTP/1, padded PNGs and host-specific observations | Implemented on CPU/OpenVINO; [socket outcome](socket-upload-capacity.md), [skill](project-socket-capacity-skill.md); [no suitable unapplied PR](open-pr-availability.md) |
+| API-key rejection before body receipt and resource-skill reference | Removes observed unauthenticated 16 MiB receipt; mandatory prefixed admin policy; native recovery and stable schema | Successful requests retain two shared-policy checks; HTTP/1 errors close unread connections; outer limits can reject first | Implemented; [auth outcome](early-api-key-authentication.md), [skill](project-early-auth-skill.md); no suitable unapplied PR |
 | Retain modular Python and measure before language changes | Builds on native inference and tested contracts | Python footprint remains; Rust benefit is unmeasured here | User confirmed; [language decision](language-platform-decision.md) |
 
 ## Next items
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Reject invalid API keys before body receipt | Removes observed 16 MiB unauthenticated body consumption; reduces avoidable parsing/ingress pressure | Preserve public probes, constant-time comparison, error/API contracts and ownership |
+| Next 1 | Use stable verified identities for public probe quotas | Closes reproduced header-rotation bypass and extra limiter keys | Client-address buckets share NATs; preserve valid/development traffic and explicit proxy trust |
 | Next 2 | Measure actual reverse-proxy request buffering and target workload headroom | Covers another body/temp-storage owner before concurrency tuning | Requires the operator configuration, TLS/HTTP version and hardware evidence |
 | Next 3 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-Next implement early API-key rejection after the real socket probe observed complete 16 MiB body receipt before 401. Preserve public health/model behavior and current resource contracts. Then measure actual reverse-proxy buffering separately before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+Next fix [public probe rate-limit identity](public-probe-rate-limits.md): four distinct invalid key headers from one client each received 200 under a two-request/minute health quota, while a fixed header received 429 after two requests. The early protected-route fix now rejects before body receive; public health still needs stable quota identity. Then measure actual reverse-proxy buffering separately before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
 
-Keep Python/FastAPI/AnyIO with small ingress, admission, queue, execution, input, remote transport and model/artifact services. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
+Keep Python/FastAPI/AnyIO with small authenticated-router, header-policy, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
 
 Keep a per-invocation 30-second shared remote fetch-phase budget, beginning at the first remote input and clipped by each 15-second image budget. Preserve ordered partial success, current-byte cache identity, inline results and independent model execution. After shared expiry, reap the current worker before returning and refuse later remote work without spawning. Retain the reviewed FastAPI 0.142.2 graphs with PR 46's renewed 0.142.2 minimum. Use HTTPX2 for API tests with explicit lifespan state and a targeted fallback gate, while keeping the SDK and bundled probes on separately reviewed HTTPX graphs. Preserve complete native wheel/hash installation and strict advisory audits. Keep focused instruction-only project skills discoverable under `.agents/skills`, including owner-first dependency migration, with change-scoped native validation and no new external-action authority.
 
@@ -64,6 +65,27 @@ Use a total 30-second upload budget that stops at complete body/disconnect/respo
 Use a separate total 30-second HTTP/1 response-send budget through the shipped asyncio launcher. Include terminal user-space and TLS ciphertext buffer drain; abort and confirm connection loss before cancellation releases ingress. Keep httptools/h11 parser selection automatic. Retest the narrow Uvicorn/CPython adapter on upgrades, use asyncio for TLS, and keep edge/HTTP2/WebSocket/background-work contracts explicit. Adopt the immutable Trivy v0.36.0 wrapper with the verified native binary selected by absolute path, disabled setup/cache and existing report/failure gates.
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
+
+## Early authentication delivery outcome
+
+Full locked QA passes **1,022 tests / seven existing skips**, including 59 new
+policy/socket cases, with **95.31% line / 90.30% branch** coverage above unchanged
+floors. Native header-only httptools/h11 and TLS checks observe no body bytes or
+interim 100; correct requests recover. Real CPU/OpenVINO socket replays preserve
+vector parity, queued ownership, disconnect cleanup and child reaping while now
+requiring zero-byte authentication refusal. Canonical OpenAPI is byte-identical.
+The final full suite runs after model/scanner work completes; initial shared-host
+startup timing failures and the unchanged isolated follow-up are archived.
+
+CodeQL Python has no new findings and two unchanged setup-publication context
+results. Verified Gitleaks source and 87-commit baseline history scans find no
+secrets. All thirteen locks remain valid and unchanged; CPU/OpenVINO/QA inventories
+and `pip check` pass. The [auth design/outcome](early-api-key-authentication.md),
+[skill extension](project-early-auth-skill.md) and [archive](validation/early-api-key-authentication-2026-10-03.json)
+retain research, pros/cons, source hashes, cases and limitations. The [separate
+public probe quota proposal](public-probe-rate-limits.md) records the newly reproduced
+next item. PR availability is still empty of suitable unapplied changes; master
+contains this work without a release or version bump.
 
 ## Real socket delivery outcome
 

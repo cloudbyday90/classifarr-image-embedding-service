@@ -137,16 +137,19 @@ docker compose up -d
 ### How it works
 
 - Classifarr sends the key as an `X-Api-Key` header (or `Authorization: Bearer <key>`) on every request.
-- The embedding service validates it with a constant-time comparison (`hmac.compare_digest`) to prevent timing attacks.
+- Protected routers validate credentials before receiving/parsing the request body, using byte-based `hmac.compare_digest` to reduce content-dependent timing risk. X-Api-Key takes precedence over Bearer; query-string credentials are not accepted.
 - `/health` and `/ready` are **always public** — Docker and orchestrators need these unauthenticated.
-- `/admin/cleanup` is **always protected**, even in development mode.
+- `/models`, `/embed-image` and `/embed-batch` require the key when enforcement is enabled.
+- `/admin/cleanup` is **always protected**, even in development mode or under deployment prefixes.
+
+Early 401/503 authentication errors close unread HTTP/1 connections. Existing ingress and declared-body limits still apply first; authenticated requests retain upload deadlines and body/image limits. Documentation/OpenAPI routes remain public. See [the design and native outcomes](docs/early-api-key-authentication.md).
 
 ### Modes
 
 | `require_api_key` in `config.toml` | `SERVICE_API_KEY` | Behaviour |
 |---|---|---|
-| `true` (default) | set | All endpoints except `/health`/`/ready` require the key |
-| `true` | _not set_ | Service returns `503` — fail-closed on misconfiguration |
+| `true` (default) | set | Models, embedding, batch and admin routes require the key |
+| `true` | _not set_ | Protected routes return `503` — fail-closed on misconfiguration |
 | `false` | set | Dev mode — non-admin endpoints are public; `/admin/cleanup` still requires key |
 | `false` | _not set_ | Dev mode — non-admin endpoints public; admin returns `503` |
 
@@ -665,6 +668,9 @@ The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-re
 - [Local PR 40 implementation and validation](docs/pr-40-local-validation.md)
 - [Socket-upload capacity design and outcomes](docs/socket-upload-capacity.md)
 - [Socket-capacity AI skill extension](docs/project-socket-capacity-skill.md)
+- [Early API-key authentication design and outcomes](docs/early-api-key-authentication.md)
+- [Authentication AI skill extension](docs/project-early-auth-skill.md)
+- [Next task: public probe rate-limit identity](docs/public-probe-rate-limits.md)
 - [Open PR availability](docs/open-pr-availability.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
 - [Total upload and supervised remote-fetch design and validation](docs/request-lifetimes.md)

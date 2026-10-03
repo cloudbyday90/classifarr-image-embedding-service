@@ -141,6 +141,7 @@ def test_native_socket_capacity_with_real_children_and_ambient_proxy(monkeypatch
     result = asyncio.run(check_socket_capacity(subject))
     assert result["transport"] == "direct-loopback-http1"
     assert result["unauthenticated_status"] == 401 and result["overflow_status"] == 413
+    assert result["unauthenticated_received_bytes"] == 0
     for stage in result["staged"]:
         assert stage["held"]["active"] == 2 and stage["excess_status"] == 503
         assert stage["disconnected_callers"] == 1 and stage["retained_status"] == 200

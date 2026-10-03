@@ -2,7 +2,7 @@
 
 Assessment: 2026-10-03. GitHub MCP returned eight open PRs; their fetched diffs and
 immutable heads were compared with the local master baseline
-`6d4221715bf9a4a9820077fd8a550503c22ebc6d`.
+`ded0a63843c728abfaed29e8a8e6c8a05e80ebb8`.
 
 ## Design and decision
 
@@ -31,7 +31,8 @@ These URLs were discovered and fetched through web services rather than construc
 ## Outcome and recommendation
 
 There is no suitable unapplied open PR to choose. Continuing the recommended
-socket-capacity work avoids replaying already delivered changes or weakening the
+early-authentication work avoids replaying already delivered changes or weakening the
 platform. Recheck the current open list in the next iteration; PR state and heads
-can change. The [socket design and outcome](socket-upload-capacity.md) records this
-iteration's actual implementation and validation.
+can change. The [authentication design and outcome](early-api-key-authentication.md) records
+this iteration's actual implementation and validation. The eight heads were
+refetched through GitHub MCP and remain unchanged from the socket iteration.

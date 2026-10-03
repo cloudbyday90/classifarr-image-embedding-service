@@ -1,0 +1,1709 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline": "ded0a63843c728abfaed29e8a8e6c8a05e80ebb8",
+  "scope": "Early authenticated-route checks. Native model/socket replay uses immutable locked images plus read-only source overlays; no production rebuild or hosted workflow claim.",
+  "containment": {
+    "memory_cpu_bytes": 4294967296,
+    "memory_openvino_bytes": 8589934592,
+    "swap_bytes": 0,
+    "pids_limit": 1024,
+    "tmpfs_bytes": 134217728,
+    "tmpfs_options": [
+      "noexec",
+      "nosuid",
+      "nodev"
+    ],
+    "network": "none, loopback only",
+    "capabilities": "all dropped",
+    "no_new_privileges": true,
+    "worker_processes": 1,
+    "inference_owners": 1,
+    "fixture_edge": 974,
+    "repeats": 1,
+    "sample_interval_seconds": 0.02
+  },
+  "socket_replays": [
+    {
+      "backend": "cpu",
+      "image": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "journal_sha256": "73a62f30d4a139c93a376ef619114755a2fb6c2950f0c42eace5dd6c2b6583bb",
+      "log_sha256": "11618b4ae62cf62dd27fb8e01602c0e879e286c717a6f23dea1c8d85e8e002f3",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 165367808,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 165367808,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 243073024,
+          "process_rss_bytes": 243073024,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "socket",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "socket_phase": {
+        "elapsed_seconds": 67.03611856102361,
+        "event": "phase_end",
+        "memory": {
+          "after": {
+            "cgroup": {
+              "current_bytes": 791162880,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 4294967296,
+              "peak_bytes": 1525022720,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 3155202048,
+            "process_rss_bytes": 2427928576,
+            "resources": {
+              "process_threads": 28,
+              "tasks": {
+                "current": 28,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "before": {
+            "cgroup": {
+              "current_bytes": 363098112,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 4294967296,
+              "peak_bytes": 1054756864,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 2688327680,
+            "process_rss_bytes": 1999278080,
+            "resources": {
+              "process_threads": 24,
+              "tasks": {
+                "current": 24,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "sample_count": 3024,
+          "sampled_minima": {
+            "temporary_available_bytes": 123727872,
+            "temporary_available_inodes": 2042407
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1524801536,
+            "cgroup_tasks": 44,
+            "process_rss_bytes": 3155189760,
+            "process_threads": 43,
+            "temporary_used_bytes": 10489856
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        "phase": "native_socket_upload_capacity"
+      },
+      "held_uploads": [
+        {
+          "case": "single-ceilings",
+          "event": "socket_upload_held",
+          "ingress": {
+            "active": 8,
+            "maximum": 8,
+            "rejected": 0
+          },
+          "memory": {
+            "cgroup": {
+              "current_bytes": 666509312,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 4294967296,
+              "peak_bytes": 1054756864,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 2688327680,
+            "process_rss_bytes": 2302152704,
+            "resources": {
+              "process_threads": 33,
+              "tasks": {
+                "current": 33,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "received_bytes": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "case": "batch-ceiling",
+          "event": "socket_upload_held",
+          "ingress": {
+            "active": 8,
+            "maximum": 8,
+            "rejected": 1
+          },
+          "memory": {
+            "cgroup": {
+              "current_bytes": 838234112,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 4294967296,
+              "peak_bytes": 1054756864,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 2688327680,
+            "process_rss_bytes": 2470404096,
+            "resources": {
+              "process_threads": 41,
+              "tasks": {
+                "current": 41,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "received_bytes": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        }
+      ],
+      "socket_result": {
+        "fixture_scope": "client/server/sampler in same process; existing remote child substitution",
+        "http_client": "httpx",
+        "limits": {
+          "batch_bytes": 33554432,
+          "batch_pixels": 32000000,
+          "body_bytes": 16777216,
+          "embedding_seconds": 45.0,
+          "http_requests": 8,
+          "image_bytes": 10485760,
+          "image_pixels": 16000000,
+          "queue_wait_seconds": 60,
+          "remote_batch_seconds": 30.0,
+          "response_seconds": 30.0,
+          "server_connections": 64,
+          "upload_seconds": 30.0
+        },
+        "maximum_body_bytes": 16777216,
+        "mixed": {
+          "batch_size": 32,
+          "body_bytes_per_client": 16777216,
+          "child_count": 2,
+          "children_reaped": true,
+          "queued": {
+            "concurrency": 1,
+            "in_flight": 1,
+            "max_queue": 100,
+            "max_wait_seconds": 60,
+            "rw_readers": 1,
+            "rw_writer": false,
+            "rw_writer_waiters": 0,
+            "waiting": 1
+          },
+          "received_bytes": {
+            "inline": 16777216,
+            "mixed": 16777216
+          },
+          "remote_bytes_per_image": 10485760,
+          "settled": {
+            "concurrency": 1,
+            "in_flight": 0,
+            "max_queue": 100,
+            "max_wait_seconds": 60,
+            "rw_readers": 0,
+            "rw_writer": false,
+            "rw_writer_waiters": 0,
+            "waiting": 0
+          },
+          "statuses": [
+            200,
+            200
+          ]
+        },
+        "overflow_status": 413,
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 2
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "single_image_bytes": 10485760,
+        "single_image_source_pixels": 16000000,
+        "staged": [
+          {
+            "body_bytes_per_client": 16777216,
+            "case": "single-ceilings",
+            "disconnected_callers": 7,
+            "excess_status": 503,
+            "held": {
+              "active": 8,
+              "maximum": 8,
+              "rejected": 0
+            },
+            "json_bytes": 13981084,
+            "retained_received_bytes": 16777216,
+            "retained_status": 200,
+            "settled": {
+              "concurrency": 1,
+              "in_flight": 0,
+              "max_queue": 100,
+              "max_wait_seconds": 60,
+              "rw_readers": 0,
+              "rw_writer": false,
+              "rw_writer_waiters": 0,
+              "waiting": 0
+            }
+          },
+          {
+            "body_bytes_per_client": 16777216,
+            "case": "batch-ceiling",
+            "disconnected_callers": 7,
+            "excess_status": 503,
+            "held": {
+              "active": 8,
+              "maximum": 8,
+              "rejected": 1
+            },
+            "json_bytes": 207216,
+            "retained_received_bytes": 16777216,
+            "retained_status": 200,
+            "settled": {
+              "concurrency": 1,
+              "in_flight": 0,
+              "max_queue": 100,
+              "max_wait_seconds": 60,
+              "rw_readers": 0,
+              "rw_writer": false,
+              "rw_writer_waiters": 0,
+              "waiting": 0
+            }
+          }
+        ],
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "final": {
+        "event": "complete",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 789110784,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 1525022720,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 3155202048,
+          "process_rss_bytes": 2427867136,
+          "resources": {
+            "process_threads": 24,
+            "tasks": {
+              "current": 24,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "passed": true
+      }
+    },
+    {
+      "backend": "openvino",
+      "image": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "journal_sha256": "a281f3b997dddef3a31620ee9bafaaa1983906054cb5a26836b4bf2556a7eed6",
+      "log_sha256": "75aac64fbd9ffe6cfe814b7fd1b2aab8d61e1b29cec488719bf906fd7291d376",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 167362560,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 167362560,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 244502528,
+          "process_rss_bytes": 244502528,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "socket",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "socket_phase": {
+        "elapsed_seconds": 77.22364940401167,
+        "event": "phase_end",
+        "memory": {
+          "after": {
+            "cgroup": {
+              "current_bytes": 3224100864,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 8589934592,
+              "peak_bytes": 3236864000,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 4884738048,
+            "process_rss_bytes": 4884705280,
+            "resources": {
+              "process_threads": 21,
+              "tasks": {
+                "current": 21,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "before": {
+            "cgroup": {
+              "current_bytes": 2774339584,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 8589934592,
+              "peak_bytes": 2774540288,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 4429774848,
+            "process_rss_bytes": 4429774848,
+            "resources": {
+              "process_threads": 21,
+              "tasks": {
+                "current": 21,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "cgroup_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "sample_count": 3270,
+          "sampled_minima": {
+            "temporary_available_bytes": 123727872,
+            "temporary_available_inodes": 2042407
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3230834688,
+            "cgroup_tasks": 27,
+            "process_rss_bytes": 4884738048,
+            "process_threads": 26,
+            "temporary_used_bytes": 10489856
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        "phase": "native_socket_upload_capacity"
+      },
+      "held_uploads": [
+        {
+          "case": "single-ceilings",
+          "event": "socket_upload_held",
+          "ingress": {
+            "active": 8,
+            "maximum": 8,
+            "rejected": 0
+          },
+          "memory": {
+            "cgroup": {
+              "current_bytes": 2928791552,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 8589934592,
+              "peak_bytes": 3018805248,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 4676722688,
+            "process_rss_bytes": 4587544576,
+            "resources": {
+              "process_threads": 23,
+              "tasks": {
+                "current": 23,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "received_bytes": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        },
+        {
+          "case": "batch-ceiling",
+          "event": "socket_upload_held",
+          "ingress": {
+            "active": 8,
+            "maximum": 8,
+            "rejected": 1
+          },
+          "memory": {
+            "cgroup": {
+              "current_bytes": 3071852544,
+              "events": {
+                "memory.failcnt": 0,
+                "memory.memsw.failcnt": 0,
+                "oom_kill": 0
+              },
+              "limit_bytes": 8589934592,
+              "peak_bytes": 3163836416,
+              "swap_limit_bytes": 0,
+              "version": 1
+            },
+            "cuda": null,
+            "process_peak_rss_bytes": 4822192128,
+            "process_rss_bytes": 4730474496,
+            "resources": {
+              "process_threads": 24,
+              "tasks": {
+                "current": 24,
+                "events": {
+                  "max": 0
+                },
+                "lifetime_peak": null,
+                "limit": 1024,
+                "version": 1
+              },
+              "temporary_filesystem": {
+                "available_bytes": 134217728,
+                "available_inodes": 2042408,
+                "capacity_bytes": 134217728,
+                "path": "/tmp",
+                "used_bytes": 0
+              }
+            }
+          },
+          "received_bytes": [
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215,
+            16777215
+          ]
+        }
+      ],
+      "socket_result": {
+        "fixture_scope": "client/server/sampler in same process; existing remote child substitution",
+        "http_client": "httpx",
+        "limits": {
+          "batch_bytes": 33554432,
+          "batch_pixels": 32000000,
+          "body_bytes": 16777216,
+          "embedding_seconds": 45.0,
+          "http_requests": 8,
+          "image_bytes": 10485760,
+          "image_pixels": 16000000,
+          "queue_wait_seconds": 60,
+          "remote_batch_seconds": 30.0,
+          "response_seconds": 30.0,
+          "server_connections": 64,
+          "upload_seconds": 30.0
+        },
+        "maximum_body_bytes": 16777216,
+        "mixed": {
+          "batch_size": 32,
+          "body_bytes_per_client": 16777216,
+          "child_count": 2,
+          "children_reaped": true,
+          "queued": {
+            "concurrency": 1,
+            "in_flight": 1,
+            "max_queue": 100,
+            "max_wait_seconds": 60,
+            "rw_readers": 1,
+            "rw_writer": false,
+            "rw_writer_waiters": 0,
+            "waiting": 1
+          },
+          "received_bytes": {
+            "inline": 16777216,
+            "mixed": 16777216
+          },
+          "remote_bytes_per_image": 10485760,
+          "settled": {
+            "concurrency": 1,
+            "in_flight": 0,
+            "max_queue": 100,
+            "max_wait_seconds": 60,
+            "rw_readers": 0,
+            "rw_writer": false,
+            "rw_writer_waiters": 0,
+            "waiting": 0
+          },
+          "statuses": [
+            200,
+            200
+          ]
+        },
+        "overflow_status": 413,
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 2
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "single_image_bytes": 10485760,
+        "single_image_source_pixels": 16000000,
+        "staged": [
+          {
+            "body_bytes_per_client": 16777216,
+            "case": "single-ceilings",
+            "disconnected_callers": 7,
+            "excess_status": 503,
+            "held": {
+              "active": 8,
+              "maximum": 8,
+              "rejected": 0
+            },
+            "json_bytes": 13981084,
+            "retained_received_bytes": 16777216,
+            "retained_status": 200,
+            "settled": {
+              "concurrency": 1,
+              "in_flight": 0,
+              "max_queue": 100,
+              "max_wait_seconds": 60,
+              "rw_readers": 0,
+              "rw_writer": false,
+              "rw_writer_waiters": 0,
+              "waiting": 0
+            }
+          },
+          {
+            "body_bytes_per_client": 16777216,
+            "case": "batch-ceiling",
+            "disconnected_callers": 7,
+            "excess_status": 503,
+            "held": {
+              "active": 8,
+              "maximum": 8,
+              "rejected": 1
+            },
+            "json_bytes": 207216,
+            "retained_received_bytes": 16777216,
+            "retained_status": 200,
+            "settled": {
+              "concurrency": 1,
+              "in_flight": 0,
+              "max_queue": 100,
+              "max_wait_seconds": 60,
+              "rw_readers": 0,
+              "rw_writer": false,
+              "rw_writer_waiters": 0,
+              "waiting": 0
+            }
+          }
+        ],
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "final": {
+        "event": "complete",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 3224076288,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 3236864000,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 4884738048,
+          "process_rss_bytes": 4884705280,
+          "resources": {
+            "process_threads": 21,
+            "tasks": {
+              "current": 21,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "passed": true
+      }
+    }
+  ],
+  "tested_source_files": [
+    {
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d",
+      "path": "scripts/capacity_api.py"
+    },
+    {
+      "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3",
+      "path": "scripts/capacity_cuda.py"
+    },
+    {
+      "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242",
+      "path": "scripts/capacity_metrics.py"
+    },
+    {
+      "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4",
+      "path": "scripts/capacity_mixed.py"
+    },
+    {
+      "sha256": "e96a2e58710c5c10293c17d39d2f3bde41a3908dbe00bc1509a3fd25065fb449",
+      "path": "scripts/capacity_probe.py"
+    },
+    {
+      "sha256": "1f0a6a6eb3cd21ead3043b5c92c1e76a767d947fbe0f405978ff328de354e96e",
+      "path": "scripts/capacity_receive_observer.py"
+    },
+    {
+      "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc",
+      "path": "scripts/capacity_remote_fixture.py"
+    },
+    {
+      "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929",
+      "path": "scripts/capacity_resources.py"
+    },
+    {
+      "sha256": "d33038c7552d022b064c434333e1d0fdb74816b48532d1131d1d5efb1ce297ef",
+      "path": "scripts/capacity_socket.py"
+    },
+    {
+      "sha256": "ebc3f433c0f90873862e937663546276a72a47b164df91cab6375943909df226",
+      "path": "scripts/capacity_socket_mixed.py"
+    },
+    {
+      "sha256": "fadf5d2fc5ce3d90a8db7ea5e184d46c82d6b3bf69daa2a15a0788fc3d054d50",
+      "path": "scripts/capacity_socket_server.py"
+    },
+    {
+      "sha256": "161ec61d176414c19e03db8cf21ab39496b616528429ea6ff4e895177cf21e53",
+      "path": "scripts/capacity_socket_upload.py"
+    },
+    {
+      "sha256": "a83ea42f0c4fc696e6a66e90bc98d5c76d60a9c0a6b77aeb6895224dc1b26970",
+      "path": "scripts/capacity_upload_body.py"
+    },
+    {
+      "sha256": "830cbf816f0672011cbf754d72f131d857c8f642bf7a385dae64b8c29b8d4a4f",
+      "path": "scripts/capacity_workload.py"
+    },
+    {
+      "sha256": "411d21b5f19dec74d6fdf6b44d7ae33f1fd495b436f0bdb97bf0e8b3e74b982e",
+      "path": "src/image_embedder/__init__.py"
+    },
+    {
+      "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2",
+      "path": "src/image_embedder/admission.py"
+    },
+    {
+      "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da",
+      "path": "src/image_embedder/artifact_integrity.py"
+    },
+    {
+      "sha256": "3624b54491eedfec6ab58266d2dbf63349e415eec723984877237fd58e61337e",
+      "path": "src/image_embedder/authenticated_router.py"
+    },
+    {
+      "sha256": "d80379051c95ccf2883fe83a27c8715dffeaaf6f63bca516b2f5fea97317e177",
+      "path": "src/image_embedder/batch.py"
+    },
+    {
+      "sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9",
+      "path": "src/image_embedder/config.py"
+    },
+    {
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66",
+      "path": "src/image_embedder/deadlines.py"
+    },
+    {
+      "sha256": "cc2ad92b552cc18753bb047e497caa3ae168a879b49957c937df6e51034c06d7",
+      "path": "src/image_embedder/embedder.py"
+    },
+    {
+      "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec",
+      "path": "src/image_embedder/execution.py"
+    },
+    {
+      "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f",
+      "path": "src/image_embedder/healthcheck.py"
+    },
+    {
+      "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02",
+      "path": "src/image_embedder/image_input.py"
+    },
+    {
+      "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17",
+      "path": "src/image_embedder/ingress.py"
+    },
+    {
+      "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2",
+      "path": "src/image_embedder/ingress_middleware.py"
+    },
+    {
+      "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672",
+      "path": "src/image_embedder/input_limits.py"
+    },
+    {
+      "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a",
+      "path": "src/image_embedder/ir_cache.py"
+    },
+    {
+      "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a",
+      "path": "src/image_embedder/lifecycle.py"
+    },
+    {
+      "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2",
+      "path": "src/image_embedder/logging_config.py"
+    },
+    {
+      "sha256": "e3cdc5d0624438f4ec365340476b475b18a1a484dc1a390e2567ef7e6c43fc30",
+      "path": "src/image_embedder/main.py"
+    },
+    {
+      "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895",
+      "path": "src/image_embedder/memory.py"
+    },
+    {
+      "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49",
+      "path": "src/image_embedder/model_catalog.py"
+    },
+    {
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a",
+      "path": "src/image_embedder/model_initialization.py"
+    },
+    {
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80",
+      "path": "src/image_embedder/model_loading.py"
+    },
+    {
+      "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f",
+      "path": "src/image_embedder/models.py"
+    },
+    {
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8",
+      "path": "src/image_embedder/openvino_models.py"
+    },
+    {
+      "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c",
+      "path": "src/image_embedder/queue.py"
+    },
+    {
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2",
+      "path": "src/image_embedder/remote_budget.py"
+    },
+    {
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0",
+      "path": "src/image_embedder/remote_fetch.py"
+    },
+    {
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc",
+      "path": "src/image_embedder/remote_process.py"
+    },
+    {
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565",
+      "path": "src/image_embedder/remote_protocol.py"
+    },
+    {
+      "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df",
+      "path": "src/image_embedder/remote_url.py"
+    },
+    {
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16",
+      "path": "src/image_embedder/remote_worker.py"
+    },
+    {
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de",
+      "path": "src/image_embedder/request_body_deadline.py"
+    },
+    {
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9",
+      "path": "src/image_embedder/response_http_protocol.py"
+    },
+    {
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812",
+      "path": "src/image_embedder/response_send_deadline.py"
+    },
+    {
+      "sha256": "4a7c0a2dd570ef163a4caf03662d2fba92d72b6bb8e6766f834589375457f9a7",
+      "path": "src/image_embedder/routes/__init__.py",
+      "repository_blob_sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1",
+      "scope": "sha256 identifies exact native source overlay; unchanged checkout CRLF differs from repository LF only."
+    },
+    {
+      "sha256": "ceacbab97b8162e67ecd0bb874447247a4b1f745b0f06aa2a8d66c4e599af768",
+      "path": "src/image_embedder/routes/admin.py"
+    },
+    {
+      "sha256": "362e39a7219c8b2b1fcf3d326bc0d2db5939792b7f875e7aedd3b61946f420bd",
+      "path": "src/image_embedder/routes/batch.py"
+    },
+    {
+      "sha256": "bd490d786fc4f8e4f4fe5e7736d2c2d3c57a74b79fd74d53fc753b2ee755ed4b",
+      "path": "src/image_embedder/routes/embed.py"
+    },
+    {
+      "sha256": "62ffc9d7329fcd2c39639657e3d64b63d04fe055d1dad027eac9f4c6103e7df8",
+      "path": "src/image_embedder/routes/health.py",
+      "repository_blob_sha256": "5590d0924454636dffdbb860a4e997e97ba9c4838958395c9f0dd03df68cffb8",
+      "scope": "sha256 identifies exact native source overlay; unchanged checkout CRLF differs from repository LF only."
+    },
+    {
+      "sha256": "389d9cdc470846e80292f4cf09e06b768efe5743146c237917d4a59d3bb9e27f",
+      "path": "src/image_embedder/routes/models.py"
+    },
+    {
+      "sha256": "1cea82eaa0ec991112e05d3f5f8e5ea8e3b1af8d28827b34e470df068aa85cc2",
+      "path": "src/image_embedder/security.py"
+    },
+    {
+      "sha256": "3d802717237af543c28224df24786a1f51805bb4b70afe97a1f9389f2eca0fb3",
+      "path": "src/image_embedder/server.py"
+    },
+    {
+      "sha256": "e3a28b77c0d84e87937f31f4e098d0d83efa689e3e019634a55c3c5613f2e929",
+      "path": "tests/test_auth_early.py"
+    },
+    {
+      "sha256": "eac1b06f4adba13abe85180ad3c1147a84390594c02adbc895980c48056da1da",
+      "path": "tests/test_auth_sockets.py"
+    },
+    {
+      "sha256": "b2132d2c123aec9a8440bcc3a35fa0ef9e57f98cd988731e33ece32910e52a6a",
+      "path": "tests/test_capacity_socket.py"
+    }
+  ],
+  "unchanged_lock_artifacts": [
+    {
+      "sha256": "6a14050c4855d2a7ce12a87000786830f77ef49861e7db04b4eeebaa20cf81b0",
+      "path": "requirements/locks/audit-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "2c446f5cce69a2f8181403f9a0be62a9496bc36f9f2d67ed5591e58935e6c698",
+      "path": "requirements/locks/audit-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "4fd1b81f8320a3bb4a15dc693492d75fad2e78722268ef73da15c1cefe69fe64",
+      "path": "requirements/locks/audit-py312-linux-arm64.json"
+    },
+    {
+      "sha256": "bea376594b24d31ea107c8b624c1e0ffe9dbc1b874a967fe80aeb9838ce1a6cd",
+      "path": "requirements/locks/audit-py312-linux-arm64.txt"
+    },
+    {
+      "sha256": "2acfbb1ca07260be4f1302e27b7f20e1c6b2115dc4388b1925d071b2c65883e0",
+      "path": "requirements/locks/bootstrap-py313-windows-amd64.json"
+    },
+    {
+      "sha256": "48f420fc87a0e80510ace0499f8a1dbb36ee359798b5414ca2af3b44ec195152",
+      "path": "requirements/locks/bootstrap-py313-windows-amd64.txt"
+    },
+    {
+      "sha256": "cbd3bb45500392930216e6adab9fed2df09f755ec576e35e978d39791c9e3bf1",
+      "path": "requirements/locks/bootstrap-py314-windows-amd64.json"
+    },
+    {
+      "sha256": "3b4ee0eebf14394f232a2cf6a7d73dbc5259a860fa545ef845228bf7f53048eb",
+      "path": "requirements/locks/bootstrap-py314-windows-amd64.txt"
+    },
+    {
+      "sha256": "5e743fa3e6555b5b6e1398eb79c09a22e15351e2322364758c575ad44fee5a11",
+      "path": "requirements/locks/bootstrap.json"
+    },
+    {
+      "sha256": "103ded5f0c5e8103512a9e92778de4303c326622947fbdb6c69c61e06a851833",
+      "path": "requirements/locks/bootstrap.txt"
+    },
+    {
+      "sha256": "08b8142b77b731908298975d9bccba1995af0f622e780715fc45d786b90d4553",
+      "path": "requirements/locks/cpu-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "13a6fde075bba4532fe22cc62bf091548559fe711bc3cd5eb6828c8be13e47d3",
+      "path": "requirements/locks/cpu-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "a4d13d949dfb1d0abaa8ea48373b885923051b8623008cf63b6c4cf0a71b66c9",
+      "path": "requirements/locks/cpu-py312-linux-arm64.json"
+    },
+    {
+      "sha256": "f4d3ae7279fa20160778d4264db8407fd891cee3b2af6a477f73965b2941d241",
+      "path": "requirements/locks/cpu-py312-linux-arm64.txt"
+    },
+    {
+      "sha256": "dd07e2de4071596393cae0e08ae28b6a348bd3f662c8bbe42f860eda8f10669e",
+      "path": "requirements/locks/cuda-legacy-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "c95c0ca65536dc787bcab630fa7b4b53ceac45c2cee6567717afff5bc6a4d34f",
+      "path": "requirements/locks/cuda-legacy-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "c0c6e81b1e8b5040d9ca10300ae2b1dc3bfc3d351baac0e03c510186e0b263c4",
+      "path": "requirements/locks/cuda-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "8033d36c4c11d40e4bb54e841c584cb6cad3079fa4ecb43a823da1724dc65de4",
+      "path": "requirements/locks/cuda-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "11208b64c1182c94fb14d97fef88922960cc19c24caafa030914c451fb09ef01",
+      "path": "requirements/locks/openvino-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "a4fb2a5fb344102de5ea6e8aa1ed9f830ecedb37a0054a3e4789ca750aa1090f",
+      "path": "requirements/locks/openvino-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "ae616fddb9b15d7c25e0bb784b45e75066a29904bc8b6948159bb440e5886b99",
+      "path": "requirements/locks/qa-py312-linux-amd64.json"
+    },
+    {
+      "sha256": "07364d47da805c3efef4397782529c6f62f1d44fc9e028c9387ae07fff07156e",
+      "path": "requirements/locks/qa-py312-linux-amd64.txt"
+    },
+    {
+      "sha256": "74018a5fc4fd5e5c03827c1b77096ba787df4ca904676e9cc6bc9ec1dc5867ea",
+      "path": "requirements/locks/windows-contracts-py313-windows-amd64.json"
+    },
+    {
+      "sha256": "e8f9204fde3bcf6cbbe22976aa47f91e02fde2399f7726ca5fc4ae560d61e20f",
+      "path": "requirements/locks/windows-contracts-py313-windows-amd64.txt"
+    },
+    {
+      "sha256": "0ce241c3efee4d41e64313ab3ce2d531cd33e09a9f32170accdb1e7b25ffa36f",
+      "path": "requirements/locks/windows-contracts-py314-windows-amd64.json"
+    },
+    {
+      "sha256": "02f7287ce07d9b708321c948220242a4f6e08f6f15514e29d0f2125060cd47b0",
+      "path": "requirements/locks/windows-contracts-py314-windows-amd64.txt"
+    }
+  ],
+  "qa": {
+    "image": "sha256:90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803",
+    "passed": 1022,
+    "skipped": 7,
+    "seconds": 132.758,
+    "line_percent": 95.30999999999999,
+    "branch_percent": 90.3,
+    "unchanged_floors": {
+      "lines": 89.42,
+      "branches": 79.37
+    },
+    "new_auth_cases": 59,
+    "native_parser_tls_cases": 24,
+    "log_sha256": "2890efae576078abb51e3431b9a4302b3c33c25d3cc5e1be55345192a86ca866",
+    "junit_sha256": "655afc7d190a960b8bd59ed48880e091fc1a9694dd3390c28c88779db3a3e5a9",
+    "coverage_sha256": "2e5409aa2e0855baa767387175549a83683003efc615cc41e767f6b44a39588a",
+    "initial_full_run": {
+      "passed": 1018,
+      "failed": 4,
+      "skipped": 7,
+      "failure_scope": "Existing 1.2-second remote child startup/network phase tests did not reach fixture server while CPU calibration overlapped. No test budgets or production network code changed.",
+      "log_sha256": "d98dca8a6f10ae1ee06bc91e282805e132366c53a988b407f58364a02385c1c4"
+    },
+    "isolated_network_followup": {
+      "passed": 9,
+      "seconds": 12.02,
+      "log_sha256": "260f68c1b0ba87c41d1ed4d2362d2460d42f71d8302bc7eb2c39757a08289486"
+    },
+    "final_run_scope": "Full fresh QA run after native model and CodeQL work completed; no concurrent task-owned native container."
+  },
+  "auth_cases": [
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers0-/embed-image-POST]",
+      "seconds": 0.027
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers0-/embed-batch-POST]",
+      "seconds": 0.026
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers0-/admin/cleanup-POST]",
+      "seconds": 0.029
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers0-/models-GET]",
+      "seconds": 0.029
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers1-/embed-image-POST]",
+      "seconds": 0.028
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers1-/embed-batch-POST]",
+      "seconds": 0.028
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers1-/admin/cleanup-POST]",
+      "seconds": 0.025
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers1-/models-GET]",
+      "seconds": 0.03
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers2-/embed-image-POST]",
+      "seconds": 0.032
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers2-/embed-batch-POST]",
+      "seconds": 0.035
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers2-/admin/cleanup-POST]",
+      "seconds": 0.035
+    },
+    {
+      "id": "test_every_protected_route_rejects_without_receive[asyncio-headers2-/models-GET]",
+      "seconds": 0.031
+    },
+    {
+      "id": "test_admin_is_mandatory_in_dev_mode_and_under_root_path[asyncio-fixture-key-401-]",
+      "seconds": 0.037
+    },
+    {
+      "id": "test_admin_is_mandatory_in_dev_mode_and_under_root_path[asyncio-fixture-key-401-/prefix]",
+      "seconds": 0.031
+    },
+    {
+      "id": "test_admin_is_mandatory_in_dev_mode_and_under_root_path[asyncio-None-503-]",
+      "seconds": 0.044
+    },
+    {
+      "id": "test_admin_is_mandatory_in_dev_mode_and_under_root_path[asyncio-None-503-/prefix]",
+      "seconds": 0.043
+    },
+    {
+      "id": "test_misconfigured_service_fails_closed_before_body[asyncio]",
+      "seconds": 0.041
+    },
+    {
+      "id": "test_wrong_primary_and_non_ascii_credentials_remain_401[asyncio-headers0]",
+      "seconds": 0.04
+    },
+    {
+      "id": "test_wrong_primary_and_non_ascii_credentials_remain_401[asyncio-headers1]",
+      "seconds": 0.026
+    },
+    {
+      "id": "test_wrong_primary_and_non_ascii_credentials_remain_401[asyncio-headers2]",
+      "seconds": 0.03
+    },
+    {
+      "id": "test_query_credentials_are_not_accepted[asyncio]",
+      "seconds": 0.028
+    },
+    {
+      "id": "test_close_header_only_for_http1[asyncio-1.0]",
+      "seconds": 0.027
+    },
+    {
+      "id": "test_close_header_only_for_http1[asyncio-1.1]",
+      "seconds": 0.034
+    },
+    {
+      "id": "test_close_header_only_for_http1[asyncio-2]",
+      "seconds": 0.028
+    },
+    {
+      "id": "test_accepted_headers_preserve_body_validation_and_success[asyncio-headers0]",
+      "seconds": 0.065
+    },
+    {
+      "id": "test_accepted_headers_preserve_body_validation_and_success[asyncio-headers1]",
+      "seconds": 0.037
+    },
+    {
+      "id": "test_accepted_headers_preserve_body_validation_and_success[asyncio-headers2]",
+      "seconds": 0.039
+    },
+    {
+      "id": "test_dev_mode_bypasses_auth_on_non_admin_routes[asyncio]",
+      "seconds": 0.038
+    },
+    {
+      "id": "test_mounted_admin_route_keeps_mandatory_protection[asyncio]",
+      "seconds": 0.029
+    },
+    {
+      "id": "test_authentication_policy_is_isolated_between_apps[asyncio]",
+      "seconds": 0.059
+    },
+    {
+      "id": "test_unmatched_methods_and_redirects_keep_routing_contract[asyncio-/unknown-POST-404]",
+      "seconds": 0.041
+    },
+    {
+      "id": "test_unmatched_methods_and_redirects_keep_routing_contract[asyncio-/embed-image-GET-405]",
+      "seconds": 0.053
+    },
+    {
+      "id": "test_unmatched_methods_and_redirects_keep_routing_contract[asyncio-/embed-image/-POST-307]",
+      "seconds": 0.029
+    },
+    {
+      "id": "test_ingress_and_declared_body_limit_still_precede_auth[asyncio]",
+      "seconds": 0.042
+    },
+    {
+      "id": "test_rejected_response_retains_ingress_until_completion[asyncio]",
+      "seconds": 0.045
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-image-plain-httptools]",
+      "seconds": 0.273
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-image-plain-h11]",
+      "seconds": 0.228
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-image-tls-httptools]",
+      "seconds": 0.262
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-image-tls-h11]",
+      "seconds": 0.248
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-batch-plain-httptools]",
+      "seconds": 0.226
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-batch-plain-h11]",
+      "seconds": 0.222
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-batch-tls-httptools]",
+      "seconds": 0.245
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-None-401-/embed-batch-tls-h11]",
+      "seconds": 0.24
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-image-plain-httptools]",
+      "seconds": 0.224
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-image-plain-h11]",
+      "seconds": 0.225
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-image-tls-httptools]",
+      "seconds": 0.354
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-image-tls-h11]",
+      "seconds": 0.273
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-batch-plain-httptools]",
+      "seconds": 0.23
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-batch-plain-h11]",
+      "seconds": 0.224
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-batch-tls-httptools]",
+      "seconds": 0.251
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-fixture-key-wrong-401-/embed-batch-tls-h11]",
+      "seconds": 0.25
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-image-plain-httptools]",
+      "seconds": 0.226
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-image-plain-h11]",
+      "seconds": 0.221
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-image-tls-httptools]",
+      "seconds": 0.244
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-image-tls-h11]",
+      "seconds": 0.244
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-batch-plain-httptools]",
+      "seconds": 0.223
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-batch-plain-h11]",
+      "seconds": 0.223
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-batch-tls-httptools]",
+      "seconds": 0.245
+    },
+    {
+      "id": "test_header_only_auth_rejection_has_no_continue_or_body_and_closes[asyncio-None-fixture-key-503-/embed-batch-tls-h11]",
+      "seconds": 0.283
+    }
+  ],
+  "openapi": {
+    "canonical_sha256": "74ed5f5e2ed776296fd487c09edb905f0ad9498bb55c0a0cb3b07ac6fb422517",
+    "baseline_sha256": "74ed5f5e2ed776296fd487c09edb905f0ad9498bb55c0a0cb3b07ac6fb422517",
+    "byte_identical": true
+  },
+  "security": {
+    "codeql_version": "2.27.1",
+    "suite": "Python security-extended",
+    "python_files": 83,
+    "sarif_sha256": "f4bb566e116c6ced86b4329445235ebb5e72305011bcda2efb72b89fb2d327c9",
+    "new_findings": 0,
+    "existing_results": [
+      {
+        "rule": "py/clear-text-logging-sensitive-data",
+        "path": "scripts/generate_env.py",
+        "line": 57
+      },
+      {
+        "rule": "py/overly-permissive-file",
+        "path": "scripts/secret_publication.py",
+        "line": 105
+      }
+    ],
+    "existing_context": "Explicit --show-key output and nonsecret 0644 publication; no suppression changes.",
+    "verified_codeql_archive_sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+    "gitleaks": {
+      "version": "8.30.1",
+      "verified_archive_sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "redaction_percent": 100,
+      "rules_changed": false,
+      "source": {
+        "findings": 0,
+        "report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "scope": "Tracked and nonignored candidate source, including finalized validation metadata; empty report confirmed before commit."
+      },
+      "baseline_history": {
+        "commits": 87,
+        "findings": 0,
+        "report_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "log_sha256": "bb6af5d7526869f3e5a0499d720176e2e1166e817fc168ed8133dc58914a2559",
+        "scope": "All local refs before this delivery commit; final committed history is checked separately before push."
+      }
+    }
+  },
+  "pr_availability": {
+    "decision": "No suitable unapplied open PR; skip per persisted user clarification.",
+    "reviewed_heads": [
+      {
+        "number": 44,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/44",
+        "head_sha": "e66ea84b748833448eb7dd8efbf91eb78f551239",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 42,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/42",
+        "head_sha": "c174b4d4ce6c8a54e3d5583998aa0fa08414c3ee",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 41,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/41",
+        "head_sha": "66ba03671b3deea9e808de88ff6ce7fb038c4681",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 40,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/40",
+        "head_sha": "a28cf48f141fa165599d0b9d93341c212664af48",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 35,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/35",
+        "head_sha": "e01c22ffad5997bb99a4bc6eecfb944068d6ee31",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 34,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/34",
+        "head_sha": "b4d4ccc31d1a24bdfc3a628ba56b91ba2e2546b2",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 33,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/33",
+        "head_sha": "5054ede6625ba6fc860c3a563644f8402a5f5769",
+        "state": "open",
+        "merged": false
+      },
+      {
+        "number": 27,
+        "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/27",
+        "head_sha": "e640f0807906bd12705b311b101c80b753ee41e0",
+        "state": "open",
+        "merged": false
+      }
+    ]
+  },
+  "next_item": {
+    "recommendation": "Stable identity for public probe quotas; unverified header rotation must not create new callers.",
+    "local_probe": {
+      "statuses": {
+        "fixed": [
+          200,
+          200,
+          429,
+          429
+        ],
+        "rotating": [
+          200,
+          200,
+          200,
+          200
+        ]
+      },
+      "storage_key_count": 5,
+      "scope": "Four fixed and four rotating invalid credential headers to public health, one client address; no body/native dispatch"
+    },
+    "probe_sha256": "9414ebf0ed19d3ba691b26061fdebc7adf0330f7ed9d16e865301d9faf8ce6a9",
+    "log_sha256": "8ccb46e9a489f8101c9f7a287c1f939f302effaee408ea2649266e5a07ab3ac2",
+    "state": "Proposal only; limiter policy unchanged."
+  },
+  "limitations": [
+    "Native socket evidence is Linux CPython 3.12; no hosted Windows/HTTP2/proxy execution claimed.",
+    "Direct socket clients, server, models and sampler share a process/cgroup and shared JSON prefixes.",
+    "Uniform padded PNGs and alternating fixtures do not cover every codec or image shape.",
+    "CPU replay overlapped initial QA; OpenVINO replay overlapped CodeQL. No comparative speed or memory-savings claim.",
+    "Native cgroup v1; task lifetime peak unavailable and shared page charging affects cgroup/process comparisons.",
+    "Two inexpensive key comparisons remain for successful protected requests, sharing one policy.",
+    "Whole socket-phase time includes multiple requests, references and recovery; not individual HTTP deadlines.",
+    "All runtime locks are unchanged; current advisory audits from the prior same-date graph review are not represented as a new audit."
+  ],
+  "native_inventories": [
+    {
+      "profile": "cpu-py312-linux-amd64",
+      "hashed_wheels": 56,
+      "pip_check": "passed",
+      "log_sha256": "c192d40fa36f7fa7514f902c9ff14236fd6e8a8322a4e8ce9c5608d400d6ca7c"
+    },
+    {
+      "profile": "openvino-py312-linux-amd64",
+      "hashed_wheels": 58,
+      "pip_check": "passed",
+      "log_sha256": "ab5bb67b71bfed6c0eb0d3bac62f3fc1638a1c7d009f650892cd589a35a34113"
+    },
+    {
+      "profile": "qa-py312-linux-amd64",
+      "hashed_wheels": 70,
+      "pip_check": "passed",
+      "log_sha256": "b97d6076392cccc2d61b65b76bc20128a7414867cfca3a0c3f020a2bafb4f1ea"
+    }
+  ]
+}

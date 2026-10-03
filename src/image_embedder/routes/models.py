@@ -4,16 +4,17 @@
 
 """Model catalogue endpoint: GET /models."""
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Request
 
+from ..authenticated_router import authenticated_router
 from ..embedder import ImageEmbedder
 from ..models import ModelInfo
 
 
 def make_router(auth) -> APIRouter:
-    router = APIRouter()
+    router = authenticated_router(auth)
 
-    @router.get("/models", response_model=list[ModelInfo], dependencies=[Depends(auth)])
+    @router.get("/models", response_model=list[ModelInfo])
     def list_models(request: Request):
         embedder_instance: ImageEmbedder = request.app.state.embedder
         return [

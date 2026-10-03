@@ -60,18 +60,17 @@ async def check_socket_capacity(workload) -> dict:
             },
             limits=httpx.Limits(max_connections=settings.max_http_requests + 2),
         ) as client:
-            unauthorized = await client.post(
-                "/embed-batch",
-                content=single.stream(),
-                headers={
-                    "Content-Length": str(single.length),
-                    "X-Capacity-Id": "unauthenticated",
-                    "X-Api-Key": "",
-                },
+            unauthorized = await header_only_status(
+                port, single.length, None, "unauthenticated"
             )
             await wait_until(lambda: observer.records["unauthenticated"].completed)
-            if unauthorized.status_code != 401:
-                raise AssertionError("Socket route did not require authentication")
+            if (
+                unauthorized != 401
+                or observer.records["unauthenticated"].bytes_received
+            ):
+                raise AssertionError(
+                    "Socket authentication did not reject before body receive"
+                )
             status = await header_only_status(
                 port, single.length + 1, protected.service_api_key, "overflow"
             )

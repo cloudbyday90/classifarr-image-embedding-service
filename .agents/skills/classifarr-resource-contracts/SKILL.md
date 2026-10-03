@@ -1,6 +1,6 @@
 ---
 name: classifarr-resource-contracts
-description: "Plan, implement and validate Classifarr image-embedding resource-lifetime changes: remote fetch and batch budgets, ingress, cancellation, admission, worker cleanup and cache preparation. Use for these service refactors or ownership regressions; not for unrelated copy edits, generic version lookups or release operations."
+description: "Plan, implement and validate Classifarr image-embedding resource-lifetime changes: early API-key checks, remote fetch and batch budgets, ingress, cancellation, admission, worker cleanup and cache preparation. Use for these service refactors or ownership regressions; not for unrelated copy edits, generic version lookups or release operations."
 ---
 
 # Classifarr Resource Contracts
@@ -9,7 +9,11 @@ Keep service changes small and explicit about who owns capacity after the HTTP c
 
 ## Establish the contract
 
-Read `OPENAI.md` and the current `docs/recommendation-stack.md`, then follow only the affected rows in [the contract map](references/contracts-and-validation.md). Inspect the implementation and relevant existing tests before adopting a historical recommendation. Record:
+Read `OPENAI.md` and the current `docs/recommendation-stack.md`, then follow only the affected rows in [the contract map](references/contracts-and-validation.md). Inspect the implementation and relevant existing tests before adopting a historical recommendation.
+
+For authentication/body-order changes, read [early authentication contracts](references/early-authentication.md). Keep protection attached to matched routers and verify native header-only rejection, mandatory admin policy and response ownership.
+
+Record:
 
 - The resource owner, admission point and release condition, including failure cleanup.
 - Which clock starts the budget, what consumes it, and whether it limits a socket hop, fetch, batch preparation, HTTP wait or native execution.

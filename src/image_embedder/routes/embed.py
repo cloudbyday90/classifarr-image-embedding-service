@@ -6,8 +6,9 @@
 
 import asyncio
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response
 
+from ..authenticated_router import authenticated_router
 from ..batch import EmbedJob
 from ..embedder import ImageEmbedder
 from ..execution import ExecutionClosedError, InferenceExecutor
@@ -31,9 +32,9 @@ def _queue_headers(queue: EmbedQueue, *, retry_after_seconds: int | None = None)
 
 
 def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
-    router = APIRouter()
+    router = authenticated_router(auth)
 
-    @router.post("/embed-image", response_model=EmbedImageResponse, dependencies=[Depends(auth)])
+    @router.post("/embed-image", response_model=EmbedImageResponse)
     @limiter.limit(rate_limit_embed)
     async def embed_image(request: Request, payload: EmbedImageRequest, response: Response):
         logger = request.app.state.logger

@@ -21,10 +21,10 @@ held callers, observe server disconnects and released ingress, finish one retain
 upload and compare its vectors with direct inference. Pre-EOF cancellation does
 not test cancellation of dispatched native work.
 
-Test unauthenticated requests with a complete valid body and record received bytes.
-The current route dependency authenticates after body parsing. Do not shorten the
-upload budget to turn that behavior into apparent early rejection. Declared body
-overflow should reject on headers without receipt.
+Test unauthenticated requests with headers only, declaring the body ceiling.
+Require 401 with zero observed receive bytes; the authenticated route wrapper runs
+before body parsing. Do not shorten upload budgets or send a complete body to hide
+a lost early check. Declared overflow should also reject on headers without receipt.
 
 Mixed requests use the existing fixed remote fixture. Label its child-only
 transport substitution and require every child reaped before fixture cleanup.

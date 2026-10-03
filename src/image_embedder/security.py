@@ -7,7 +7,7 @@
 import hmac
 
 from fastapi import Depends, HTTPException, Request
-from fastapi.security import APIKeyHeader, APIKeyQuery
+from fastapi.security import APIKeyHeader
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
@@ -29,13 +29,14 @@ def _extract_api_key(
     return None
 
 
-def make_auth_dependency(settings: Settings):
+def make_auth_dependency(settings: Settings, *, always_required: bool = False):
     """
     Return a FastAPI dependency that enforces API key authentication.
 
     - When REQUIRE_API_KEY=true (default): all callers must supply a valid key.
     - When REQUIRE_API_KEY=false (local dev): unauthenticated requests pass through.
     - /admin/cleanup is ALWAYS protected regardless of REQUIRE_API_KEY.
+    - always_required binds mandatory protection to a router, including mounts.
     """
 
     async def verify_api_key(
@@ -44,7 +45,7 @@ def make_auth_dependency(settings: Settings):
         authorization: str | None = Depends(_bearer_header),
     ) -> None:
         path = request.url.path
-        is_admin = path.startswith("/admin/")
+        is_admin = always_required or path.startswith("/admin/")
 
         # Admin endpoints are always protected.
         if not settings.require_api_key and not is_admin:
@@ -59,7 +60,9 @@ def make_auth_dependency(settings: Settings):
             )
 
         candidate = _extract_api_key(x_api_key, authorization)
-        if not candidate or not hmac.compare_digest(candidate, settings.service_api_key):
+        if not candidate or not hmac.compare_digest(
+            candidate.encode("utf-8"), settings.service_api_key.encode("utf-8")
+        ):
             raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     return verify_api_key

@@ -4,16 +4,17 @@
 
 """Admin endpoints: POST /admin/cleanup."""
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Request
 
+from ..authenticated_router import authenticated_router
 from ..memory import force_cleanup, get_memory_usage
 from ..models import CleanupResponse
 
 
 def make_router(auth) -> APIRouter:
-    router = APIRouter()
+    router = authenticated_router(auth)
 
-    @router.post("/admin/cleanup", response_model=CleanupResponse, dependencies=[Depends(auth)])
+    @router.post("/admin/cleanup", response_model=CleanupResponse)
     async def trigger_cleanup(request: Request):
         logger = request.app.state.logger
         logger.info("Manual cleanup triggered")

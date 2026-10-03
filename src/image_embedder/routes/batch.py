@@ -6,8 +6,9 @@
 
 import asyncio
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request, Response
 
+from ..authenticated_router import authenticated_router
 from ..embedder import BatchItem, ImageEmbedder
 from ..execution import ExecutionClosedError, InferenceExecutor
 from ..input_limits import InputLimitExceeded, validate_inline_images
@@ -21,9 +22,9 @@ from .embed import _queue_headers
 
 
 def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
-    router = APIRouter()
+    router = authenticated_router(auth)
 
-    @router.post("/embed-batch", response_model=EmbedBatchResponse, dependencies=[Depends(auth)])
+    @router.post("/embed-batch", response_model=EmbedBatchResponse)
     @limiter.limit(rate_limit_embed)
     async def embed_batch_endpoint(request: Request, payload: EmbedBatchRequest, response: Response):
         logger = request.app.state.logger
