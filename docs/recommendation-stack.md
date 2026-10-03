@@ -1,6 +1,6 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current CI iteration starts from `2e3813aa1b2da6caf2729ce9eea8d95946ba011f` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current secret-setup iteration starts from `d72eec64388bd4b5712a31fb1105378c895cc0da` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
@@ -24,22 +24,25 @@ Assessment date: 2026-10-03. The current CI iteration starts from `2e3813aa1b2da
 | Complete target-specific wheel hashes and exact environment inventories | Prevents transitive/artifact drift; no mixed-index installation or source builds | Native per-target generation, artifact availability and reviewed refresh cost | Implemented; [dependency design](dependency-locks.md) |
 | Reviewed weekly refresh and prompt advisory response | Keeps frozen contracts auditable while allowing security updates | Maintainer review; apt and host drivers are separate contracts | Implemented; [update policy](runtime-update-policy.md) |
 | Reviewed CI action, native tool and builder contracts | Freezes reviewed source/bytes; removes PR-write credentials and unchecked tool caches | Owned OSV workflow and deliberate refresh; hosted platform remains a trust boundary | Implemented; [execution](ci-execution-contracts.md), [native tools](ci-native-artifacts.md), [cleanup](release-cleanup.md) |
-| Selected PRs implemented locally through verified immutable refs | Requested maintenance updates without upstream merges | Hosted reporting/cache behavior remains CI work | [PR 28](pr-28-local-validation.md), [42](pr-42-local-validation.md), [40](pr-40-local-validation.md), [33](pr-33-local-validation.md), [49](pr-49-local-validation.md), [51](pr-51-local-validation.md), [41](pr-41-local-validation.md), [45](pr-45-local-validation.md), [PR 50](pr-50-local-validation.md), and now random [PR 54](pr-54-local-validation.md) |
+| Private atomic secret setup and explicit new-key disclosure | Owner-only permissions before writes; complete-file publication; default console confidentiality | Recoverable local credential, trusted checkout and operator crash cleanup remain necessary | Implemented with native Linux/Windows checks; [setup design](secret-setup.md) |
+| Selected PRs implemented locally through verified immutable refs | Requested maintenance updates without upstream merges | Hosted reporting/cache behavior remains CI work | [PR 28](pr-28-local-validation.md), [42](pr-42-local-validation.md), [40](pr-40-local-validation.md), [33](pr-33-local-validation.md), [49](pr-49-local-validation.md), [51](pr-51-local-validation.md), [41](pr-41-local-validation.md), [45](pr-45-local-validation.md), [PR 50](pr-50-local-validation.md), [PR 54](pr-54-local-validation.md), and now random [PR 34](pr-34-local-validation.md) |
 | Retain modular Python and measure before language changes | Builds on native inference and tested contracts | Python footprint remains; Rust benefit is unmeasured here | User confirmed; [language decision](language-platform-decision.md) |
 
 ## Next items
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Tighten first-time secret setup: owner-only atomic publication and explicit key display | Addresses native CodeQL alerts and accidental console/file exposure | Compose still requires a local secret file; Windows ACL and overwrite behavior need contracts |
-| Next 2 | Bound total upload and DNS/download lifetime; evaluate isolation from measured need | Releases finite slots retained by slow uploads/resolution/trickled bodies | Cancellation, proxy/server budgets, resolver/process boundaries and accounting need design |
-| Next 3 | Calibrate selected accelerator and concurrent-input deployments; restore CUDA ARM after upstream metadata repair | Measures device VRAM and target-host headroom before scaling owners | Hardware/runner cost; cuSPARSELt ARM metadata currently fails strict pip check |
+| Next 1 | Bound total upload and DNS/download lifetime; evaluate isolation from measured need | Releases finite slots retained by slow uploads/resolution/trickled bodies | Cancellation, proxy/server budgets, resolver/process boundaries and accounting need design |
+| Next 2 | Calibrate selected accelerator and concurrent-input deployments; restore CUDA ARM after upstream metadata repair | Measures device VRAM and target-host headroom before scaling owners | Hardware/runner cost; cuSPARSELt ARM metadata currently fails strict pip check |
+| Next 3 | Add recurring native Windows setup validation | Protects creation-time ACL and rotation behavior from platform regressions | Separate Windows runner/tooling; Linux runtime profiles remain unchanged |
 
-The next small implementation should harden `scripts/generate_env.py`: stop default console key output and publish owner-only `.env` data without overwrite races, with explicit display and force contracts. Native CodeQL flags its current console output and intended plaintext storage; assess the storage context rather than suppressing alerts. Then bound total HTTP upload and DNS/download lifetimes. Preserve complete dependency/model/IR contracts and calibrate deployment hardware before raising concurrency.
+The next implementation should bound total HTTP upload and DNS/download lifetimes, carrying the existing finite owner/admission accounting across stalled receives, resolution, redirects and trickled responses. Align client/proxy budgets and prove cancellation/slot release with controlled native tests before evaluating resolver/process isolation. Preserve complete dependency/model/IR contracts and calibrate deployment hardware before raising concurrency.
 
 ## Final recommendation stack
 
 Keep Python/FastAPI/AnyIO with small ingress, admission, queue, execution, input, remote transport and model/artifact services. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
+
+Generate shared service credentials with explicit 32-byte entropy. Publish private complete `.env` files atomically on an owned/trusted checkout, preserve existing config, and disclose new keys only with an explicit display option. Keep nonsecret defaults readable by the container. Use managed secret rotation only as a separately designed deployment migration.
 
 Keep CPU-only Torch by default, exact cu130/cu126 profiles for appropriate NVIDIA hardware, and matching OpenVINO bindings/base for Intel deployments. Use immutable approved model revisions/digests, restricted local weight loading, explicit PIL preprocessing and no remote model Python. Maintain the process-owned IR contract, complete manifest, finite locks, atomic publication, FP32 serialization and accuracy execution policy on application-owned local volumes.
 
@@ -48,6 +51,14 @@ Retain one worker, eight complete HTTP ingress owners, server concurrency 64 and
 Keep remote URLs disabled unless needed and prefer explicit allowlists. Use approved public numeric destinations, verified original-host TLS identity, at most three validated redirects and four bounded address attempts. Preserve authority/DNS policy, response closure, byte limits, sanitized errors and isolation from ambient transport credentials.
 
 Validate small offline fixtures in routine pytest, real production models in the separate change-scoped/weekly CPU/OpenVINO workflow, capacity through the manual calibration workflow, installed packages and isolated tooling with strict OSV, and device behavior on appropriate hardware. Native workflows perform verified networked prefetch followed by offline containers. Install complete target-specific binary-wheel/hash locks through isolated no-index pip, validate input contracts and exact inventories, and follow the reviewed weekly/urgent update policy. Keep supported digest-pinned bases; Python locks do not freeze apt or host drivers. Pin action source commits and scanner/builder image digests, verify reviewed native tool hashes before execution, deny credentials by default and preserve complete-report gates and conservative tag-only retention. Review publisher provenance and hosted integration separately.
+
+## Secret setup delivery outcome
+
+Private same-directory staging establishes POSIX `0600` or a protected current-user Windows DACL before writing. Exclusive publication and a setup lock prevent cooperating creation/rotation races; explicit rotation replaces complete `.env` data while preserving existing defaults. Default CLI/launcher output omits the key; `--show-key` is an explicit disclosure of a newly generated key. Nonsecret POSIX config remains `0644` for non-root container access. Existing keys are neither read nor silently repaired, and crash leftovers remain private/gitignored until operator inspection.
+
+Full locked QA passes **758 tests**, with seven platform/optional skips; native Windows setup passes **32 tests** with sixteen POSIX/unavailable-symlink skips. The 48 new setup cases and a CI policy regression cover real publication contention, cross-process lock refusal, pre-write ACL/mode checks, rotations, failures, unsafe links and actual launcher fixtures. A different Linux UID cannot read the key but can read config. Application coverage stays **94.31% / 88.71%**, and the unchanged 67-package QA inventory validates PR 34's renewed input contract.
+
+Actual CodeQL security-extended analysis retains two contextual alerts: explicit `--show-key` output and world-readable nonsecret Docker config defaults. Neither is suppressed. Its previous plaintext-storage alert is absent, but the key remains intentionally recoverable plaintext in a private file. The separate [setup](secret-setup.md), [historical digest classification](secret-scan-digests.md), random [PR 34](pr-34-local-validation.md) and [validation archive](validation/secret-setup-2026-10-03.json) records explain official October 2026 research, tradeoffs, precise evidence and limits. No upstream PR merge, branch, release, tag or version bump is created.
 
 ## CI delivery outcome
 

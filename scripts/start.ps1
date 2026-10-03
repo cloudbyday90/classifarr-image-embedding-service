@@ -15,7 +15,7 @@ if (-not (Test-Path "$Root\.env")) {
     python "$Root\scripts\generate_env.py"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     Write-Host ""
-    Write-Host "  *** Copy the SERVICE_API_KEY above into Classifarr before continuing. ***" -ForegroundColor Cyan
+    Write-Host "  Open .env in a private editor and copy SERVICE_API_KEY into Classifarr before continuing." -ForegroundColor Cyan
     Write-Host "  In Classifarr: Settings -> API Keys, create a key with the 'embed_service' tier." -ForegroundColor Cyan
     Write-Host "  Or set IMAGE_EMBEDDER_API_KEY in Classifarr's environment." -ForegroundColor Cyan
     Write-Host ""

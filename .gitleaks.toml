@@ -1,0 +1,17 @@
+title = "Classifarr default rules with verified historical digest exceptions"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Two public log SHA-256 digests in the historical CI validation record; see docs/secret-scan-digests.md"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''^docs/validation/ci-contracts-2026-10-03\.json$''']
+regexes = [
+  '''^fbb2c86971f90325d5a933774be9c90282882c56979d8145742e7b1a4de12117$''',
+  '''^77d1a96ce099533e6d588b6bea396512d566ff572e5e87fd4824d9ca167adc17$''',
+]

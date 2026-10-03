@@ -16,7 +16,7 @@ if [ ! -f "$ROOT/.env" ]; then
     echo ""
     python3 "$ROOT/scripts/generate_env.py"
     echo ""
-    echo "  *** Copy the SERVICE_API_KEY above into Classifarr before continuing. ***"
+    echo "  Open .env in a private editor and copy SERVICE_API_KEY into Classifarr before continuing."
     echo "  In Classifarr: Settings -> API Keys, create a key with the 'embed_service' tier."
     echo "  Or set IMAGE_EMBEDDER_API_KEY in Classifarr's environment."
     echo ""

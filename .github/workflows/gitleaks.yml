@@ -29,7 +29,7 @@ jobs:
         run: python scripts/install_ci_tool.py gitleaks --directory "$RUNNER_TEMP/verified-tools"
       - name: Scan fetched history with full redaction
         run: >-
-          "$RUNNER_TEMP/verified-tools/gitleaks" git . --log-opts=--all
+          "$RUNNER_TEMP/verified-tools/gitleaks" git . --log-opts=--all --config=.gitleaks.toml
           --redact=100 --exit-code=2 --report-format=sarif --report-path=gitleaks-results.sarif
       - name: Retain redacted findings for investigation
         if: always() && hashFiles('gitleaks-results.sarif') != ''

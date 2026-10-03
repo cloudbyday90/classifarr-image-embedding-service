@@ -88,7 +88,7 @@ In this example, Classifarr can reach the image embedder at:
 
 ## Authentication
 
-The embedding service uses a **shared API key** for service-to-service authentication. Classifarr generates and manages this key; you copy it into your environment once.
+The embedding service uses a **shared API key** for service-to-service authentication. Generate it locally and configure the same value in Classifarr and the embedding service.
 
 ### Setup
 
@@ -106,7 +106,7 @@ bash scripts/start.sh
 
 The script does three things:
 1. If `.env` doesn't exist yet, runs `generate_env.py` to create it with a fresh `SERVICE_API_KEY`.
-2. Prints the key and pauses so you can copy it into Classifarr before the service starts.
+2. Pauses so you can open `.env` in a private editor and copy the key into Classifarr before the service starts. Console output contains no key.
 3. Runs `docker compose up -d`.
 
 **`.env` persists across restarts.** Once it exists, `docker compose up -d` (or the start script) just works — no key generation or prompts. You only go through the first-time flow once per machine.
@@ -116,15 +116,18 @@ The script does three things:
 **Manual setup / key rotation:**
 
 ```bash
-python scripts/generate_env.py           # first-time: creates .env + config.toml defaults
-python scripts/generate_env.py --force   # rotate key (config.toml is preserved)
+python scripts/generate_env.py               # create private .env + missing defaults
+python scripts/generate_env.py --show-key    # create and explicitly display the new key
+python scripts/generate_env.py --force       # rotate key; preserve config.toml
 ```
 
 This creates:
-- `.env` — contains only `SERVICE_API_KEY`. Gitignored; never committed.
+- `.env` — contains only `SERVICE_API_KEY`. Gitignored; owner-only POSIX permissions or a protected current-user Windows ACL are established before writing.
 - `config.toml` — default settings, if not already present. Committed to the repo, mounted read-only into the container.
 
-Copy the printed `SERVICE_API_KEY` value into Classifarr as `IMAGE_EMBEDDER_API_KEY` (env var), or via Classifarr Settings → API Keys with the `embed_service` tier.
+Open `.env` in a private editor and copy `SERVICE_API_KEY` into Classifarr as `IMAGE_EMBEDDER_API_KEY` (env var), or via Classifarr Settings → API Keys with the `embed_service` tier. `--show-key` displays only a newly created key; combine it with `--force` only when explicitly rotating. It can expose the key to console capture or redirection. Existing secrets are preserved without reading or changing their permissions; after rotation, update Classifarr and recreate the service container.
+
+Setup publishes complete files atomically, refuses linked/nonregular targets, and serializes concurrent creators/rotators. Use a trusted checkout; on POSIX its setup directory must be owned by you without group/other write permissions. Windows requires persistent ACL and hard-link support. An interrupted run can leave `.env.setup.lock` or private, gitignored `.env.setup-*.tmp` files: confirm no setup is running before inspecting/removing only its stale artifacts. Nonsecret config defaults stay readable by the container. See the [design, alternatives and native validation](docs/secret-setup.md).
 
 Then start the stack:
 ```bash

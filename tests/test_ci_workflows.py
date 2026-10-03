@@ -7,10 +7,51 @@ import re
 from pathlib import Path
 
 import pytest
+import tomllib
 import yaml
 from check_osv_reports import check_report
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_history_digest_exceptions_cannot_hide_other_values_paths_or_rules():
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    assert config["extend"] == {"useDefault": True}
+    assert "allowlist" not in config and "allowlists" not in config
+    assert len(config["rules"]) == 1
+    rule = config["rules"][0]
+    assert set(rule) == {"id", "allowlists"} and rule["id"] == "generic-api-key"
+    assert len(rule["allowlists"]) == 1
+    policy = rule["allowlists"][0]
+    assert policy["condition"] == "AND" and policy["regexTarget"] == "secret"
+    assert set(policy) == {
+        "description",
+        "condition",
+        "regexTarget",
+        "paths",
+        "regexes",
+    }
+    paths, values = policy["paths"], policy["regexes"]
+    assert len(paths) == 1 and len(values) == 2
+    assert paths == [r"^docs/validation/ci-contracts-2026-10-03\.json$"]
+    ledger = json.loads(
+        (ROOT / "docs/validation/ci-contracts-2026-10-03.json").read_text()
+    )
+    approved = [
+        ledger["evidence_log_sha256"][name]
+        for name in ["secret-changes.log", "secret-history-final.log"]
+    ]
+    assert set(values) == {f"^{digest}$" for digest in approved}
+    for digest in approved:
+        assert any(re.fullmatch(pattern, digest) for pattern in values)
+        assert not any(re.fullmatch(pattern, digest + "0") for pattern in values)
+    workflow = yaml.safe_load((ROOT / ".github/workflows/gitleaks.yml").read_text())
+    scan = next(
+        step["run"]
+        for step in workflow["jobs"]["gitleaks"]["steps"]
+        if "Scan fetched history" in step.get("name", "")
+    )
+    assert "--config=.gitleaks.toml" in scan and "--log-opts=--all" in scan
 
 
 def workflows():

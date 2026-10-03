@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Modular private setup/publication and Windows ACL helpers, with separate design/outcome records and cross-platform setup regressions.
 - Reviewed native CI tool contracts, modular verification and release-retention helpers, with separate design/outcome records and workflow boundary regressions.
 - Complete hash-locked Linux dependency profiles, modular generation/installation validation, and separate dependency, refresh-policy and PR 50 design/outcome records.
 - Modular offline capacity probes with process/cgroup memory, batch parity, authenticated deadline and detached-owner checks; a manual CPU/OpenVINO calibration workflow and separate design/outcome records.
@@ -21,6 +22,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopt open PR #34 locally by raising the HTTPX development minimum to the already hash-locked 0.28.1 release.
+- Keep generated API keys out of setup/startup console output by default; provide explicit new-key display and rotation controls while preserving existing configuration.
 - Freeze remaining workflow actions and nested scanner/builder dependencies; narrow credentials, remove Gitleaks PR-write access and require completed OSV scans.
 - Replace Docker Hub cleanup shell interpolation with bounded authenticated API handling, complete inventory validation and current-tag protection.
 - Adopt open PR #54 locally by raising the Requests minimum to the already hash-locked 2.34.2 release.
@@ -53,6 +56,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Retain default secret-scanning rules with exact path/value exceptions for two verified historical log digests, validated against negative native scanner controls.
+- Publish complete `.env` data with owner-only permissions established before writing; refuse linked targets, serialize setup/rotation and preserve existing keys on handled publication failures.
 - Reject stale dependency inputs, unapproved wheel origins, altered artifacts and unexpected installed packages; require hashes for all transitive Python dependencies without index fallback or source builds.
 - Verify publisher asset digests before model loading; restrict PyTorch weight deserialization and remote code, and rebuild corrupted or incomplete generated artifacts under finite process locks.
 - Reject excess complete HTTP requests before body receive/JSON retention with retryable 503 responses, while preserving health access and detached inference ownership.
