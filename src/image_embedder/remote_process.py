@@ -47,10 +47,14 @@ def _environment() -> dict[str, str]:
     }
 
 
-def fetch_remote_image(image_url: str, settings: Settings) -> bytes:
+def fetch_remote_image(
+    image_url: str, settings: Settings, *, total_deadline: float | None = None
+) -> bytes:
     if not settings.allow_remote_urls:
         raise ValueError("Remote image URLs are disabled")
     deadline = time.monotonic() + settings.remote_fetch_timeout_seconds
+    if total_deadline is not None:
+        deadline = min(deadline, total_deadline)
     payload = encode_request(
         image_url,
         RemoteFetchOptions(
@@ -63,6 +67,8 @@ def fetch_remote_image(image_url: str, settings: Settings) -> bytes:
     try:
         # An anonymous file avoids communicate() buffering unchecked stdout in RAM.
         with tempfile.TemporaryFile() as output:
+            if time.monotonic() >= deadline:
+                raise RemoteFetchError("Remote image fetch timed out")
             process = subprocess.Popen(
                 _command(),
                 stdin=subprocess.PIPE,

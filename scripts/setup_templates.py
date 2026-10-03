@@ -39,6 +39,7 @@ allowed_remote_hosts = []   # when allow_remote_urls = true, restrict to these h
 max_image_bytes = 10485760  # 10 MiB
 request_timeout_seconds = 15
 remote_fetch_timeout_seconds = 15 # total fetch including DNS, TLS and redirects
+remote_batch_fetch_timeout_seconds = 30 # shared fetch phase; ordered partial results
 
 [queue]
 concurrency = 1

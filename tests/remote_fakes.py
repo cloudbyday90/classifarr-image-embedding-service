@@ -6,6 +6,8 @@
 
 import socket
 
+from fakes import install_direct_remote_fetch
+
 from image_embedder import remote_fetch
 
 
@@ -55,7 +57,7 @@ class RemoteTransport:
         self.calls = []
         self.closed = []
         monkeypatch.setattr(remote_fetch, "_pool", self.pool)
-        monkeypatch.setattr("image_embedder.embedder.fetch_remote_image", remote_fetch.fetch_remote_image)
+        install_direct_remote_fetch(monkeypatch)
 
     def pool(self, destination, address, timeout):
         owner = self

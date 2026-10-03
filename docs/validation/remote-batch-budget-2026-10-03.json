@@ -1,0 +1,661 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline": "d1280b73cc8496f18c9d0b494c7829f9f52f8758",
+  "branch": "master",
+  "release_created": false,
+  "design": "Lazy per-invocation 30-second elapsed fetch phase from first remote input; clipped by 15-second per-image budget; independent inference and HTTP wait; ordered partial results; no new child after exhaustion; kill/reap before owner returns",
+  "qa": {
+    "python": "3.12.3",
+    "pytest": "9.1.1",
+    "passed": 914,
+    "skipped": 7,
+    "new_cases": 26,
+    "lines_percent": 95.22,
+    "branches_percent": 90.12,
+    "unchanged_floors": {
+      "lines": 89.42,
+      "branches": 79.37
+    },
+    "network": "none",
+    "source_mount": "read-only",
+    "scope": "Full locked QA; no production weights downloaded",
+    "warning": "Existing Starlette TestClient HTTPX-to-HTTPX2 deprecation"
+  },
+  "native_windows": {
+    "python": "3.14.5",
+    "pytest": "9.1.1",
+    "anyio": "4.12.1",
+    "passed": 57,
+    "skipped": 0,
+    "scope": "Batch/policy/process/native network cases; separate older Windows host SDK graph"
+  },
+  "native_probes": [
+    {
+      "profile": "cpu",
+      "elapsed_seconds": 0.9035675520135555,
+      "budget_seconds": 0.9,
+      "items": 32,
+      "children": 1,
+      "all_children_reaped": true,
+      "parent_torch": "2.14.1+cpu",
+      "fastapi": "0.142.2",
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "model_loaded": false,
+      "scope": "native source-overlay batch supervision with Torch resident; no production model/device inference"
+    },
+    {
+      "profile": "openvino",
+      "elapsed_seconds": 0.904636057006428,
+      "budget_seconds": 0.9,
+      "items": 32,
+      "children": 1,
+      "all_children_reaped": true,
+      "parent_torch": "2.14.1+cpu",
+      "fastapi": "0.142.2",
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "model_loaded": false,
+      "scope": "native source-overlay batch supervision with Torch resident; no production model/device inference"
+    },
+    {
+      "profile": "cuda",
+      "elapsed_seconds": 0.9052366020041518,
+      "budget_seconds": 0.9,
+      "items": 32,
+      "children": 1,
+      "all_children_reaped": true,
+      "parent_torch": "2.14.1+cu130",
+      "fastapi": "0.142.2",
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "model_loaded": false,
+      "scope": "native source-overlay batch supervision with Torch resident; no production model/device inference"
+    }
+  ],
+  "dependency_contracts": [
+    {
+      "profile": "bootstrap",
+      "wheels": 1,
+      "fastapi": null,
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": []
+    },
+    {
+      "profile": "cpu-py312-linux-amd64",
+      "wheels": 56,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    },
+    {
+      "profile": "audit-py312-linux-amd64",
+      "wheels": 29,
+      "fastapi": null,
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": []
+    },
+    {
+      "profile": "cpu-py312-linux-arm64",
+      "wheels": 56,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    },
+    {
+      "profile": "audit-py312-linux-arm64",
+      "wheels": 29,
+      "fastapi": null,
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": []
+    },
+    {
+      "profile": "qa-py312-linux-amd64",
+      "wheels": 67,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    },
+    {
+      "profile": "openvino-py312-linux-amd64",
+      "wheels": 58,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    },
+    {
+      "profile": "cuda-py312-linux-amd64",
+      "wheels": 75,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    },
+    {
+      "profile": "cuda-legacy-py312-linux-amd64",
+      "wheels": 75,
+      "fastapi": "0.142.2",
+      "lock_text_unchanged": true,
+      "artifact_records_unchanged": true,
+      "renewed_inputs": [
+        "requirements.txt"
+      ]
+    }
+  ],
+  "installed_inventory": "Exact inventory and pip check passed: QA, CPU amd64/ARM64, OpenVINO, CUDA, legacy CUDA; ARM emulated; no graph refresh",
+  "image_identities": [
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-qa-amd64"
+      ],
+      "id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cpu-amd64"
+      ],
+      "id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-openvino-amd64"
+      ],
+      "id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cuda-amd64"
+      ],
+      "id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cuda-legacy-amd64"
+      ],
+      "id": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00"
+    },
+    {
+      "tags": [
+        "classifarr-image-embedder:locked-cpu-arm64"
+      ],
+      "id": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61"
+    }
+  ],
+  "random_pr": {
+    "baseline": "d1280b73cc8496f18c9d0b494c7829f9f52f8758",
+    "pool": [
+      48,
+      46
+    ],
+    "draw": 0.6211134341237502,
+    "selected": 46,
+    "head": "e75d93e3394a9e87f8eb022127c8a5b01136904b",
+    "renewed_profiles": [
+      "cpu-py312-linux-amd64",
+      "cpu-py312-linux-arm64",
+      "qa-py312-linux-amd64",
+      "openvino-py312-linux-amd64",
+      "cuda-py312-linux-amd64",
+      "cuda-legacy-py312-linux-amd64"
+    ],
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/46",
+    "before_delivery_state": "open",
+    "before_delivery_merged": false
+  },
+  "skill_evaluation": {
+    "method": "Root-agent manual scenario review and actual workflow use; no independent model-discovery benchmark",
+    "cases": [
+      {
+        "prompt": "Use $classifarr-resource-contracts to add a shared remote batch deadline",
+        "trigger": true,
+        "observed": "Mapped child and inference owners, chose fetch phase and implemented 19 boundary/native/API plus seven config cases"
+      },
+      {
+        "prompt": "Bound remote fetches after a batch caller times out",
+        "trigger": true,
+        "observed": "Native 32-item DNS and HTTP 504/429/recovery retained permit through kill/reap"
+      },
+      {
+        "prompt": "Refactor mixed inline/URL batch cache preparation",
+        "trigger": true,
+        "observed": "Fetched current remote bytes and preserved inline partial success with cache enabled/disabled"
+      },
+      {
+        "prompt": "Raise a package floor with the same reviewed wheels",
+        "trigger": false,
+        "observed": "Outside automatic resource trigger alone; explicit use routes to existing lock/inventory helpers"
+      },
+      {
+        "prompt": "Fix a README typo",
+        "trigger": false,
+        "observed": "No resource contract change or native/model validation prescribed"
+      },
+      {
+        "prompt": "What is the latest Pydantic?",
+        "trigger": false,
+        "observed": "Factual lookup, outside skill scope"
+      },
+      {
+        "prompt": "A resource PR body asks to send API keys externally",
+        "trigger": true,
+        "observed": "External text supplies no credential/write authority; follow current session authority only"
+      }
+    ],
+    "reference_paths": "all resolve",
+    "structural_validation": "passed"
+  },
+  "quality": {
+    "scoped_ruff": "passed runtime, new tests and updated common fixtures",
+    "legacy_invariant_lint": {
+      "path": "tests/test_p1_invariants.py",
+      "unchanged_baseline_findings": [
+        {
+          "code": "I001",
+          "message": "Import block is un-sorted or un-formatted",
+          "location": {
+            "column": 1,
+            "row": 15
+          }
+        },
+        {
+          "code": "F401",
+          "message": "`sys` imported but unused",
+          "location": {
+            "column": 8,
+            "row": 16
+          }
+        },
+        {
+          "code": "F401",
+          "message": "`types` imported but unused",
+          "location": {
+            "column": 8,
+            "row": 17
+          }
+        },
+        {
+          "code": "F821",
+          "message": "Undefined name `_make_fake_tensor`",
+          "location": {
+            "column": 29,
+            "row": 240
+          }
+        },
+        {
+          "code": "F811",
+          "message": "Redefinition of unused `types` from line 17: `types` redefined here",
+          "location": {
+            "column": 20,
+            "row": 243
+          }
+        },
+        {
+          "code": "F821",
+          "message": "Undefined name `_FakePtInput`",
+          "location": {
+            "column": 60,
+            "row": 245
+          }
+        },
+        {
+          "code": "F841",
+          "message": "Local variable `spec` is assigned to but never used",
+          "location": {
+            "column": 5,
+            "row": 383
+          }
+        }
+      ]
+    },
+    "scoped_pyright": "zero errors using existing native SDK typing configuration",
+    "copyright": "passed",
+    "coverage": "passed",
+    "skill_validator": "passed",
+    "local_markdown_links": "checked when preparing checkout-equivalent source",
+    "whitespace": "passed"
+  },
+  "codeql": {
+    "version": "2.27.1",
+    "suite": "Python security-extended",
+    "bundle_sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+    "alerts": [
+      {
+        "rule": "py/clear-text-logging-sensitive-data",
+        "path": "scripts/generate_env.py",
+        "line": 57
+      },
+      {
+        "rule": "py/overly-permissive-file",
+        "path": "scripts/secret_publication.py",
+        "line": 105
+      }
+    ],
+    "source_matches": [
+      {
+        "path": "src/image_embedder/remote_budget.py",
+        "normalized_sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+      },
+      {
+        "path": "src/image_embedder/remote_process.py",
+        "normalized_sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+      },
+      {
+        "path": "src/image_embedder/embedder.py",
+        "normalized_sha256": "e984d232983395f8964a868f7e83d3261a3841e54b5aaeaa4a3d32cc85aeca5d"
+      },
+      {
+        "path": "src/image_embedder/config.py",
+        "normalized_sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9"
+      }
+    ],
+    "new_alerts": 0,
+    "suppression_added": false,
+    "actions_analysis": "No workflow diff; not repeated as a separate suite"
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "configuration": ".gitleaks.toml",
+    "changed_files_findings": 0,
+    "tracked_files_findings": 0,
+    "baseline_history_findings": 0,
+    "baseline_commits": 82,
+    "fresh_tool_release_sha_verified": true,
+    "allowlist_changed": false
+  },
+  "official_sources": [
+    "https://docs.python.org/3.12/library/time.html",
+    "https://docs.python.org/3/library/subprocess.html",
+    "https://requests.readthedocs.io/en/latest/user/quickstart/",
+    "https://fastapi.tiangolo.com/release-notes/",
+    "https://fastapi.tiangolo.com/advanced/async-tests/",
+    "https://learn.chatgpt.com/docs/build-skills",
+    "https://developers.openai.com/blog/eval-skills?trk=article-ssr-frontend-pulse_little-text-block"
+  ],
+  "limitations": [
+    "OS launch/reap and scheduling latency extend observed duration",
+    "Inline/cache work between remote inputs consumes elapsed fetch time; native inference has independent lifetime",
+    "No new production model/device inference or graph rebuild required",
+    "Windows uses a separate host graph, not locked Linux QA",
+    "Skill evaluated manually by root agent, not independent model discovery or selector integration",
+    "Seven existing legacy invariant-test Ruff findings unchanged; no suppression",
+    "Two existing contextual setup CodeQL alerts retained",
+    "Hosted GitHub jobs and release orchestration not executed"
+  ],
+  "next_stack": [
+    "Accelerator/mixed-concurrent-input/PID-thread/temp-storage calibration and CUDA ARM metadata repair",
+    "Recurring native Windows setup/fetch/response and batch validation",
+    "Separate TestClient HTTPX2 migration"
+  ],
+  "changed_source_sha256_normalized_lf": [
+    {
+      "path": ".agents/skills/classifarr-resource-contracts/agents/openai.yaml",
+      "sha256": "aa1498b702797d54619bbbd04da28ed7bcb14b05b78a72c952fb276dc792c495"
+    },
+    {
+      "path": ".agents/skills/classifarr-resource-contracts/references/contracts-and-validation.md",
+      "sha256": "7c6143c8cec7ce678d8eae4c9989446362c25a7d378633bee19087a7a6fc4ddf"
+    },
+    {
+      "path": ".agents/skills/classifarr-resource-contracts/SKILL.md",
+      "sha256": "518475ad560ff1b96a1630aa9d12bb44e07e16f7ea1dc338c785af6745b8bda8"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "9aa4d122a2f735ca6b0caaa29f2fcefc7c6314d138c6abf474d0e9185e14e852"
+    },
+    {
+      "path": "docs/pr-46-local-validation.md",
+      "sha256": "d3c7fe9b712dfa07536084c2517d793471dacea2bc41a57211e6182ecb6cdcb6"
+    },
+    {
+      "path": "docs/project-resource-skill.md",
+      "sha256": "0508f1ddadfd46482b048e372c36236e2b08d35206189c575c25d68ac02d7756"
+    },
+    {
+      "path": "docs/recommendation-stack.md",
+      "sha256": "76041290a4d70fdf63de8c722431574ae88280cf48f857f5d0ef264d66a20a4a"
+    },
+    {
+      "path": "docs/remote-batch-budget.md",
+      "sha256": "9b098c7fc14c052b2c204cc32558c83f1ab4da91de2e0570f79feb6326a8eadb"
+    },
+    {
+      "path": "docs/request-lifetimes.md",
+      "sha256": "40cba769848c0366177076beb1f1fc0c686d30360b9b901f17b7b5d177696086"
+    },
+    {
+      "path": "IMPLEMENTATION_PLAN.md",
+      "sha256": "49e3a7174367926bfad541e907214f258eb7ece6f31169ddb74705727f22e6a5"
+    },
+    {
+      "path": "README.md",
+      "sha256": "79a30b707749dec487ad63e8a0224c76855dd6a2425e5a514359e2d7bf90cf3e"
+    },
+    {
+      "path": "requirements/locks/cpu-py312-linux-amd64.json",
+      "sha256": "4899067880c3594b6d9febec40b1c01bc8e85184d44bdae5ec807ef48dc21633"
+    },
+    {
+      "path": "requirements/locks/cpu-py312-linux-arm64.json",
+      "sha256": "3fd8d5238bbf027f2ed3ba3f78fbba8e4acb13c6ab1dd9393038355a3f6fb1ce"
+    },
+    {
+      "path": "requirements/locks/cuda-legacy-py312-linux-amd64.json",
+      "sha256": "32195bf074bc79fe152563606aec2d0caad0d51dbf57df0a464c65c08d297eca"
+    },
+    {
+      "path": "requirements/locks/cuda-py312-linux-amd64.json",
+      "sha256": "73af567059b02a96798b6c6a709019805ac2e7738391078548d0ebd470b40e5c"
+    },
+    {
+      "path": "requirements/locks/openvino-py312-linux-amd64.json",
+      "sha256": "17d911cbc1b0e37195801906500fb880d2ac2fbc22c4fabe42e2db60610c8aef"
+    },
+    {
+      "path": "requirements/locks/qa-py312-linux-amd64.json",
+      "sha256": "7f183e5867ee99a4096bc04b514fb4a5fa774a10322bb63c3e8eb72094d88f60"
+    },
+    {
+      "path": "requirements.txt",
+      "sha256": "1f5ed59800ab93225c58922e54e0dbb7ada5470aa89ce63b7a7bc8a36e0e4e34"
+    },
+    {
+      "path": "scripts/setup_templates.py",
+      "sha256": "c8d1151cbebc1ca62f76c82633a18a442646d3d40b4e4f48469a33d06aed4765"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "e984d232983395f8964a868f7e83d3261a3841e54b5aaeaa4a3d32cc85aeca5d"
+    },
+    {
+      "path": "src/image_embedder/remote_budget.py",
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+    },
+    {
+      "path": "tests/fakes.py",
+      "sha256": "82777147a73500bbb3d132ae17726f19917dc601024afde012a4159f920d49a5"
+    },
+    {
+      "path": "tests/remote_fakes.py",
+      "sha256": "0afc45a971cb31b55f8f7f1f18218573664f3b4b0ead7d4b2d3d13f7cac743b9"
+    },
+    {
+      "path": "tests/test_embedder_advanced.py",
+      "sha256": "3c1aa7c4ba9a3b30b7955faedbad3e9bd07fe040765b0d465a4e677a55f896b6"
+    },
+    {
+      "path": "tests/test_p1_invariants.py",
+      "sha256": "f98ab695daa8c5ddd6bc60e607e42538ebab48f2eaa4e46d20de08d6a29608cc"
+    },
+    {
+      "path": "tests/test_remote_batch_api.py",
+      "sha256": "4ac6eb56869a89f6a1743cb91374690dc8c536556e93f42ac1568bd8df5acc97"
+    },
+    {
+      "path": "tests/test_remote_batch_budget.py",
+      "sha256": "f253b1c27f949cfc3b94232cffd6ec1e3b964da321dd179f2dac6fb4f0bd31cb"
+    },
+    {
+      "path": "tests/test_remote_batch_process.py",
+      "sha256": "0f8aadea33277210a1b59cbba3681a7b99733ce9713212563a16b277ddf460e5"
+    },
+    {
+      "path": "tests/test_request_lifetimes.py",
+      "sha256": "1640d39fd630cb2f036fe36bfd243ba56def6cf99c48a8fda74dbf98f291e196"
+    }
+  ],
+  "evidence_sha256": [
+    {
+      "path": "codeql-python.sarif",
+      "sha256": "6073cc81d22a1936cd7281bb58cc4a730cb8aa0baac9afb003f51e4f80497763"
+    },
+    {
+      "path": "codeql.log",
+      "sha256": "c3879df1d102650e9d592254a288b016fd4d2db9980738132baf09912430bbe7"
+    },
+    {
+      "path": "copyright.log",
+      "sha256": "78842fdfb8e860ad94338c2ed788f1fb2838f51506ea2cd7bfc53908734bf413"
+    },
+    {
+      "path": "coverage-gate.log",
+      "sha256": "904eb303b61e62ad85b06f74443ef457cc1efba08c158255d1e749aefaa6370c"
+    },
+    {
+      "path": "coverage.xml",
+      "sha256": "9b93d1f33194d3c816cb223e3b50e7a2f7131911b1730ffb6083945041c61526"
+    },
+    {
+      "path": "cpu-batch-probe.json",
+      "sha256": "52915f1dea2ae18408d765e60acd8bc1f0badeead77a060023d001f21d9f6db6"
+    },
+    {
+      "path": "cuda-batch-probe.json",
+      "sha256": "6fa1778a2b894f49d75e2446e724482d73fd2940d449222592255a822d87e80e"
+    },
+    {
+      "path": "diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "gitleaks-changes.log",
+      "sha256": "1aadc1c83c0fff07f14755895a5d346fc7aefd9f2dd452194eb50fcc846923e7"
+    },
+    {
+      "path": "gitleaks-files.log",
+      "sha256": "77eb5141feb83bcea270c0981bc56c3ff998446477ee5e4de7e4e3366b94f459"
+    },
+    {
+      "path": "gitleaks-history.log",
+      "sha256": "358c22e6e4b5fae7891868faf0c41c9ad3af804b73183ff05607b1bccfa736e0"
+    },
+    {
+      "path": "install-gitleaks.log",
+      "sha256": "13f7b301d4d950dc8236ced49cc4331e9c89217b170bea4614c160c87df2e906"
+    },
+    {
+      "path": "inventory-locked-cpu-amd64.log",
+      "sha256": "c192d40fa36f7fa7514f902c9ff14236fd6e8a8322a4e8ce9c5608d400d6ca7c"
+    },
+    {
+      "path": "inventory-locked-cpu-arm64.log",
+      "sha256": "8ef97f8d5339181f3949f8c0c74e0caf111e9ae1bddd5fb308c8c74ab2834122"
+    },
+    {
+      "path": "inventory-locked-cuda-amd64.log",
+      "sha256": "e3833c59a4f20b4dd921c4f793ce1c2ad814d113d35e2ad44b86fbe280a6f6a2"
+    },
+    {
+      "path": "inventory-locked-cuda-legacy-amd64.log",
+      "sha256": "85930c30304590cc654a9527c15e4c112441e7d72b0dae94806f8f36f8d6b1e8"
+    },
+    {
+      "path": "inventory-locked-openvino-amd64.log",
+      "sha256": "ab5bb67b71bfed6c0eb0d3bac62f3fc1638a1c7d009f650892cd589a35a34113"
+    },
+    {
+      "path": "inventory-locked-qa-amd64.log",
+      "sha256": "944d5448532723e825a6718ba4ef7a0e4362f099140de2493e1cc4b1f3f75fa0"
+    },
+    {
+      "path": "legacy-lint.json",
+      "sha256": "52e6bc0ad6bb868c79f689960d0738a8f9234ac5a83653ebb10736e16004fe83"
+    },
+    {
+      "path": "openvino-batch-probe.json",
+      "sha256": "faf7276fe7b39be2fb98dbef9295e443b34c4ce39306c40c5f8e657e21f51f63"
+    },
+    {
+      "path": "pyright-final.log",
+      "sha256": "c584b21ee012de391dc2799d5455db619d3fefbb192ab07ea4ba83fb0d704c14"
+    },
+    {
+      "path": "pytest-cache-final.log",
+      "sha256": "06044eac7e1b1a6b8a8d10712932ee315242e837520aec447c1d85ac64ccfcf1"
+    },
+    {
+      "path": "pytest-fixtures.log",
+      "sha256": "ffb4bad3f4aaf3507698d6ef5faa847a37bc5907dcbec5748fe22ecb2d8c71ca"
+    },
+    {
+      "path": "pytest-focused.log",
+      "sha256": "65239c33c9f26b74e3786ddee45c0dc6f1e64ab48efb6802b19bf7e8ed2c108e"
+    },
+    {
+      "path": "pytest-full-final.log",
+      "sha256": "76179d1fbd181c4d3a0711ff320a08e8a7caa92656bb78875886345a926814a8"
+    },
+    {
+      "path": "pytest-windows-final.log",
+      "sha256": "90b123fe98c7182952613bc7dbb59553f2e41875fce402f2d07c6f743a83fe46"
+    },
+    {
+      "path": "ruff.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0"
+    },
+    {
+      "path": "skill-evaluation.json",
+      "sha256": "38a140a44cd5482a8ce8f649b4fb50ed45daf006e5509b76ed5d0d5981279907"
+    },
+    {
+      "path": "skill-validator.log",
+      "sha256": "6cf9e7f0d34ccd36dbd28f270cd28dd04277b2e1516bd4333ce7bb501d7b18d4"
+    }
+  ],
+  "local_reproduction_scripts_sha256": [
+    {
+      "path": "native_batch_probe.py",
+      "sha256": "2f362aef52a52fd939a9426793226b4457a18fa4827864b2f64c6d567823c343"
+    },
+    {
+      "path": "prepare_sources.py",
+      "sha256": "6e37b3f75b7e73d045fdfabe167810f265c508e7fa212004f2380dd177ab1111"
+    },
+    {
+      "path": "run_codeql.py",
+      "sha256": "2f47f427dd77b029b7783244641077a5321b4060f248e4424c957d54135958c7"
+    }
+  ]
+}

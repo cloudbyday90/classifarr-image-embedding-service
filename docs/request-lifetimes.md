@@ -31,6 +31,8 @@ Linux [getrusage](https://www.man7.org/linux/man-pages/man2/getrusage.2.html) pr
 
 ## Outcome
 
+The subsequent [shared remote batch budget](remote-batch-budget.md) bounds cumulative sequential fetching from the first remote input. The results below remain this document's original per-fetch/upload validation evidence.
+
 Production embedding now calls `remote_process`; `remote_fetch` remains the direct validated transport invoked by `remote_worker`. The bounded `remote_protocol` carries only fetch options and reviewed errors. No SDK graph, endpoint success schema or inference admission contract changes. Socket/upload/fetch durations reject zero, negative, boolean and nonfinite values; fractional durations and environment-over-TOML-over-default precedence are tested. The setup template and shipped config expose both new budgets.
 
 Full locked Linux QA passes **832 tests**, with seven existing platform/optional skips. The **74 new cases** cover total upload gaps, downstream cleanup/408 ownership, non-HTTP bypass, completed body/response behavior, external cancellation, constructor/TOML/environment validation, bounded/malformed protocol, launch failure, startup time, kill/communication failure cleanup, blocked DNS, detached owners, native trickled headers/body, redirects, stalled TLS, trusted/invalid TLS and byte-error preservation. Windows Python 3.14.5 with pytest 9.1.1 passes **41 process/network cases** in temporary tooling; Linux CPython 3.12 remains the deployed contract. Coverage is **94.65% lines / 89.34% branches**, above unchanged **89.42% / 79.37%** floors. Exact QA inventory still verifies **67 hashed wheels**.

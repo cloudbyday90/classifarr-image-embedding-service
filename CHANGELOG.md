@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Shared total remote batch fetch budgets with ordered partial results, retained child ownership and native Linux/Windows regressions.
+- A repository AI skill for designing and validating embedding-service resource and ownership changes.
 - Configurable total HTTP response-send lifetimes, with modular server/transport services, native slow-reader/disconnect regressions and separate design/outcome records.
 - Configurable total upload and remote-fetch lifetimes, with modular ASGI deadline, disposable-worker protocol and supervision services; separate design/outcome records and native cancellation/network regressions.
 - Modular private setup/publication and Windows ACL helpers, with separate design/outcome records and cross-platform setup regressions.
@@ -24,6 +26,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopt open PR #46 locally by raising the FastAPI minimum to 0.142.1 while retaining the reviewed 0.142.2 wheel graphs.
 - Adopted PR 27's Trivy action update through a verified immutable v0.36.0 commit and explicit native scanner path, preserving disabled setup/cache paths and existing scan/report gates.
 - The shared launcher uses asyncio so response completion accounts for TLS ciphertext buffers before releasing capacity.
 - Adopt open PR #52 locally by raising the pytest development minimum to the already hash-locked 9.1.1 release.

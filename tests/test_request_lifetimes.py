@@ -193,6 +193,7 @@ async def test_real_application_stalled_upload_releases_ingress_without_inferenc
         ("request_body_timeout_seconds", "REQUEST_BODY_TIMEOUT_SECONDS", "server", 30),
         ("response_send_timeout_seconds", "RESPONSE_SEND_TIMEOUT_SECONDS", "server", 30),
         ("remote_fetch_timeout_seconds", "REMOTE_FETCH_TIMEOUT_SECONDS", "image", 15),
+        ("remote_batch_fetch_timeout_seconds", "REMOTE_BATCH_FETCH_TIMEOUT_SECONDS", "image", 30),
         ("request_timeout_seconds", "REQUEST_TIMEOUT_SECONDS", "image", 15),
     ],
 )
@@ -215,6 +216,7 @@ def test_input_budget_defaults_and_configuration_precedence(
         ("request_body_timeout_seconds", "server"),
         ("response_send_timeout_seconds", "server"),
         ("remote_fetch_timeout_seconds", "image"),
+        ("remote_batch_fetch_timeout_seconds", "image"),
         ("request_timeout_seconds", "image"),
     ],
 )

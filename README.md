@@ -540,7 +540,9 @@ Remote fetching remains disabled by default. When enabled, each HTTP/HTTPS hop m
 
 At most three redirects are followed. Credentialed URLs, raw controls/backslashes, unsafe DNS results and HTTPS-to-HTTP redirects are refused. Fetching uses the installed certificate bundle and direct connections; ambient proxy, netrc, cookie and Requests CA-bundle overrides are ignored. Final decoded response bytes are bounded by `MAX_IMAGE_BYTES`; response/pool resources close on every exit. Policy refusals return 400, oversized images 413, and HTTP/network failures retain 500 with sanitized details. Explicit batches retain ordered per-item errors. See the [destination design and validation](docs/remote-image-destinations.md).
 
-Each remote fetch now has a total 15-second budget (`REMOTE_FETCH_TIMEOUT_SECONDS` or `[image].remote_fetch_timeout_seconds`) covering fresh-interpreter startup, DNS, all approved address attempts, TLS, redirects and decoded body reads. `REQUEST_TIMEOUT_SECONDS` remains a separate socket/hop setting; raising it does not raise the total budget. URL text permits at most 8192 characters; the bounded stdin message permits at most 64 KiB including fetch options. The child receives no service key or ambient Python/proxy/CA overrides. On timeout it is killed and reaped before its inference owner releases capacity; the existing sanitized server-error contract is retained. OS launch/reaping can add latency. Batches fetch sequentially with one total budget per image. See the [lifetime alternatives, measurements and limits](docs/request-lifetimes.md).
+Each remote fetch has a total 15-second budget (`REMOTE_FETCH_TIMEOUT_SECONDS` or `[image].remote_fetch_timeout_seconds`) covering fresh-interpreter startup, DNS, all approved address attempts, TLS, redirects and decoded body reads. `REQUEST_TIMEOUT_SECONDS` remains a separate socket/hop setting; raising it does not raise the total budget. URL text permits at most 8192 characters; the bounded stdin message permits at most 64 KiB including fetch options. The child receives no service key or ambient Python/proxy/CA overrides. On timeout it is killed and reaped before its inference owner releases capacity. OS launch/reaping can add latency. See the [lifetime alternatives, measurements and limits](docs/request-lifetimes.md).
+
+Sequential explicit and coalesced batches also share a 30-second fetch-phase deadline (`REMOTE_BATCH_FETCH_TIMEOUT_SECONDS` or `[image].remote_batch_fetch_timeout_seconds`), starting at their first remote fetch. Each fetch uses the earlier per-image/shared deadline; subsequent remote inputs get ordered `Remote batch fetch timed out` errors without spawning another child. Earlier successful remote inputs and valid inline inputs still succeed. Inline decoding/cache lookup between remote fetches consumes elapsed time, and cached remote embeddings still require fetching current bytes. Image decoding and native inference keep their independent lifetime; this is not a hard whole-batch timeout. See the [shared-budget design and outcomes](docs/remote-batch-budget.md).
 
 ## Environment Variables
 
@@ -558,6 +560,7 @@ Each remote fetch now has a total 15-second budget (`REMOTE_FETCH_TIMEOUT_SECOND
 - `MAX_BATCH_IMAGE_PIXELS` (default `32000000` - aggregate source + pre-crop resize pixels)
 - `REQUEST_TIMEOUT_SECONDS` (remote-hop default `15`; explicit legacy values also apply to embedding deadlines if the new setting is absent)
 - `REMOTE_FETCH_TIMEOUT_SECONDS` (default `15` - total remote fetch including startup, DNS and all redirects; positive finite seconds)
+- `REMOTE_BATCH_FETCH_TIMEOUT_SECONDS` (default `30` - shared sequential batch fetch phase from first remote input; positive finite seconds)
 - `EMBEDDING_TIMEOUT_SECONDS` (embedding response default `45`; positive finite seconds, including fractions)
 
 ### Concurrency & Queue
@@ -622,6 +625,11 @@ pytest
 
 ## Engineering Decisions
 
+The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-resource-contracts/SKILL.md) guides ownership and validation work. In Codex, invoke `$classifarr-resource-contracts` when changing fetch, batch, ingress or inference lifetimes. Its [design and evaluation record](docs/project-resource-skill.md) explains discovery, scope and limits.
+
+- [Shared remote batch budget and ordered partial results](docs/remote-batch-budget.md)
+- [Open PR 46 local FastAPI floor adoption](docs/pr-46-local-validation.md)
+- [Project resource-contract AI skill design and usage](docs/project-resource-skill.md)
 - [Production capacity calibration and operating limits](docs/capacity-calibration.md)
 - [Embedding deadline design and migration](docs/embedding-deadlines.md)
 - [Process-owned model initialization](docs/model-initialization.md)

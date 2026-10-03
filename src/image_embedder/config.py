@@ -125,6 +125,7 @@ class Settings:
     request_body_timeout_seconds: float = field(default_factory=lambda: _duration("REQUEST_BODY_TIMEOUT_SECONDS", "server", "request_body_timeout_seconds", 30.0))
     response_send_timeout_seconds: float = field(default_factory=lambda: _duration("RESPONSE_SEND_TIMEOUT_SECONDS", "server", "response_send_timeout_seconds", 30.0))
     remote_fetch_timeout_seconds: float = field(default_factory=lambda: _duration("REMOTE_FETCH_TIMEOUT_SECONDS", "image", "remote_fetch_timeout_seconds", 15.0))
+    remote_batch_fetch_timeout_seconds: float = field(default_factory=lambda: _duration("REMOTE_BATCH_FETCH_TIMEOUT_SECONDS", "image", "remote_batch_fetch_timeout_seconds", 30.0))
     embedding_timeout_seconds: float | None = field(default_factory=_embedding_duration)
 
     embed_concurrency: int = field(default_factory=lambda: _int("IMAGE_EMBEDDER_CONCURRENCY", "queue", "concurrency", 1))
@@ -169,7 +170,7 @@ class Settings:
     rate_limit_health: str = field(default_factory=lambda: _str("RATE_LIMIT_HEALTH", "auth", "rate_limit_health", "120/minute"))
 
     def __post_init__(self) -> None:
-        for name in ("request_body_timeout_seconds", "response_send_timeout_seconds", "remote_fetch_timeout_seconds", "request_timeout_seconds"):
+        for name in ("request_body_timeout_seconds", "response_send_timeout_seconds", "remote_fetch_timeout_seconds", "remote_batch_fetch_timeout_seconds", "request_timeout_seconds"):
             setattr(self, name, positive_duration(getattr(self, name), name))
         self.embedding_timeout_seconds = embedding_deadline(
             self.embedding_timeout_seconds, self.request_timeout_seconds,

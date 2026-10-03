@@ -21,6 +21,7 @@ from .model_catalog import MODEL_CATALOG, ModelSpec
 from .model_initialization import initialization_guard
 from .model_loading import load_processor, load_vision_model
 from .openvino_models import load_openvino_model
+from .remote_budget import RemoteBatchBudget
 from .remote_process import fetch_remote_image
 from .remote_url import is_public_address, resolve_remote_url
 
@@ -305,10 +306,15 @@ class ImageEmbedder:
     def _decode_base64(self, image_base64: str) -> bytes:
         return decode_base64(image_base64, self.settings.max_image_bytes)
 
-    def _resolve_image_bytes(self, image_url: Optional[str], image_base64: Optional[str]) -> bytes:
+    def _resolve_image_bytes(
+        self, image_url: Optional[str], image_base64: Optional[str], *,
+        remote_budget: RemoteBatchBudget | None = None,
+    ) -> bytes:
         if image_base64:
             return self._decode_base64(image_base64)
         if image_url:
+            if remote_budget is not None:
+                return remote_budget.fetch(image_url)
             return self._fetch_image_bytes(image_url)
         raise ValueError("image_url or image_base64 is required")
 
@@ -483,6 +489,7 @@ class ImageEmbedder:
         self, spec: ModelSpec, target_size: int, items: List[BatchItem], images: ExitStack,
     ) -> List[Union[EmbedResult, Exception]]:
         budget = BatchInputBudget(self.settings.max_batch_image_bytes, self.settings.max_batch_image_pixels)
+        remote_budget = RemoteBatchBudget(self.settings)
 
         # Pre-check cache: items already computed don't need model inference.
         outcomes: List[Any] = [None] * len(items)
@@ -492,7 +499,9 @@ class ImageEmbedder:
         if self._embedding_cache is not None:
             for i, item in enumerate(items):
                 try:
-                    image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                    image_bytes = self._resolve_image_bytes(
+                        item.image_url, item.image_base64, remote_budget=remote_budget,
+                    )
                     budget.add_bytes(len(image_bytes))
                 except Exception as exc:
                     outcomes[i] = exc
@@ -511,7 +520,9 @@ class ImageEmbedder:
         else:
             for i, item in enumerate(items):
                 try:
-                    image_bytes = self._resolve_image_bytes(item.image_url, item.image_base64)
+                    image_bytes = self._resolve_image_bytes(
+                        item.image_url, item.image_base64, remote_budget=remote_budget,
+                    )
                     budget.add_bytes(len(image_bytes))
                 except Exception as exc:
                     outcomes[i] = exc

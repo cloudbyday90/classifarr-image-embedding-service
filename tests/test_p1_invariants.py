@@ -212,7 +212,7 @@ def test_embed_batch_openvino_wrong_output_shape_raises(monkeypatch):
     monkeypatch.setattr(embedder, "_load_model", lambda _s: (_model_wrong, processor, "ov:CPU"))
 
     items = [BatchItem(None, "AA==", False), BatchItem(None, "BB==", False)]
-    monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda _u, b64: b64.encode())
+    monkeypatch.setattr(embedder, "_resolve_image_bytes", lambda _u, b64, **_kwargs: b64.encode())
     monkeypatch.setattr(embedder, "_image_from_bytes", lambda _d, **_kwargs: Image.new("RGB", (1, 1)))
 
     with pytest.raises(ValueError, match="unexpected output shape"):

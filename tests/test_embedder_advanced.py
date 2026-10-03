@@ -370,7 +370,7 @@ def test_embed_batch_all_cached_skips_model_loading(monkeypatch):
     monkeypatch.setattr(
         embedder,
         "_resolve_image_bytes",
-        lambda _image_url, image_base64: image_base64.encode("ascii"),
+        lambda _image_url, image_base64, **_kwargs: image_base64.encode("ascii"),
     )
 
     for item, result in zip(items, expected):
@@ -397,7 +397,7 @@ def test_embed_batch_openvino_mixed_cache_errors_and_cleanup(monkeypatch):
     def _model(inputs):
         return [np.array([_ROW0, _ROW1], dtype=np.float32)]
 
-    def _resolve_image_bytes(_image_url, image_base64):
+    def _resolve_image_bytes(_image_url, image_base64, **_kwargs):
         return image_base64.encode("ascii")
 
     def _image_from_bytes(data, **_kwargs):

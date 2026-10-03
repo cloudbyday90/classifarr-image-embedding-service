@@ -12,13 +12,23 @@ from PIL import Image
 from image_embedder.config import Settings
 
 
+def install_direct_remote_fetch(monkeypatch):
+    """Use direct policy for unit fakes; native tests separately prove supervision."""
+    from image_embedder import remote_fetch
+
+    monkeypatch.setattr("image_embedder.embedder.fetch_remote_image", remote_fetch.fetch_remote_image)
+
+    def batch_fetch(image_url, settings, *, total_deadline):
+        return remote_fetch.fetch_remote_image(image_url, settings)
+
+    monkeypatch.setattr("image_embedder.remote_budget.fetch_remote_image", batch_fetch)
+
+
 def install_remote_response(monkeypatch, response):
     """Exercise real destination validation while replacing outbound transport."""
     from image_embedder import remote_fetch
 
-    # Transport unit fakes exercise the worker's direct policy. Fresh-child tests
-    # independently verify production supervision; this seam is never automatic.
-    monkeypatch.setattr("image_embedder.embedder.fetch_remote_image", remote_fetch.fetch_remote_image)
+    install_direct_remote_fetch(monkeypatch)
 
     monkeypatch.setattr(
         socket, "getaddrinfo", lambda host, port, **_kwargs: [
