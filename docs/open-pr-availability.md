@@ -2,7 +2,7 @@
 
 Assessment: 2026-10-03. GitHub MCP returned eight open PRs; their fetched diffs and
 immutable heads were compared with the local master baseline
-`ded0a63843c728abfaed29e8a8e6c8a05e80ebb8`.
+`65597eaa3e1e925abcecb02b3a1b6f22727cb455`.
 
 ## Design and decision
 
@@ -31,8 +31,11 @@ These URLs were discovered and fetched through web services rather than construc
 ## Outcome and recommendation
 
 There is no suitable unapplied open PR to choose. Continuing the recommended
-early-authentication work avoids replaying already delivered changes or weakening the
+quota-identity work avoids replaying already delivered changes or weakening the
 platform. Recheck the current open list in the next iteration; PR state and heads
-can change. The [authentication design and outcome](early-api-key-authentication.md) records
+can change. The [quota design and outcome](public-probe-rate-limits.md) records
 this iteration's actual implementation and validation. The eight heads were
-refetched through GitHub MCP and remain unchanged from the socket iteration.
+refetched through GitHub MCP's repository-provided pull collection and individual
+diff services and remain unchanged from the authentication iteration. The generic
+issue search returned issues despite its PR qualifier; it was not used as the
+authoritative PR inventory.

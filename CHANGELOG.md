@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- A quota-identity reference for the resource-contract AI skill, with separate design/outcome records and native forwarding-trust regressions.
 - A focused authentication/body-order reference for the resource-contract AI skill, with native parser/TLS regressions and separate design/outcome records.
 - Real HTTP/1 upload-capacity calibration at body/image ceilings, with observed ingress rejection, disconnect recovery and native CPU/OpenVINO vector checks.
 - A focused socket-capacity reference for the repository calibration AI skill, with separate design, results and PR-availability records.
@@ -34,6 +35,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Separate credential verification and quota identity into small service modules; retain existing quota values, endpoint scopes and application-owned limiter state.
 - Require zero-body header-only authentication rejection in socket calibration, with real CPU/OpenVINO recovery checks and a documented public-probe quota follow-up.
 - Include socket uploads in manual CPU/OpenVINO capacity calibration; retain existing production limits and document authentication before body receipt as the next fix.
 - Migrated API test clients to HTTPX2 with explicit lifespan/state cleanup checks and a gate against the deprecated Starlette fallback; production dependency graphs remain unchanged.
@@ -78,6 +80,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Batch-window shutdown settles collected job futures and retains accounting for running inference.
 
 ### Security
+- Close public-probe and dev embedding quota bypasses from rotating credential headers or empty Bearer values; use stable address identities and verified nonsecret service principals without changing authentication or proxy trust.
 - Reject invalid or unconfigured API keys before protected routes receive/parse bodies; close unread HTTP/1 connections while preserving ingress ownership and public probe access.
 - Bind mandatory admin authentication to its router under deployment prefixes, and reject wrong non-ASCII credentials without comparison errors.
 - Bound remote DNS, TLS, redirects and trickled responses with one parent-owned fetch budget; strip ambient credentials and terminate/reap expired workers before releasing inference capacity.

@@ -2,31 +2,16 @@
 # Copyright (C) 2024-2026 Classifarr Contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""API key authentication and rate-limiting helpers."""
-
-import hmac
+"""API-key authentication policy."""
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import APIKeyHeader
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from .config import Settings
+from .credentials import extract_api_key, matches_api_key
 
 _api_key_header = APIKeyHeader(name="X-Api-Key", auto_error=False)
 _bearer_header = APIKeyHeader(name="Authorization", auto_error=False)
-
-
-def _extract_api_key(
-    x_api_key: str | None,
-    authorization: str | None,
-) -> str | None:
-    """Return the API key from X-Api-Key or Authorization: Bearer <key>."""
-    if x_api_key:
-        return x_api_key
-    if authorization and authorization.lower().startswith("bearer "):
-        return authorization[7:]
-    return None
 
 
 def make_auth_dependency(settings: Settings, *, always_required: bool = False):
@@ -59,28 +44,8 @@ def make_auth_dependency(settings: Settings, *, always_required: bool = False):
                 detail="Service API key is not configured. Set SERVICE_API_KEY.",
             )
 
-        candidate = _extract_api_key(x_api_key, authorization)
-        if not candidate or not hmac.compare_digest(
-            candidate.encode("utf-8"), settings.service_api_key.encode("utf-8")
-        ):
+        candidate = extract_api_key(x_api_key, authorization)
+        if not matches_api_key(candidate, settings.service_api_key):
             raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     return verify_api_key
-
-
-def make_limiter(settings: Settings) -> Limiter:
-    """
-    Return a slowapi Limiter keyed by API key (falls back to client IP).
-    This ensures each caller has an independent quota.
-    """
-
-    def _key_func(request: Request) -> str:
-        x_api_key = request.headers.get("x-api-key")
-        if x_api_key:
-            return x_api_key
-        auth = request.headers.get("authorization", "")
-        if auth.lower().startswith("bearer "):
-            return auth[7:]
-        return get_remote_address(request)
-
-    return Limiter(key_func=_key_func)

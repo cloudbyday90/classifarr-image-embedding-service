@@ -9,13 +9,14 @@ from fastapi import APIRouter, Request
 from ..embedder import ImageEmbedder
 from ..models import DeviceInfo, HealthResponse, MemoryInfo, ModelStatus, ReadyResponse
 from ..queue import EmbedQueue
+from ..rate_limits import client_address_key
 
 
 def make_router(limiter, rate_limit_health: str) -> APIRouter:
     router = APIRouter()
 
     @router.get("/health", response_model=HealthResponse)
-    @limiter.limit(rate_limit_health)
+    @limiter.limit(rate_limit_health, key_func=client_address_key)
     def health(request: Request) -> HealthResponse:
         embedder_instance: ImageEmbedder = request.app.state.embedder
         queue: EmbedQueue = request.app.state.queue
@@ -38,7 +39,7 @@ def make_router(limiter, rate_limit_health: str) -> APIRouter:
         )
 
     @router.get("/ready", response_model=ReadyResponse)
-    @limiter.limit(rate_limit_health)
+    @limiter.limit(rate_limit_health, key_func=client_address_key)
     def ready(request: Request) -> ReadyResponse:
         embedder_instance: ImageEmbedder = request.app.state.embedder
         device_info = embedder_instance.get_device_info()

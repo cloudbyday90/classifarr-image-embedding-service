@@ -1,11 +1,12 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current early-authentication/skill iteration starts from `ded0a63843c728abfaed29e8a8e6c8a05e80ebb8` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current quota-identity/skill iteration starts from `65597eaa3e1e925abcecb02b3a1b6f22727cb455` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
+| Stable public-probe and verified embedding quota identities | Closes rotated/empty-header bypasses; removes raw credentials from storage/logs | NAT clients share probe limits; a shared service credential shares embedding quota | Implemented; [identity design](public-probe-rate-limits.md), [skill extension](project-quota-identity-skill.md) |
 | Track inference owners beyond HTTP deadlines; preserve server signals and drain work | Preserves accounting during cancellation; cleanup cannot race workers | Running Python threads cannot be forcibly killed; supervisor deadlines must align | Implemented; [execution design](inference-execution.md) |
 | Shared FIFO admission for batch-window members and explicit batches | One waiting budget; prompt cancellation and live-client dispatch | Separate byte/pixel limits still matter | Implemented; [admission design](bounded-batch-admission.md) |
 | Streamed HTTP and modular inline/image/batch budgets | Rejects excess before queue retention or RGB/resize expansion; predictable closure | 413 behavior; budgets are not exact RSS quotas | Implemented; [input design](input-memory-budgets.md) |
@@ -42,15 +43,14 @@ Assessment date: 2026-10-03. The current early-authentication/skill iteration st
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Use stable verified identities for public probe quotas | Closes reproduced header-rotation bypass and extra limiter keys | Client-address buckets share NATs; preserve valid/development traffic and explicit proxy trust |
-| Next 2 | Measure actual reverse-proxy request buffering and target workload headroom | Covers another body/temp-storage owner before concurrency tuning | Requires the operator configuration, TLS/HTTP version and hardware evidence |
-| Next 3 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
+| Next 1 | Measure actual reverse-proxy request buffering and target workload headroom | Covers another body/temp-storage owner before concurrency tuning | Requires the operator configuration, TLS/HTTP version, trusted peers, NAT traffic and hardware evidence |
+| Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-Next fix [public probe rate-limit identity](public-probe-rate-limits.md): four distinct invalid key headers from one client each received 200 under a two-request/minute health quota, while a fixed header received 429 after two requests. The early protected-route fix now rejects before body receive; public health still needs stable quota identity. Then measure actual reverse-proxy buffering separately before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. Next measure actual reverse-proxy buffering, effective-address trust and operator workload headroom before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
 
-Keep Python/FastAPI/AnyIO with small authenticated-router, header-policy, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
+Keep Python/FastAPI/AnyIO with small authenticated-router, credential, quota-identity, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Public probes use effective addresses; protected quotas use one verified nonsecret service principal or address fallback. Preserve separate counters, application-owned storage and server-owned proxy trust. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
 
 Keep a per-invocation 30-second shared remote fetch-phase budget, beginning at the first remote input and clipped by each 15-second image budget. Preserve ordered partial success, current-byte cache identity, inline results and independent model execution. After shared expiry, reap the current worker before returning and refuse later remote work without spawning. Retain the reviewed FastAPI 0.142.2 graphs with PR 46's renewed 0.142.2 minimum. Use HTTPX2 for API tests with explicit lifespan state and a targeted fallback gate, while keeping the SDK and bundled probes on separately reviewed HTTPX graphs. Preserve complete native wheel/hash installation and strict advisory audits. Keep focused instruction-only project skills discoverable under `.agents/skills`, including owner-first dependency migration, with change-scoped native validation and no new external-action authority.
 
@@ -65,6 +65,25 @@ Use a total 30-second upload budget that stops at complete body/disconnect/respo
 Use a separate total 30-second HTTP/1 response-send budget through the shipped asyncio launcher. Include terminal user-space and TLS ciphertext buffer drain; abort and confirm connection loss before cancellation releases ingress. Keep httptools/h11 parser selection automatic. Retest the narrow Uvicorn/CPython adapter on upgrades, use asyncio for TLS, and keep edge/HTTP2/WebSocket/background-work contracts explicit. Adopt the immutable Trivy v0.36.0 wrapper with the verified native binary selected by absolute path, disabled setup/cache and existing report/failure gates.
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
+
+## Quota identity delivery outcome
+
+Full locked QA passes **1,051 tests / seven existing skips**, including 29 new quota
+cases and eight native parser/proxy checks. Coverage is **95.32% lines / 90.27%
+branches**, above unchanged floors; both new service modules are fully covered.
+Rotated public credentials now exhaust one address identity, and empty Bearer
+requests are charged in both public and dev routes. Verified-key traffic, public
+access, endpoint scopes, expiry recovery and early auth remain intact.
+
+OpenAPI is byte-identical. All thirteen profiles and the exact 70-wheel QA
+inventory pass with unchanged lock bytes. CodeQL Python covers 85 files with no
+new findings and two unchanged setup-publication context results. Fresh verified
+Gitleaks source and 88-commit baseline history scans find no secrets. Independent
+source review found no concrete surviving bypass/regression; execution used the
+locked image because local venvs are stale. The [identity design](public-probe-rate-limits.md)
+and [skill design](project-quota-identity-skill.md) retain official October research,
+tradeoffs, validation and honest native/deployment limits. No suitable unapplied
+PR is available; delivery uses master without a release.
 
 ## Early authentication delivery outcome
 

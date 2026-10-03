@@ -52,4 +52,4 @@ these historical ASGI measurements with native CPU/OpenVINO HTTP/1 uploads at
 configured body/image ceilings, server receive counters, disconnect settlement
 and real vector recovery. Keep the original observations above intact; direct
 socket evidence still leaves the operator's proxy buffering and target hardware
-as separate gates. The [authentication follow-up](early-api-key-authentication.md) now rejects before body ingestion; the next item is [public probe quota identity](public-probe-rate-limits.md).
+as separate gates. The [authentication follow-up](early-api-key-authentication.md) now rejects before body ingestion and [quota identities](public-probe-rate-limits.md) are stable across unverified headers. Next measure actual operator proxy buffering, effective-address trust and target workload headroom.

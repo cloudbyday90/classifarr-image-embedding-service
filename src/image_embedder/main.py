@@ -21,13 +21,14 @@ from .ingress_middleware import IngressAdmissionMiddleware
 from .lifecycle import make_lifespan
 from .logging_config import get_logger, setup_logging
 from .queue import EmbedQueue
+from .rate_limits import make_limiter
 from .request_body_deadline import RequestBodyDeadlineMiddleware
 from .routes import admin as admin_routes
 from .routes import batch as batch_routes
 from .routes import embed as embed_routes
 from .routes import health as health_routes
 from .routes import models as models_routes
-from .security import make_auth_dependency, make_limiter
+from .security import make_auth_dependency
 
 
 def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None = None) -> FastAPI:

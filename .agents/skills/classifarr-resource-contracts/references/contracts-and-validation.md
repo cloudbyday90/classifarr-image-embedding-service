@@ -5,6 +5,7 @@ Service modules below are under `src/image_embedder`; dependency helpers are und
 | Changed boundary | Owner / primary modules | Read / focused validation |
 |---|---|---|
 | Authentication before body receipt | `authenticated_router.py`, `security.py`, protected `routes/` factories and `main.py` | `docs/early-api-key-authentication.md`; `tests/test_auth_early.py`, `tests/test_auth_sockets.py`, existing auth/ingress/input-limit checks |
+| Quota identity and public probes | `rate_limits.py`, `credentials.py`, `security.py`, `routes/health.py` | `docs/public-probe-rate-limits.md`; `tests/test_rate_limits.py`, `tests/test_rate_limit_sockets.py`, existing auth/ingress/API checks |
 | Upload and ingress | `ingress.py`, `ingress_middleware.py`, `request_body_deadline.py`, `main.py` | `docs/aggregate-ingress.md`, `docs/request-lifetimes.md`; `tests/test_ingress.py`, `tests/test_request_lifetimes.py` |
 | HTTP response transport | `response_send_deadline.py`, `response_http_protocol.py`, `server.py` | `docs/response-send-lifetimes.md`; `tests/test_response_send_deadline.py`, `tests/test_response_http_protocol.py`; real parser/TLS/slow-reader and worker-spawn probes |
 | Admission and detached inference | `admission.py`, `execution.py`, `queue.py`, `batch.py` | `docs/inference-execution.md`, `docs/bounded-batch-admission.md`; `tests/test_execution.py`, `tests/test_execution_batch_window.py`, `tests/test_batch_admission.py` |

@@ -9,7 +9,7 @@ A lightweight image embedding microservice designed for Classifarr. It exposes a
 - Docker-ready with simple configuration
 - **CUDA GPU build** (`Dockerfile.cuda` + `docker-compose.cuda.yml`) for NVIDIA GPU inference
 - **API key authentication** with constant-time comparison (service-to-service)
-- **Per-key rate limiting** on `/embed-image` to prevent GPU resource exhaustion
+- **Verified-key and client-address rate limits** on embedding and public probes
 - **Production-ready robustness:**
   - Structured logging with rotation
   - Automatic memory management (GPU + garbage collection)
@@ -143,6 +143,8 @@ docker compose up -d
 - `/admin/cleanup` is **always protected**, even in development mode or under deployment prefixes.
 
 Early 401/503 authentication errors close unread HTTP/1 connections. Existing ingress and declared-body limits still apply first; authenticated requests retain upload deadlines and body/image limits. Documentation/OpenAPI routes remain public. See [the design and native outcomes](docs/early-api-key-authentication.md).
+
+Each of `/health` and `/ready` has a separate client-address quota, regardless of credential headers. Embedding routes share one verified service-key identity across callers, with separate single/batch counters. Missing or invalid credentials use the client address in dev mode; rotating headers and empty Bearer values cannot create fresh quota identities. Raw API keys are not retained in limiter storage or exhaustion logs. Client addresses come from the server's existing forwarding policy; trust only actual proxy peers. NAT clients share address quotas. See [quota design, tradeoffs and outcomes](docs/public-probe-rate-limits.md).
 
 ### Modes
 
@@ -615,6 +617,7 @@ The admission/worker/concurrency/backlog controls map to `[server]` keys `max_ht
 Auth mode and rate limiting are configured in `config.toml` under `[auth]` and can be overridden by environment variable:
 - `REQUIRE_API_KEY` — overrides `config.toml` `require_api_key` (default `true`)
 - `RATE_LIMIT_EMBED` — overrides `config.toml` `rate_limit_embed` (default `30/minute`); format: `<count>/<period>` e.g. `10/minute`, `2/second`
+- `RATE_LIMIT_HEALTH` — overrides `config.toml` `rate_limit_health` (default `120/minute`), separately for `/health` and `/ready`
 
 ### Configuration File
 Most settings are defined in `config.toml` (committed to the repo) and mounted read-only into the container at `/app/config.toml`. Environment variables always override config file values. Override the path with `CONFIG_FILE=/path/to/config.toml`.
@@ -670,7 +673,8 @@ The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-re
 - [Socket-capacity AI skill extension](docs/project-socket-capacity-skill.md)
 - [Early API-key authentication design and outcomes](docs/early-api-key-authentication.md)
 - [Authentication AI skill extension](docs/project-early-auth-skill.md)
-- [Next task: public probe rate-limit identity](docs/public-probe-rate-limits.md)
+- [Public-probe and embedding quota identity design and outcomes](docs/public-probe-rate-limits.md)
+- [Quota identity AI skill extension](docs/project-quota-identity-skill.md)
 - [Open PR availability](docs/open-pr-availability.md)
 - [Recommendation stack and next task](docs/recommendation-stack.md)
 - [Total upload and supervised remote-fetch design and validation](docs/request-lifetimes.md)
