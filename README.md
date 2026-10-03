@@ -375,6 +375,8 @@ python -m image_embedder.server
 
 ## Reviewed Dependency Environments
 
+Native boundary CI runs weekly and for relevant changes on Windows Server 2025 with conventional Python 3.13/3.14. Fresh, complete hash-locked venvs exercise private setup/rotation, supervised remote-child/shared-batch cleanup and real HTTP response transports without model downloads. Missing critical cases or unexpected skips fail the gate. Separate OSV jobs audit the complete Windows graphs without cross-platform resolution. See the [Windows design, commands and local results](docs/windows-native-validation.md); Windows production inference remains outside these tests.
+
 Container builds and Linux CI install complete target-specific wheel locks with required SHA-256 hashes, no index resolution and binary-only installation. CPU amd64/arm64, modern/legacy CUDA amd64, OpenVINO amd64, QA amd64 and isolated audit-tool profiles include their transitive dependencies and reviewed pip installer. Input ranges remain update intent; changing them without regenerating affected locks fails validation. Runtime smoke checks require an exact installed inventory without extra, missing, substituted or duplicate packages.
 
 Regenerate inside the actual Linux CPython 3.12 target interpreter using `python scripts/lock_dependencies.py --backend cpu` (or the corresponding backend). Bootstrap the reviewed installer first. `--constraints /path/to/reviewed-versions.txt` preserves selected tested versions; omitting or deliberately changing constraints performs a reviewed refresh. ARM profiles require an ARM interpreter, native or emulated. Never use cross-platform pip flags as a substitute for native environment-marker resolution. `--cache-dir` optionally reuses a writable wheel cache; hashes still protect installation.
@@ -625,6 +627,11 @@ pytest
 ```
 
 ## Engineering Decisions
+
+Use the checked-in [native-validation skill](.agents/skills/classifarr-native-validation/SKILL.md), `$classifarr-native-validation`, for OS boundary checks or their CI. Its [design/evaluation record](docs/project-native-validation-skill.md) explains the required native evidence and platform limits.
+
+- [Recurring native Windows validation](docs/windows-native-validation.md)
+- [PR 46 renewed FastAPI minimum](docs/pr-46-floor-followup.md)
 
 The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-resource-contracts/SKILL.md) guides ownership and validation work. In Codex, invoke `$classifarr-resource-contracts` when changing fetch, batch, ingress or inference lifetimes. Its [design and evaluation record](docs/project-resource-skill.md) explains discovery, scope and limits.
 

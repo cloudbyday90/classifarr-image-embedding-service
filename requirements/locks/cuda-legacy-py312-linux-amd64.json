@@ -469,7 +469,7 @@
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
     "requirements-torch-cuda-legacy.txt": "ac632ed9f8ebdc345e0db3570431afbda53b42094678c507acb9816fc90c352d",
-    "requirements.txt": "65c0d7b639377ff237f684879d554e41cd2f91dbb593f51270da8158411c47c1"
+    "requirements.txt": "835443b22d9df062c48522e0193a2c5b01631e208163422177722b20c6be45b1"
   },
   "profile": "cuda-legacy-py312-linux-amd64",
   "python": "3.12",

@@ -1,0 +1,33 @@
+{
+  "architecture": "amd64",
+  "artifacts": [
+    {
+      "name": "pip",
+      "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+      "url": "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl",
+      "version": "26.2.1"
+    }
+  ],
+  "backend": "bootstrap",
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.13.3",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_python_implementation": "CPython",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26200",
+    "python_full_version": "3.13.3",
+    "python_version": "3.13",
+    "sys_platform": "win32"
+  },
+  "inputs": {
+    "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba"
+  },
+  "profile": "bootstrap-py313-windows-amd64",
+  "python": "3.13",
+  "requirements_sha256": "48f420fc87a0e80510ace0499f8a1dbb36ee359798b5414ca2af3b44ec195152",
+  "resolver": "pip==26.2.1",
+  "schema_version": 1
+}

@@ -16,6 +16,8 @@ Service modules below are under `src/image_embedder`; dependency helpers are und
 
 ## Repeatable commands
 
+For Windows ACL, remote-child/shared-budget and response-socket changes, use the sibling `classifarr-native-validation` skill and `scripts/validate_windows_contracts.py` in a complete Windows contract venv. See `docs/windows-native-validation.md`; Linux fixtures alone cannot establish those OS contracts.
+
 Use the repository's locked QA image after verifying its identity and availability. The image tag is a local convenience, not immutable proof. Full QA uses `python -m pytest` with this repository's `pytest.ini`; use `-o addopts=''` only for focused checks. Store coverage output outside Git, then apply `scripts/check_coverage_ratchet.py` to that exact XML. Do not lower the floors.
 
 Portable offline input checks: `python scripts/lock_dependencies.py --check`. Native exact-inventory check: `python scripts/install_dependencies.py --backend qa --root <checkout> --verify-only` inside the corresponding locked Linux environment. Review all affected profiles; an amd64 QA pass alone does not validate ARM or accelerator execution.

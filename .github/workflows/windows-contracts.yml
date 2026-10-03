@@ -1,0 +1,84 @@
+name: Native Windows contracts
+
+on:
+  schedule:
+    - cron: '23 7 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths: ['src/**', 'tests/**', 'scripts/**', 'requirements*.txt', 'requirements/locks/**', 'pytest.ini', '.github/workflows/windows-contracts.yml']
+  pull_request:
+    branches: [main, master]
+    paths: ['src/**', 'tests/**', 'scripts/**', 'requirements*.txt', 'requirements/locks/**', 'pytest.ini', '.github/workflows/windows-contracts.yml']
+
+permissions: {}
+
+jobs:
+  audit-contract-graphs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install isolated reviewed auditor
+        run: |
+          python -m venv "$RUNNER_TEMP/audit-venv"
+          "$RUNNER_TEMP/audit-venv/bin/python" scripts/install_dependencies.py --backend bootstrap
+          "$RUNNER_TEMP/audit-venv/bin/python" scripts/install_dependencies.py --backend audit --target "$RUNNER_TEMP/audit-tools"
+      - name: Audit complete Windows graphs without cross-platform resolution
+        env:
+          PYTHONPATH: ${{ runner.temp }}/audit-tools
+        run: '"$RUNNER_TEMP/audit-venv/bin/python" scripts/audit_windows_contracts.py --output-directory "$RUNNER_TEMP/windows-audit"'
+      - name: Retain audit reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: windows-contract-graph-audits
+          path: ${{ runner.temp }}/windows-audit/*.json
+          if-no-files-found: warn
+          retention-days: 14
+  native-contracts:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.13', '3.14']
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: x64
+          check-latest: true
+          allow-prereleases: false
+          freethreaded: false
+      - name: Create isolated environment
+        run: python -m venv "$env:RUNNER_TEMP/contracts-venv"
+      - name: Install verified bootstrap
+        run: '& "$env:RUNNER_TEMP/contracts-venv/Scripts/python.exe" scripts/install_dependencies.py --backend bootstrap'
+      - name: Install complete native contract graph
+        run: '& "$env:RUNNER_TEMP/contracts-venv/Scripts/python.exe" scripts/install_dependencies.py --backend windows-contracts'
+      - name: Run mandatory native cases
+        run: '& "$env:RUNNER_TEMP/contracts-venv/Scripts/python.exe" scripts/validate_windows_contracts.py --output "$env:RUNNER_TEMP/windows-contract-results.json"'
+      - name: Upload outcome metadata only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: windows-contracts-py${{ matrix.python }}
+          path: ${{ runner.temp }}/windows-contract-results.json
+          if-no-files-found: warn
+          retention-days: 14

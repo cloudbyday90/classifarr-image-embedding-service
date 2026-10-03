@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Recurring native Windows validation for private setup, remote-child/shared-batch cleanup and HTTP response lifetimes, with complete platform locks, mandatory outcome gates and separate graph audits.
+- A focused repository AI skill for native platform validation, with separate research, design and outcome records.
 - Concurrent inline/remote and detached-owner capacity probes with task/thread, anonymous temporary-storage and CUDA allocator measurements.
 - A focused repository AI skill for deployment capacity calibration, with separate research, design and outcome records.
 - Shared total remote batch fetch budgets with ordered partial results, retained child ownership and native Linux/Windows regressions.
@@ -30,7 +32,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ### Changed
 - Raise the NumPy minimum to the reviewed 2.5.3 version; preserve complete locked wheel graphs.
 - Extend manual CPU/OpenVINO calibration with concurrent mixed inputs and bounded temporary storage/task experiments.
-- Adopt open PR #46 locally by raising the FastAPI minimum to 0.142.1 while retaining the reviewed 0.142.2 wheel graphs.
+- Adopt open PR #46's renewed FastAPI minimum of 0.142.2 while retaining the reviewed wheel graphs.
 - Adopted PR 27's Trivy action update through a verified immutable v0.36.0 commit and explicit native scanner path, preserving disabled setup/cache paths and existing scan/report gates.
 - The shared launcher uses asyncio so response completion accounts for TLS ciphertext buffers before releasing capacity.
 - Adopt open PR #52 locally by raising the pytest development minimum to the already hash-locked 9.1.1 release.

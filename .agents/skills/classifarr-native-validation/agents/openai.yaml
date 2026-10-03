@@ -1,0 +1,4 @@
+interface:
+  display_name: "Classifarr Native Validation"
+  short_description: "Validate Windows ACL, child and socket contracts"
+  default_prompt: "Use $classifarr-native-validation to validate platform boundaries and report exact native evidence."

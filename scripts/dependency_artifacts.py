@@ -84,18 +84,20 @@ def wheel_artifact(record: dict, profile: DependencyProfile) -> WheelArtifact:
         or parts[1] != version
     ):
         raise ValueError("Wheel identity differs from resolver metadata")
-    if profile.name == "bootstrap" and not filename.endswith("-py3-none-any.whl"):
+    if profile.backend == "bootstrap" and not filename.endswith("-py3-none-any.whl"):
         raise ValueError("Bootstrap artifacts must be universal wheels")
     return WheelArtifact(name, version, url, digest)
 
 
 def check_report_environment(environment: dict, profile: DependencyProfile) -> None:
     if not isinstance(environment, dict) or (
-        environment.get("python_version") != "3.12"
+        environment.get("python_version") != profile.python
         or environment.get("implementation_name") != "cpython"
-        or environment.get("sys_platform") != "linux"
+        or environment.get("sys_platform") != profile.sys_platform
     ):
-        raise ValueError("Resolver environment must be Linux CPython 3.12")
+        raise ValueError(
+            f"Resolver environment must be {profile.system} CPython {profile.python}"
+        )
     machine = environment.get("platform_machine")
     if not isinstance(machine, str) or (
         profile.architecture != "any" and architecture(machine) != profile.architecture

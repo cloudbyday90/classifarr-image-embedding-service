@@ -38,7 +38,16 @@ def main() -> None:
     parser.add_argument(
         "--backend",
         required=True,
-        choices=("bootstrap", "cpu", "qa", "cuda", "cuda-legacy", "openvino", "audit"),
+        choices=(
+            "bootstrap",
+            "cpu",
+            "qa",
+            "cuda",
+            "cuda-legacy",
+            "openvino",
+            "audit",
+            "windows-contracts",
+        ),
     )
     parser.add_argument(
         "--root", type=Path, default=Path(__file__).resolve().parents[1]

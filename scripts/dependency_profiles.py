@@ -6,6 +6,7 @@
 
 import platform
 import sys
+import sysconfig
 from dataclasses import dataclass
 
 
@@ -17,6 +18,12 @@ class DependencyProfile:
     inputs: tuple[str, ...]
     torch_version: str | None = None
     torch_index: str | None = None
+    python: str = "3.12"
+    system: str = "Linux"
+
+    @property
+    def sys_platform(self) -> str:
+        return "win32" if self.system == "Windows" else "linux"
 
 
 def architecture(machine: str) -> str:
@@ -100,6 +107,19 @@ def _profiles() -> dict[str, DependencyProfile]:
             version,
             f"https://download.pytorch.org/whl/{index}",
         )
+    for minor in (13, 14):
+        for backend in ("bootstrap", "windows-contracts"):
+            name = f"{backend}-py3{minor}-windows-amd64"
+            profiles[name] = DependencyProfile(
+                name,
+                backend,
+                "amd64",
+                ("requirements-bootstrap.txt",)
+                if backend == "bootstrap"
+                else ("requirements-windows.txt",),
+                python=f"3.{minor}",
+                system="Windows",
+            )
     return profiles
 
 
@@ -107,6 +127,16 @@ PROFILES = _profiles()
 
 
 def selected_profile(backend: str, arch: str | None = None) -> DependencyProfile:
+    if (
+        arch is None
+        and platform.system() == "Windows"
+        and backend in ("bootstrap", "windows-contracts")
+    ):
+        name = f"{backend}-py{sys.version_info.major}{sys.version_info.minor}-windows-{architecture(platform.machine())}"
+        try:
+            return PROFILES[name]
+        except KeyError as error:
+            raise ValueError(f"Unsupported dependency profile: {name}") from error
     target = arch or runtime_target()
     name = "bootstrap" if backend == "bootstrap" else f"{backend}-py312-linux-{target}"
     try:
@@ -116,7 +146,16 @@ def selected_profile(backend: str, arch: str | None = None) -> DependencyProfile
 
 
 def check_environment(profile: DependencyProfile) -> None:
-    target = runtime_target()
+    if (
+        platform.system() != profile.system
+        or sys.implementation.name != "cpython"
+        or sys.version_info[:2] != tuple(map(int, profile.python.split(".")))
+        or sysconfig.get_config_var("Py_GIL_DISABLED") == 1
+    ):
+        raise ValueError(
+            f"Locked environments require {profile.system} CPython {profile.python}"
+        )
+    target = architecture(platform.machine())
     if profile.architecture not in ("any", target):
         raise ValueError(
             f"Profile {profile.name} does not match this {target} interpreter"

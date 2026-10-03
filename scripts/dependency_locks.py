@@ -73,7 +73,7 @@ def write_lock(
     manifest = {
         "schema_version": 1,
         "profile": profile.name,
-        "python": "3.12",
+        "python": profile.python,
         "architecture": profile.architecture,
         "backend": profile.backend,
         "resolver": "pip==26.2.1",
@@ -108,7 +108,7 @@ def load_lock(
     expected = {
         "schema_version": 1,
         "profile": profile.name,
-        "python": "3.12",
+        "python": profile.python,
         "architecture": profile.architecture,
         "backend": profile.backend,
         "resolver": "pip==26.2.1",

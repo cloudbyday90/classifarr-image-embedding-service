@@ -1,0 +1,2741 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline": "3b9573ba9ef156fa45c898e611ecc04a4d64bf09",
+  "delivery": {
+    "branch": "master",
+    "release": false,
+    "upstream_pr_merge": false,
+    "version_bump": false
+  },
+  "dependency_contracts": {
+    "locks": [
+      {
+        "manifest_sha256": "5e743fa3e6555b5b6e1398eb79c09a22e15351e2322364758c575ad44fee5a11",
+        "packages": 1,
+        "profile": "bootstrap",
+        "requirements_sha256": "103ded5f0c5e8103512a9e92778de4303c326622947fbdb6c69c61e06a851833"
+      },
+      {
+        "manifest_sha256": "dc0b673d7fe02bd5bbaacc52da8ecc474ab991ecdd049e53c9f3edee9086699a",
+        "packages": 56,
+        "profile": "cpu-py312-linux-amd64",
+        "requirements_sha256": "13a6fde075bba4532fe22cc62bf091548559fe711bc3cd5eb6828c8be13e47d3"
+      },
+      {
+        "manifest_sha256": "6a14050c4855d2a7ce12a87000786830f77ef49861e7db04b4eeebaa20cf81b0",
+        "packages": 29,
+        "profile": "audit-py312-linux-amd64",
+        "requirements_sha256": "2c446f5cce69a2f8181403f9a0be62a9496bc36f9f2d67ed5591e58935e6c698"
+      },
+      {
+        "manifest_sha256": "bf72d347802c09074f1c69fe2e7e3e5bee3406a92075b4bf27654d328de92bc7",
+        "packages": 56,
+        "profile": "cpu-py312-linux-arm64",
+        "requirements_sha256": "f4d3ae7279fa20160778d4264db8407fd891cee3b2af6a477f73965b2941d241"
+      },
+      {
+        "manifest_sha256": "4fd1b81f8320a3bb4a15dc693492d75fad2e78722268ef73da15c1cefe69fe64",
+        "packages": 29,
+        "profile": "audit-py312-linux-arm64",
+        "requirements_sha256": "bea376594b24d31ea107c8b624c1e0ffe9dbc1b874a967fe80aeb9838ce1a6cd"
+      },
+      {
+        "manifest_sha256": "24f7822577ca9140106d0eab05db904ab4ac4cbeeeafa17905af5b863eab69a6",
+        "packages": 67,
+        "profile": "qa-py312-linux-amd64",
+        "requirements_sha256": "acb5f6d373caeee6fed7ba1323508b17e737c6ad874370d6793c45324450bf0a"
+      },
+      {
+        "manifest_sha256": "cdec28ad2bc1350090dc9bf034723440afebd16a4d419cc5144641dbd8d918b5",
+        "packages": 58,
+        "profile": "openvino-py312-linux-amd64",
+        "requirements_sha256": "a4fb2a5fb344102de5ea6e8aa1ed9f830ecedb37a0054a3e4789ca750aa1090f"
+      },
+      {
+        "manifest_sha256": "c9c01104cea7c5259a7103b24dc1e4d0f38e490f414171b1c80cf354dcd3d28b",
+        "packages": 75,
+        "profile": "cuda-py312-linux-amd64",
+        "requirements_sha256": "8033d36c4c11d40e4bb54e841c584cb6cad3079fa4ecb43a823da1724dc65de4"
+      },
+      {
+        "manifest_sha256": "c9dee6d6955cc03ab6422313ad7acaa3b8db6629c257317f6be89f73e4c131b7",
+        "packages": 75,
+        "profile": "cuda-legacy-py312-linux-amd64",
+        "requirements_sha256": "c95c0ca65536dc787bcab630fa7b4b53ceac45c2cee6567717afff5bc6a4d34f"
+      },
+      {
+        "manifest_sha256": "2acfbb1ca07260be4f1302e27b7f20e1c6b2115dc4388b1925d071b2c65883e0",
+        "packages": 1,
+        "profile": "bootstrap-py313-windows-amd64",
+        "requirements_sha256": "48f420fc87a0e80510ace0499f8a1dbb36ee359798b5414ca2af3b44ec195152"
+      },
+      {
+        "manifest_sha256": "74018a5fc4fd5e5c03827c1b77096ba787df4ca904676e9cc6bc9ec1dc5867ea",
+        "packages": 33,
+        "profile": "windows-contracts-py313-windows-amd64",
+        "requirements_sha256": "e8f9204fde3bcf6cbbe22976aa47f91e02fde2399f7726ca5fc4ae560d61e20f"
+      },
+      {
+        "manifest_sha256": "cbd3bb45500392930216e6adab9fed2df09f755ec576e35e978d39791c9e3bf1",
+        "packages": 1,
+        "profile": "bootstrap-py314-windows-amd64",
+        "requirements_sha256": "3b4ee0eebf14394f232a2cf6a7d73dbc5259a860fa545ef845228bf7f53048eb"
+      },
+      {
+        "manifest_sha256": "0ce241c3efee4d41e64313ab3ce2d531cd33e09a9f32170accdb1e7b25ffa36f",
+        "packages": 33,
+        "profile": "windows-contracts-py314-windows-amd64",
+        "requirements_sha256": "02f7287ce07d9b708321c948220242a4f6e08f6f15514e29d0f2125060cd47b0"
+      }
+    ],
+    "unchanged_linux_artifacts": 446,
+    "valid_profiles": 13
+  },
+  "final_policy_controls": {
+    "command": "python -m pytest -o addopts= -p no:cacheprovider tests/test_windows_contract_policy.py tests/test_windows_dependency_profiles.py tests/test_dependency_audit_report.py",
+    "linux_passed": 19,
+    "passed": 19,
+    "windows_python": "3.14.2"
+  },
+  "limits": [
+    "Local Windows 11 uses CPython 3.13.3/3.14.2; hosted Server 2025 latest stable patch execution and uploads remain unobserved.",
+    "Windows graph omits production model/device runtimes.",
+    "OSV audits advisory metadata; actual artifact integrity is verified by native hash-checked installation.",
+    "Native timing includes OS scheduling/launch/reap and is not a hard real-time bound.",
+    "Manual skill scenario evaluation is not an independent model benchmark."
+  ],
+  "linux_qa": {
+    "branch_coverage_percent": 90.12,
+    "command": "python -m pytest --cov-report=term --cov-report=xml:/validation/coverage.xml -p no:cacheprovider -o faulthandler_timeout=45",
+    "duration_seconds": 125.07,
+    "image": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+    "line_coverage_percent": 95.22,
+    "memory_bytes": 4294967296,
+    "network": "none",
+    "passed": 947,
+    "skipped": 7,
+    "source": "checkout-equivalent tracked files plus relevant nonignored new files; read-only mount",
+    "tmpfs": "256 MiB exec,nosuid,nodev; exec required for trusted launcher fixture",
+    "unchanged_floors": [
+      89.42,
+      79.37
+    ],
+    "warning": "existing Starlette TestClient HTTPX2 deprecation",
+    "warnings": 1
+  },
+  "native_linux_inventories": [
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+      "pip_check": "passed",
+      "profile": "qa-py312-linux-amd64"
+    },
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "pip_check": "passed",
+      "profile": "cpu-py312-linux-amd64"
+    },
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+      "pip_check": "passed",
+      "profile": "cpu-py312-linux-arm64"
+    },
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "pip_check": "passed",
+      "profile": "openvino-py312-linux-amd64"
+    },
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "pip_check": "passed",
+      "profile": "cuda-py312-linux-amd64"
+    },
+    {
+      "exact_inventory": "passed",
+      "image": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+      "pip_check": "passed",
+      "profile": "cuda-legacy-py312-linux-amd64"
+    }
+  ],
+  "native_windows": [
+    {
+      "command": "py313/Scripts/python.exe scripts/validate_windows_contracts.py --output windows-13.json",
+      "counts": {
+        "passed": 102,
+        "skipped": 16
+      },
+      "deselected_uvloop": [
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-False-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-False-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-True-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-True-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-False-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-False-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-True-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-True-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-gap-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-gap-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-trickle-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-trickle-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-disconnect-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-disconnect-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[uvloop-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[uvloop-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[uvloop-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[uvloop-ResponseDeadlineH11Protocol]"
+      ],
+      "duration_seconds": 33.3,
+      "event_loop_probe": "asyncio.windows_events.ProactorEventLoop",
+      "exit_code": 0,
+      "gate_errors": [],
+      "outcomes": [
+        {
+          "nodeid": "tests/test_secret_setup.py::test_creation_keeps_console_secret_free_and_produces_separate_defaults",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_explicit_display_only_exposes_the_successfully_published_new_key[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_explicit_display_only_exposes_the_successfully_published_new_key[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_existing_secret_is_neither_read_repaired_nor_displayed[arguments0]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_existing_secret_is_neither_read_repaired_nor_displayed[arguments1]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_rotation_replaces_inode_and_preserves_custom_config_without_display",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-False-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-False-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-True-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-True-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-False-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-False-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-True-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-True-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-False-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-False-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-True-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-True-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-False-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-False-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-True-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-True-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[511]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[504]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[450]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[0]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[18]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[63]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[511]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_exclusive_publication_has_one_winner_under_real_concurrent_writers",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_setup_lock_refuses_another_process_without_removing_its_lock[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_setup_lock_refuses_another_process_without_removing_its_lock[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[write]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[flush]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[fsync]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[replace]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_default_config_failure_does_not_publish_a_key",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_competing_config_publication_preserves_the_winners_settings",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_final_name_is_never_visible_with_partial_data[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_final_name_is_never_visible_with_partial_data[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_dacl_is_owner_only_at_creation_and_after_rotation",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_junction_root_is_refused",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[unsupported]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[query]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[crt]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_temporary_name_collision_never_removes_or_overwrites_another_file",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_posix_linked_setup_directory_is_refused",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_start_launcher_generates_once_and_keeps_key_out_of_console",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_production_worker_blocks_private_destination_and_hides_ambient_secrets",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_disabled_urls_and_oversized_request_never_launch",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_native_blocked_dns_is_terminated_and_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_detached_inference_keeps_permit_until_child_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Zanything]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Vtoken=test-url-credential]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Ftoken=test-url-credential]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Iwrong]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[V\\xff]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Oabcd]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Vxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error0-ValueError-Invalid image URL]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error1-InputLimitExceeded-Image payload exceeds maximum size]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error2-RemoteFetchError-HTTP 503]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error3-RemoteFetchError-Unable to fetch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error4-RemoteFetchError-Unable to fetch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[None]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value1]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value2]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value3]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value4]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value5]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_protocol_request_size_and_success_boundaries",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_entrypoint_reads_bounded_input_and_writes_sanitized_result[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_entrypoint_reads_bounded_input_and_writes_sanitized_result[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[failed]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[oversized]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[startup-budget]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_process_launch_failure_is_sanitized",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_cleanup_failure_still_closes_pipes_and_reaps_before_return[kill]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_cleanup_failure_still_closes_pipes_and_reaps_before_return[communication]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[headers]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[body]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[redirect]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[tls]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_success_preserves_host_sni_and_strips_ambient_state[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_success_preserves_host_sni_and_strips_ambient_state[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_rejects_bad_tls_without_url_details[False-images.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_rejects_bad_tls_without_url_details[True-wrong.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_retains_image_byte_error_contract",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_numeric_transport_preserves_host_tls_and_ignores_ambient_auth[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_numeric_transport_preserves_host_tls_and_ignores_ambient_auth[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_tls_rejects_untrusted_ca_and_wrong_hostname[False-images.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_tls_rejects_untrusted_ca_and_wrong_hostname[True-wrong.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_gzip_body_is_limited_by_decoded_bytes",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_expired_parent_deadline_never_launches_child",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_32_item_dns_batch_uses_one_shared_budget",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_detached_batch_keeps_permit_until_active_fetch_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_earlier_of_per_image_and_shared_deadline[image]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_earlier_of_per_image_and_shared_deadline[batch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_success_then_trickle_spends_remaining_shared_budget",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-False-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-False-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-True-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-True-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-False-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-False-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-True-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-True-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-gap-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-gap-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-trickle-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-trickle-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-disconnect-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-disconnect-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[asyncio-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[asyncio-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[asyncio-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[asyncio-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        }
+      ],
+      "packages": [
+        {
+          "name": "annotated-doc",
+          "version": "0.0.5"
+        },
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "anyio",
+          "version": "4.15.1"
+        },
+        {
+          "name": "certifi",
+          "version": "2026.7.22"
+        },
+        {
+          "name": "cffi",
+          "version": "2.1.1"
+        },
+        {
+          "name": "charset-normalizer",
+          "version": "3.5.2"
+        },
+        {
+          "name": "click",
+          "version": "8.5.0"
+        },
+        {
+          "name": "colorama",
+          "version": "0.4.6"
+        },
+        {
+          "name": "cryptography",
+          "version": "50.0.2"
+        },
+        {
+          "name": "fastapi",
+          "version": "0.142.2"
+        },
+        {
+          "name": "filelock",
+          "version": "3.32.3"
+        },
+        {
+          "name": "h11",
+          "version": "0.16.0"
+        },
+        {
+          "name": "httptools",
+          "version": "0.8.0"
+        },
+        {
+          "name": "idna",
+          "version": "3.20"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.3"
+        },
+        {
+          "name": "opentelemetry-api",
+          "version": "1.45.0"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pip",
+          "version": "26.2.1"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pycparser",
+          "version": "3.0"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.5"
+        },
+        {
+          "name": "pydantic_core",
+          "version": "2.46.5"
+        },
+        {
+          "name": "Pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "requests",
+          "version": "2.34.2"
+        },
+        {
+          "name": "starlette",
+          "version": "1.7.0"
+        },
+        {
+          "name": "trustme",
+          "version": "1.2.1"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "typing_extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "urllib3",
+          "version": "2.8.0"
+        },
+        {
+          "name": "uvicorn",
+          "version": "0.54.0"
+        }
+      ],
+      "platform": "Windows-11-10.0.26200-SP0",
+      "profile": "windows-contracts-py313-windows-amd64",
+      "python": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+      "runner_image": {
+        "ImageOS": null,
+        "ImageVersion": null
+      },
+      "schema_version": 1
+    },
+    {
+      "command": "py314/Scripts/python.exe scripts/validate_windows_contracts.py --output windows-14.json",
+      "counts": {
+        "passed": 102,
+        "skipped": 16
+      },
+      "deselected_uvloop": [
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-False-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-False-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-True-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-terminal-True-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-False-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-False-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-True-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[uvloop-stream-True-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-gap-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-gap-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-trickle-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-trickle-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-disconnect-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[uvloop-disconnect-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[uvloop-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[uvloop-ResponseDeadlineH11Protocol]",
+        "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[uvloop-ResponseDeadlineHTTPProtocol]",
+        "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[uvloop-ResponseDeadlineH11Protocol]"
+      ],
+      "duration_seconds": 33.48,
+      "event_loop_probe": "asyncio.windows_events.ProactorEventLoop",
+      "exit_code": 0,
+      "gate_errors": [],
+      "outcomes": [
+        {
+          "nodeid": "tests/test_secret_setup.py::test_creation_keeps_console_secret_free_and_produces_separate_defaults",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_explicit_display_only_exposes_the_successfully_published_new_key[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_explicit_display_only_exposes_the_successfully_published_new_key[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_existing_secret_is_neither_read_repaired_nor_displayed[arguments0]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_existing_secret_is_neither_read_repaired_nor_displayed[arguments1]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_rotation_replaces_inode_and_preserves_custom_config_without_display",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-False-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-False-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-True-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[directory-True-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-False-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-False-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-True-.env]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[hardlink-True-config.toml]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-False-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-False-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-True-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[symlink-True-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-False-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-False-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-True-.env]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "Windows symlink privilege unavailable",
+          "nodeid": "tests/test_secret_setup.py::test_unsafe_targets_are_refused_without_following_or_mutating_them[dangling-True-config.toml]",
+          "outcome": "skipped",
+          "phase": "call"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[511]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[504]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_writable_shared_setup_directory_is_refused[450]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[0]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[18]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[63]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_private_permissions_are_in_place_before_the_first_write[511]",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_exclusive_publication_has_one_winner_under_real_concurrent_writers",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_setup_lock_refuses_another_process_without_removing_its_lock[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_setup_lock_refuses_another_process_without_removing_its_lock[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[write]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[flush]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[fsync]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_handled_failure_preserves_old_secret_and_cleans_private_staging[replace]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_default_config_failure_does_not_publish_a_key",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_competing_config_publication_preserves_the_winners_settings",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_final_name_is_never_visible_with_partial_data[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_final_name_is_never_visible_with_partial_data[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_dacl_is_owner_only_at_creation_and_after_rotation",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_junction_root_is_refused",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[unsupported]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[query]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_windows_acl_or_handle_failure_happens_before_data_and_cleans_file[crt]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_temporary_name_collision_never_removes_or_overwrites_another_file",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "classification": "POSIX-only setup contract",
+          "nodeid": "tests/test_secret_setup.py::test_posix_linked_setup_directory_is_refused",
+          "outcome": "skipped",
+          "phase": "setup"
+        },
+        {
+          "nodeid": "tests/test_secret_setup.py::test_start_launcher_generates_once_and_keeps_key_out_of_console",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_production_worker_blocks_private_destination_and_hides_ambient_secrets",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_disabled_urls_and_oversized_request_never_launch",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_native_blocked_dns_is_terminated_and_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_detached_inference_keeps_permit_until_child_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Zanything]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Vtoken=test-url-credential]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Ftoken=test-url-credential]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Iwrong]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[V\\xff]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Oabcd]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_malformed_response_is_bounded_and_sanitized[Vxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error0-ValueError-Invalid image URL]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error1-InputLimitExceeded-Image payload exceeds maximum size]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error2-RemoteFetchError-HTTP 503]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error3-RemoteFetchError-Unable to fetch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_errors_preserve_only_reviewed_contract[error4-RemoteFetchError-Unable to fetch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[None]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value1]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value2]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value3]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value4]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_invalid_worker_request_fails_closed[value5]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_protocol_request_size_and_success_boundaries",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_entrypoint_reads_bounded_input_and_writes_sanitized_result[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_worker_entrypoint_reads_bounded_input_and_writes_sanitized_result[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[failed]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[oversized]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_supervisor_rejects_bad_worker_and_counts_process_startup[startup-budget]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_process_launch_failure_is_sanitized",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_cleanup_failure_still_closes_pipes_and_reaps_before_return[kill]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process.py::test_cleanup_failure_still_closes_pipes_and_reaps_before_return[communication]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[headers]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[body]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[redirect]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_trickle_redirect_and_tls_share_total_budget[tls]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_success_preserves_host_sni_and_strips_ambient_state[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_success_preserves_host_sni_and_strips_ambient_state[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_rejects_bad_tls_without_url_details[False-images.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_rejects_bad_tls_without_url_details[True-wrong.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_process_network.py::test_native_worker_retains_image_byte_error_contract",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_numeric_transport_preserves_host_tls_and_ignores_ambient_auth[False]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_numeric_transport_preserves_host_tls_and_ignores_ambient_auth[True]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_tls_rejects_untrusted_ca_and_wrong_hostname[False-images.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_tls_rejects_untrusted_ca_and_wrong_hostname[True-wrong.example]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_native_transport.py::test_real_gzip_body_is_limited_by_decoded_bytes",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_expired_parent_deadline_never_launches_child",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_32_item_dns_batch_uses_one_shared_budget",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_detached_batch_keeps_permit_until_active_fetch_reaped",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_earlier_of_per_image_and_shared_deadline[image]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_earlier_of_per_image_and_shared_deadline[batch]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_remote_batch_process.py::test_native_success_then_trickle_spends_remaining_shared_budget",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-False-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-False-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-True-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-terminal-True-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-False-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-False-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-True-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_slow_reader_is_aborted_before_ingress_release_and_capacity_recovers[asyncio-stream-True-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-gap-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-gap-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-trickle-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-trickle-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-disconnect-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_stream_gaps_trickle_and_disconnect_finish_owned_work[asyncio-disconnect-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[asyncio-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_successful_terminal_response_bytes_and_keepalive_are_preserved[asyncio-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[asyncio-ResponseDeadlineHTTPProtocol]",
+          "outcome": "passed",
+          "phase": "call"
+        },
+        {
+          "nodeid": "tests/test_response_http_protocol.py::test_real_starlette_stream_cancels_and_cleans_before_owner_release[asyncio-ResponseDeadlineH11Protocol]",
+          "outcome": "passed",
+          "phase": "call"
+        }
+      ],
+      "packages": [
+        {
+          "name": "annotated-doc",
+          "version": "0.0.5"
+        },
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "anyio",
+          "version": "4.15.1"
+        },
+        {
+          "name": "certifi",
+          "version": "2026.7.22"
+        },
+        {
+          "name": "cffi",
+          "version": "2.1.1"
+        },
+        {
+          "name": "charset-normalizer",
+          "version": "3.5.2"
+        },
+        {
+          "name": "click",
+          "version": "8.5.0"
+        },
+        {
+          "name": "colorama",
+          "version": "0.4.6"
+        },
+        {
+          "name": "cryptography",
+          "version": "50.0.2"
+        },
+        {
+          "name": "fastapi",
+          "version": "0.142.2"
+        },
+        {
+          "name": "filelock",
+          "version": "3.32.3"
+        },
+        {
+          "name": "h11",
+          "version": "0.16.0"
+        },
+        {
+          "name": "httptools",
+          "version": "0.8.0"
+        },
+        {
+          "name": "idna",
+          "version": "3.20"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "numpy",
+          "version": "2.5.3"
+        },
+        {
+          "name": "opentelemetry-api",
+          "version": "1.45.0"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pillow",
+          "version": "12.3.0"
+        },
+        {
+          "name": "pip",
+          "version": "26.2.1"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "pycparser",
+          "version": "3.0"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.5"
+        },
+        {
+          "name": "pydantic_core",
+          "version": "2.46.5"
+        },
+        {
+          "name": "Pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "requests",
+          "version": "2.34.2"
+        },
+        {
+          "name": "starlette",
+          "version": "1.7.0"
+        },
+        {
+          "name": "trustme",
+          "version": "1.2.1"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "typing_extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "urllib3",
+          "version": "2.8.0"
+        },
+        {
+          "name": "uvicorn",
+          "version": "0.54.0"
+        }
+      ],
+      "platform": "Windows-11-10.0.26200-SP0",
+      "profile": "windows-contracts-py314-windows-amd64",
+      "python": "3.14.2 (tags/v3.14.2:df79316, Dec  5 2025, 17:18:21) [MSC v.1944 64 bit (AMD64)]",
+      "runner_image": {
+        "ImageOS": null,
+        "ImageVersion": null
+      },
+      "schema_version": 1
+    }
+  ],
+  "next_item": "Evaluate Starlette TestClient HTTPX2 migration and the complete QA graph separately.",
+  "pr_selection": {
+    "base": "f45ee654295f313e428063707dd049bda4c79d99",
+    "head": "24bc812e60e2b59c036ae232d3afec0ec4232e2d",
+    "merged": false,
+    "number": 46,
+    "open_prs": [
+      53,
+      46,
+      44,
+      42,
+      41,
+      40,
+      35,
+      34,
+      33,
+      27
+    ],
+    "original_pr_state": "open",
+    "pool": [
+      46
+    ],
+    "uniform_draw": 0.6636218198823813,
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/46"
+  },
+  "quality": {
+    "actionlint": "changed workflow passed",
+    "copyright": "passed",
+    "local_md_links": "passed",
+    "pyright": "1.1.414 scoped passed",
+    "ruff": "0.16.10 scoped passed",
+    "skill_metadata": "new and affected skills passed"
+  },
+  "schema_version": 1,
+  "security": {
+    "actions_security_extended_alerts": 0,
+    "codeql_bundle_sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815",
+    "codeql_version": "2.27.1",
+    "final_scan_completion": "passed; Python final immutable source, Actions unchanged workflow snapshot",
+    "gitleaks": {
+      "existing_history_commits": 84,
+      "history_leaks": 0,
+      "source_leaks": 0,
+      "suppression_changes": false,
+      "verified_archive_sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "version": "8.30.1"
+    },
+    "python_security_extended_alerts": [
+      {
+        "context": "explicit --show-key",
+        "path": "scripts/generate_env.py",
+        "rule": "py/clear-text-logging-sensitive-data"
+      },
+      {
+        "context": "nonsecret defaults 0644",
+        "path": "scripts/secret_publication.py",
+        "rule": "py/overly-permissive-file"
+      }
+    ],
+    "suppressions_added": false
+  },
+  "source_files": [
+    {
+      "path": ".github/workflows/capacity-calibration.yml",
+      "sha256": "df2f0573c6653e0b7c7a8809c568144a5d8afa54d2d09082459c4e6d0ff3cfd6"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "0835392ae1999ef5ca89435ea9e11fc2271ff65add546ea2ba0bc270121a1274"
+    },
+    {
+      "path": ".github/workflows/codeql.yml",
+      "sha256": "72c0e7575ee4e0add6dac10167fa08f11d9111351bde04d9a17e53100295af43"
+    },
+    {
+      "path": ".github/workflows/copyright-compliance.yml",
+      "sha256": "56ba9092e2cc6a80aef85a491b8cde331c24f131861d5f0666f375c20b7c8eb3"
+    },
+    {
+      "path": ".github/workflows/gitleaks.yml",
+      "sha256": "69253ab86d569214b66a9f8450a9d95b82a07a075a3732118edf16f6ba5dd026"
+    },
+    {
+      "path": ".github/workflows/model-contracts.yml",
+      "sha256": "770cf5014700f53c7d32929ab2f778b96387e6e6c69d1bae283f2eeb33efe951"
+    },
+    {
+      "path": ".github/workflows/osv-pinned.yml",
+      "sha256": "3b1ac62dde76566862ab31dbc276c5792db89d6f62e5d4b6c04258810999c060"
+    },
+    {
+      "path": ".github/workflows/osv-scanner.yml",
+      "sha256": "1496159d7d97ad20186578ec25de388355f1c73f6567bd1f7b3f769ca56ac1fd"
+    },
+    {
+      "path": ".github/workflows/trivy.yml",
+      "sha256": "c8e48a77d57d2611b7bb03983095b75f265e514fb446529481d63984b6d8e2d8"
+    },
+    {
+      "path": ".github/workflows/windows-contracts.yml",
+      "sha256": "28d4c04510ca10023f81485a2f8bc6a80eb0956b3d1706613fa99e262bd356d4"
+    },
+    {
+      "path": "scripts/audit_windows_contracts.py",
+      "sha256": "1e8226698db7f11f857bd80af2efbe2b8f5ff8a7633050a1d4cd7a309053b85c"
+    },
+    {
+      "path": "scripts/backend_probe.py",
+      "sha256": "f0956dc0e2de28836efdaaed05dab781d82d530c366f7226580058f7e948597e"
+    },
+    {
+      "path": "scripts/capacity_api.py",
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+    },
+    {
+      "path": "scripts/capacity_cuda.py",
+      "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+    },
+    {
+      "path": "scripts/capacity_metrics.py",
+      "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+    },
+    {
+      "path": "scripts/capacity_mixed.py",
+      "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+    },
+    {
+      "path": "scripts/capacity_probe.py",
+      "sha256": "05a7400192cbccc54c7a03038b947ba5cd864e08a89065f5589fd7a2a41f1808"
+    },
+    {
+      "path": "scripts/capacity_remote_fixture.py",
+      "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+    },
+    {
+      "path": "scripts/capacity_resources.py",
+      "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "sha256": "248a639e7e693115083ee0d5bd8bc28d53426b3738b334df7fcf1261229e54e3"
+    },
+    {
+      "path": "scripts/check_copyright.py",
+      "sha256": "b14fb9601b3e9c4af22ac2ea19b02d6c1d6ed443f660927c146f9da5497996da"
+    },
+    {
+      "path": "scripts/check_coverage_ratchet.py",
+      "sha256": "ff8dcae86ee35e2e3a6c8cb781b29b9c7cb41186d130635ea03a9ce88d353ee9"
+    },
+    {
+      "path": "scripts/check_osv_reports.py",
+      "sha256": "19a033a64bb4008aa28945eb604022fe5924fbc9549ef3d2465a501ab478435a"
+    },
+    {
+      "path": "scripts/ci_downloads.py",
+      "sha256": "a9b2fd489efb8f8b2f85a4ff61286fe41414bf110771ebe16ab2fee830fd2743"
+    },
+    {
+      "path": "scripts/ci_tool_contracts.py",
+      "sha256": "53db5a3b4d16f2a261cf0a543740c031cd8ac0383ba32603156949843f286ba0"
+    },
+    {
+      "path": "scripts/cleanup_dockerhub.py",
+      "sha256": "381a23d4ebb1f864ab18897794198144722fa9eca182a3b53f5a4a45560de9d6"
+    },
+    {
+      "path": "scripts/dependency_artifacts.py",
+      "sha256": "c5c626470576a4dc09a3368e62f3b9e082de5ba92dc4f34fa163bf2a3960baef"
+    },
+    {
+      "path": "scripts/dependency_audit_report.py",
+      "sha256": "252ee8421da76bc1fdd753a99d3af169a964007c01c8be947121cc271d5fe5a4"
+    },
+    {
+      "path": "scripts/dependency_locks.py",
+      "sha256": "3db39e3989946547e51c9930e13756dd6d140afeb3edd8ff94c65408faa1b178"
+    },
+    {
+      "path": "scripts/dependency_profiles.py",
+      "sha256": "4f02677fc5793e74b26349aab940dedd4ea93ee968b7b2bc1425abc01fe39219"
+    },
+    {
+      "path": "scripts/dockerhub_client.py",
+      "sha256": "2eb25b4c387e5f4fa129f5965f54a70e698a08181ce12be70cf8013ad5d300a3"
+    },
+    {
+      "path": "scripts/dockerhub_retention.py",
+      "sha256": "74e50e0467dfee60af45502c5784fcb0b905a722c1ca54cf4c26cbf44b56882f"
+    },
+    {
+      "path": "scripts/generate_env.py",
+      "sha256": "600d3845a6865f96e1655cc3b352f5a23ac8b5a29ccf0af041d73276efb71fb2"
+    },
+    {
+      "path": "scripts/install_ci_tool.py",
+      "sha256": "07cfb6430bde2ee4e11e9ffeefbb392c48b5393232e09fca01caac4bd6e2c136"
+    },
+    {
+      "path": "scripts/install_dependencies.py",
+      "sha256": "1a1c34e18d581315df129af7d26395b2aa474d728badf95944f499478b7271a3"
+    },
+    {
+      "path": "scripts/lock_dependencies.py",
+      "sha256": "0141dc10a35e3139a83d8be7b73ba6e52d7b93c35e23259c04504b96096b83c8"
+    },
+    {
+      "path": "scripts/production_model_probe.py",
+      "sha256": "421a732f2fd213143d4fc419c082c72a2a727bcc185be7a6bceb9b6a5fc3da20"
+    },
+    {
+      "path": "scripts/secret_publication.py",
+      "sha256": "91d9c22bfab6809d765b92af0057258680d8c0b204d45374c195161e1e8e52f1"
+    },
+    {
+      "path": "scripts/secret_setup.py",
+      "sha256": "fefc8e732722e6d456cd2ee76a8f4e19ee0b798b2a1b616de76372b755b77498"
+    },
+    {
+      "path": "scripts/secret_windows.py",
+      "sha256": "0c914126a3b2a4a64e88fe0c7da0980677127e716502b87d1071fb45547e8640"
+    },
+    {
+      "path": "scripts/setup_templates.py",
+      "sha256": "c8d1151cbebc1ca62f76c82633a18a442646d3d40b4e4f48469a33d06aed4765"
+    },
+    {
+      "path": "scripts/smoke_backend.py",
+      "sha256": "35556810e3d0facb3e9941a80d282e9d9379802cd31168bcd8b7e0126f2c4679"
+    },
+    {
+      "path": "scripts/update_coverage_baseline.py",
+      "sha256": "a4c2ac28856c11031e1df475e057d5fa38edee5206b94606e00a23e1a0dec800"
+    },
+    {
+      "path": "scripts/validate_windows_contracts.py",
+      "sha256": "78f1393114883f81dddc16b8647e7ea82f5d1a65f4732844285517b8e5a248bf"
+    },
+    {
+      "path": "scripts/windows_contract_policy.py",
+      "sha256": "7d2d60491ccb4c4e303db4b98c475d8e5733063f858055e8b61b6ea6d103f9d4"
+    },
+    {
+      "path": "src/image_embedder/__init__.py",
+      "sha256": "d353412e242436afceb2fef9c23356cbbc49aa6ca79f77048c66163b62ac90eb"
+    },
+    {
+      "path": "src/image_embedder/admission.py",
+      "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+    },
+    {
+      "path": "src/image_embedder/artifact_integrity.py",
+      "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+    },
+    {
+      "path": "src/image_embedder/batch.py",
+      "sha256": "6d04c4c27753dc779a4dccd53d4a1af51a52f6f83856f32035880d45686350a8"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "e984d232983395f8964a868f7e83d3261a3841e54b5aaeaa4a3d32cc85aeca5d"
+    },
+    {
+      "path": "src/image_embedder/execution.py",
+      "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+    },
+    {
+      "path": "src/image_embedder/healthcheck.py",
+      "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+    },
+    {
+      "path": "src/image_embedder/image_input.py",
+      "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+    },
+    {
+      "path": "src/image_embedder/ingress.py",
+      "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+    },
+    {
+      "path": "src/image_embedder/ingress_middleware.py",
+      "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+    },
+    {
+      "path": "src/image_embedder/input_limits.py",
+      "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+    },
+    {
+      "path": "src/image_embedder/ir_cache.py",
+      "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+    },
+    {
+      "path": "src/image_embedder/lifecycle.py",
+      "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+    },
+    {
+      "path": "src/image_embedder/logging_config.py",
+      "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+    },
+    {
+      "path": "src/image_embedder/main.py",
+      "sha256": "dc067f77b967a9634180b63d3dffb78b7ec4d0bfce0ffe23aafd255689473500"
+    },
+    {
+      "path": "src/image_embedder/memory.py",
+      "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+    },
+    {
+      "path": "src/image_embedder/model_catalog.py",
+      "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+    },
+    {
+      "path": "src/image_embedder/model_initialization.py",
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+    },
+    {
+      "path": "src/image_embedder/model_loading.py",
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+    },
+    {
+      "path": "src/image_embedder/models.py",
+      "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+    },
+    {
+      "path": "src/image_embedder/openvino_models.py",
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+    },
+    {
+      "path": "src/image_embedder/queue.py",
+      "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+    },
+    {
+      "path": "src/image_embedder/remote_budget.py",
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+    },
+    {
+      "path": "src/image_embedder/remote_fetch.py",
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+    },
+    {
+      "path": "src/image_embedder/remote_protocol.py",
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+    },
+    {
+      "path": "src/image_embedder/remote_url.py",
+      "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+    },
+    {
+      "path": "src/image_embedder/remote_worker.py",
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+    },
+    {
+      "path": "src/image_embedder/request_body_deadline.py",
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+    },
+    {
+      "path": "src/image_embedder/response_http_protocol.py",
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+    },
+    {
+      "path": "src/image_embedder/response_send_deadline.py",
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+    },
+    {
+      "path": "src/image_embedder/routes/__init__.py",
+      "sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1"
+    },
+    {
+      "path": "src/image_embedder/routes/admin.py",
+      "sha256": "28bd989577b2227af4156935825abd6bf977aec644767945585d7e28ee213693"
+    },
+    {
+      "path": "src/image_embedder/routes/batch.py",
+      "sha256": "35af357e1fef293926861c3e394da35a2a596273651cda5d80faa4f3b2f271b9"
+    },
+    {
+      "path": "src/image_embedder/routes/embed.py",
+      "sha256": "568a3c8aabaedc1859ccbd557d3098e6c73bf2d0dd9c964d2351535064ad0a5b"
+    },
+    {
+      "path": "src/image_embedder/routes/health.py",
+      "sha256": "5590d0924454636dffdbb860a4e997e97ba9c4838958395c9f0dd03df68cffb8"
+    },
+    {
+      "path": "src/image_embedder/routes/models.py",
+      "sha256": "7606f41bbbf54aff7ed69e48447dd6d44e746565f2c7d67316af70cc1b5aa0aa"
+    },
+    {
+      "path": "src/image_embedder/security.py",
+      "sha256": "3011a8fe7eca7a8619ab89aa9d6a24f6c60110b90a54dfdd44df45b903412eb4"
+    },
+    {
+      "path": "src/image_embedder/server.py",
+      "sha256": "3d802717237af543c28224df24786a1f51805bb4b70afe97a1f9389f2eca0fb3"
+    },
+    {
+      "path": "tests/conftest.py",
+      "sha256": "52ed9b75c7e51c120a66519a3ea2d294e04942f43f649e8547d343c70cd6db4f"
+    },
+    {
+      "path": "tests/fakes.py",
+      "sha256": "82777147a73500bbb3d132ae17726f19917dc601024afde012a4159f920d49a5"
+    },
+    {
+      "path": "tests/remote_fakes.py",
+      "sha256": "0afc45a971cb31b55f8f7f1f18218573664f3b4b0ead7d4b2d3d13f7cac743b9"
+    },
+    {
+      "path": "tests/remote_process_harness.py",
+      "sha256": "1bb3085237b7ec65f2e24ae9521d070eb9eeffc7a9469f12eed0641eb208f9ad"
+    },
+    {
+      "path": "tests/test_admission.py",
+      "sha256": "984b5cd740f7954c31f55941c5c71a0a3fa2202c9edd2ccf23086506be55903e"
+    },
+    {
+      "path": "tests/test_api.py",
+      "sha256": "f2c3af29ff9f2671a12d99d51aa7f7926467b1261f416d14773370324c321901"
+    },
+    {
+      "path": "tests/test_api_error_mapping.py",
+      "sha256": "0e03a72d619a576e7663eea452191ba0865eb5bcb238e47e0e243e5900f98671"
+    },
+    {
+      "path": "tests/test_auth.py",
+      "sha256": "79e16be3e97fdfeba05db6d63535d07f4606de3febebc6294de1379fc90b9a45"
+    },
+    {
+      "path": "tests/test_backend_probe.py",
+      "sha256": "83f227bd47030a1622ff5a7b3a60bdccc7f7bd0c48faddc47166ba12ef850ffe"
+    },
+    {
+      "path": "tests/test_batch_admission.py",
+      "sha256": "327396e9d1846402fbb4364b0ecb6e643b9eb29be1dd6f980cdfaec337aa461e"
+    },
+    {
+      "path": "tests/test_batch_endpoint.py",
+      "sha256": "c66d8039acaef314f09831715218fc1a37fe73b3cf8efcb3b8f55d9b348d7386"
+    },
+    {
+      "path": "tests/test_capacity_cuda.py",
+      "sha256": "f352744a82c4a68169d8c6f9dbbdee3a8c5b1b41929738083d4a24566f2de8cc"
+    },
+    {
+      "path": "tests/test_capacity_metrics.py",
+      "sha256": "9e498bc98896210c0489818e5f83aabf06937054bf9e99a9298074a422552145"
+    },
+    {
+      "path": "tests/test_capacity_mixed.py",
+      "sha256": "8b2872d8cbc441c6e528d349de7812349a3d0f28255e3d7fc39ec4cc70a116f9"
+    },
+    {
+      "path": "tests/test_capacity_resources.py",
+      "sha256": "e3b9e5b7a7ec15604bb9d9efba7ccbe767cbc4e573d9006b717f2a1ee85b9d8a"
+    },
+    {
+      "path": "tests/test_capacity_workload.py",
+      "sha256": "9cf7a8c93ecdf458ff7261cc61f6db62619a319e9cf6566dc60b2e3a0cb07b53"
+    },
+    {
+      "path": "tests/test_ci_artifacts.py",
+      "sha256": "81e6488b580963920d0343fd0f3cb625b94ca877c8854ad5a57b40c0b1f13276"
+    },
+    {
+      "path": "tests/test_ci_workflows.py",
+      "sha256": "88de8c255373afda8b3c25774d123abca70bfbeb946126d2eae5e1846c72d19e"
+    },
+    {
+      "path": "tests/test_coverage_gaps.py",
+      "sha256": "92643bde43c741e66da65be1f14b31454418690ca6985eb638224e0e4cbb7cba"
+    },
+    {
+      "path": "tests/test_dependency_artifacts.py",
+      "sha256": "9aabe4b327f3f15d52cac834b40949e82944af79180e2dc0a1ba8632b3e52b65"
+    },
+    {
+      "path": "tests/test_dependency_audit_report.py",
+      "sha256": "aa7e44ec742cd31d737a94976e4bbf9906330ebc8e3481321095985256f5961e"
+    },
+    {
+      "path": "tests/test_dependency_locks.py",
+      "sha256": "007f86b6fd44e1e72e4ed23b73785945c56a33562943ae4b616b0ce7110ef020"
+    },
+    {
+      "path": "tests/test_device_and_model_loading.py",
+      "sha256": "ce5509966fabe92e7fd4843e152ec6362e76f7dd8e9d2f42302de0e1bf5b8e27"
+    },
+    {
+      "path": "tests/test_dockerhub_retention.py",
+      "sha256": "6125fa641892d5c517657ff2734c7c02fc068ad756bc67f42aa51743d7f8d7eb"
+    },
+    {
+      "path": "tests/test_easy_wins.py",
+      "sha256": "ac11770fa32b1ae8c13e74d097f18c21729dfcf42a8bdb85a48e91e5e4bd3cac"
+    },
+    {
+      "path": "tests/test_embed_flow_mocked.py",
+      "sha256": "7981947e018704fa9696621453912e32d2198254173e16aa50aa9a44c887fca2"
+    },
+    {
+      "path": "tests/test_embedder.py",
+      "sha256": "1f32a996abea4e7aef17a349d591e46f612c8b8332130e182cc4c542a55db9a5"
+    },
+    {
+      "path": "tests/test_embedder_advanced.py",
+      "sha256": "3c1aa7c4ba9a3b30b7955faedbad3e9bd07fe040765b0d465a4e677a55f896b6"
+    },
+    {
+      "path": "tests/test_embedding_deadlines.py",
+      "sha256": "1867132acd29c23c53a9579186380c8b536e070d7063801a2fb418f5810a3a78"
+    },
+    {
+      "path": "tests/test_execution.py",
+      "sha256": "a4d57a573a3e6519e7eaa4a273a21d923b1612f41ffe209a0ee6b1686ea56316"
+    },
+    {
+      "path": "tests/test_execution_batch_window.py",
+      "sha256": "25907efc919891ea7f803d19c1dd7db90be7c80bc565f778a03d7cc8a70b58b1"
+    },
+    {
+      "path": "tests/test_execution_integration.py",
+      "sha256": "2588caa666e2ec2864582b08817e9f2705e0ba49daac4dfdfee1aebebf5551b1"
+    },
+    {
+      "path": "tests/test_health_endpoints.py",
+      "sha256": "cd796e9de78034de307b3b0018b97c897a85c6ae194498eb762cdc34fc759ae2"
+    },
+    {
+      "path": "tests/test_image_input_limits.py",
+      "sha256": "83e833945f3f6f7009b0c35383b0a470d8135276b35f5791b503a986e4d641de"
+    },
+    {
+      "path": "tests/test_ingress.py",
+      "sha256": "090ab47834759a718dcf005717d5a4380e4f5c3321df36e4b6cef77258933175"
+    },
+    {
+      "path": "tests/test_ingress_settings.py",
+      "sha256": "bf21404ca12a3a3be5359641bcc987dda875656782dc3e54a2d83ae60b32f960"
+    },
+    {
+      "path": "tests/test_integration.py",
+      "sha256": "605a3acbfd9713f3ec303bbdb3d079e0ba8bce80d813d148377d9bb3df1a9299"
+    },
+    {
+      "path": "tests/test_ir_cache.py",
+      "sha256": "0a47f8f6761db63c3ac0448c4c94d3ed592f67235b91baa29c020122f46d8cc0"
+    },
+    {
+      "path": "tests/test_model_contracts.py",
+      "sha256": "b097cbd0d4404f91416d581e6940bbb4eaa0dec90e6a2a338f1f5ae8f01aec6f"
+    },
+    {
+      "path": "tests/test_model_initialization.py",
+      "sha256": "e3ba5ac70730a60a21957e3d6071f9cb29f9dc099333672d75ebd24a468689ed"
+    },
+    {
+      "path": "tests/test_p1_invariants.py",
+      "sha256": "f98ab695daa8c5ddd6bc60e607e42538ebab48f2eaa4e46d20de08d6a29608cc"
+    },
+    {
+      "path": "tests/test_production_models.py",
+      "sha256": "bc69cf6ebb825bf24fd95795d083c5439130b38ba66cfede26e190914ba05e60"
+    },
+    {
+      "path": "tests/test_queueing.py",
+      "sha256": "7800e8be2175d1c4835ade7a7b32cbb81394d937df4c16ce59a12e257a7cfdc7"
+    },
+    {
+      "path": "tests/test_remote_api_boundary.py",
+      "sha256": "2112e613baf5215844c4659425ee8a02bfe5af37ae912592e4e372128b0e3497"
+    },
+    {
+      "path": "tests/test_remote_batch_api.py",
+      "sha256": "4ac6eb56869a89f6a1743cb91374690dc8c536556e93f42ac1568bd8df5acc97"
+    },
+    {
+      "path": "tests/test_remote_batch_budget.py",
+      "sha256": "f253b1c27f949cfc3b94232cffd6ec1e3b964da321dd179f2dac6fb4f0bd31cb"
+    },
+    {
+      "path": "tests/test_remote_batch_process.py",
+      "sha256": "0f8aadea33277210a1b59cbba3681a7b99733ce9713212563a16b277ddf460e5"
+    },
+    {
+      "path": "tests/test_remote_destinations.py",
+      "sha256": "41a1b7bdf2a5a334fb851ebb95211c3f5e9c7d4e017a40bfd92b58eccaa7902c"
+    },
+    {
+      "path": "tests/test_remote_fetch_and_security.py",
+      "sha256": "39ad48c5b9d581d7600adba8168971f935579cffce778746889d87da693355d3"
+    },
+    {
+      "path": "tests/test_remote_native_transport.py",
+      "sha256": "20ec6e601efaaf8dfaa80a0945c7e2fee061281b8b70439242d9d730c7b59890"
+    },
+    {
+      "path": "tests/test_remote_process.py",
+      "sha256": "65c0447ccb12b769edd68d0b7a88425cd77e0e044460d6270519ad9c10e15852"
+    },
+    {
+      "path": "tests/test_remote_process_network.py",
+      "sha256": "b31382111fb820a531ab4f5e08498668f43b4a9e83ea4d771ce478ee83c882de"
+    },
+    {
+      "path": "tests/test_request_input_limits.py",
+      "sha256": "50621705f534f9d863eee7cd0410792ec5cb5ba61e154ce0c233043e9f00d087"
+    },
+    {
+      "path": "tests/test_request_lifetimes.py",
+      "sha256": "1640d39fd630cb2f036fe36bfd243ba56def6cf99c48a8fda74dbf98f291e196"
+    },
+    {
+      "path": "tests/test_response_http_protocol.py",
+      "sha256": "a3763c4870c3154f0cba410feb2a1112670228aaf941c2d6a5413da4f8b93d15"
+    },
+    {
+      "path": "tests/test_response_send_deadline.py",
+      "sha256": "15aae3d8b7bbeedd21b5903b4e90cf37f148c7031c0d43dca77a79d7bff8de89"
+    },
+    {
+      "path": "tests/test_robustness.py",
+      "sha256": "159a034b6d5c4ece56f0015840c6804db2ff2aadf6cfab6c8e8b44bb8055ddaf"
+    },
+    {
+      "path": "tests/test_secret_setup.py",
+      "sha256": "4a8c521aa64ea1bb1f58e2cae60383442c81825a1d551375c502a15db09790b6"
+    },
+    {
+      "path": "tests/test_test_suite_layout.py",
+      "sha256": "47a0905a38eabda80a787efce8750697d185563f8d9299bf5cbc76db080eaf5e"
+    },
+    {
+      "path": "tests/test_warmup.py",
+      "sha256": "91f07f3e49db23941979a92a52c792f9c091e79a9ff8d22d28c7543d6c45cffd"
+    },
+    {
+      "path": "tests/test_windows_contract_policy.py",
+      "sha256": "d118f813528e61efb451a5e370f75f36d3bc7d9a286300deff9cc59ce498d965"
+    },
+    {
+      "path": "tests/test_windows_dependency_profiles.py",
+      "sha256": "b1a0f286af613b83a2eb0a0893eda8e9b355041013ee81d220fdac7b4266abc9"
+    },
+    {
+      "path": "tests/worker_fakes.py",
+      "sha256": "1ee50d25eefa876b8dd38be83ac90b7f3218d5ed45967c4fd1a1ac45c4560ae5"
+    }
+  ],
+  "windows_audits": [
+    {
+      "known_vulnerabilities": 0,
+      "packages": 33,
+      "profile": "windows-contracts-py313-windows-amd64",
+      "report": {
+        "dependencies": [
+          {
+            "name": "annotated-doc",
+            "version": "0.0.5",
+            "vulns": []
+          },
+          {
+            "name": "annotated-types",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "anyio",
+            "version": "4.15.1",
+            "vulns": []
+          },
+          {
+            "name": "certifi",
+            "version": "2026.7.22",
+            "vulns": []
+          },
+          {
+            "name": "cffi",
+            "version": "2.1.1",
+            "vulns": []
+          },
+          {
+            "name": "charset-normalizer",
+            "version": "3.5.2",
+            "vulns": []
+          },
+          {
+            "name": "click",
+            "version": "8.5.0",
+            "vulns": []
+          },
+          {
+            "name": "colorama",
+            "version": "0.4.6",
+            "vulns": []
+          },
+          {
+            "name": "cryptography",
+            "version": "50.0.2",
+            "vulns": []
+          },
+          {
+            "name": "fastapi",
+            "version": "0.142.2",
+            "vulns": []
+          },
+          {
+            "name": "filelock",
+            "version": "3.32.3",
+            "vulns": []
+          },
+          {
+            "name": "h11",
+            "version": "0.16.0",
+            "vulns": []
+          },
+          {
+            "name": "httptools",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "idna",
+            "version": "3.20",
+            "vulns": []
+          },
+          {
+            "name": "iniconfig",
+            "version": "2.3.0",
+            "vulns": []
+          },
+          {
+            "name": "numpy",
+            "version": "2.5.3",
+            "vulns": []
+          },
+          {
+            "name": "opentelemetry-api",
+            "version": "1.45.0",
+            "vulns": []
+          },
+          {
+            "name": "packaging",
+            "version": "26.3",
+            "vulns": []
+          },
+          {
+            "name": "pillow",
+            "version": "12.3.0",
+            "vulns": []
+          },
+          {
+            "name": "pip",
+            "version": "26.2.1",
+            "vulns": []
+          },
+          {
+            "name": "pluggy",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "pycparser",
+            "version": "3.0",
+            "vulns": []
+          },
+          {
+            "name": "pydantic",
+            "version": "2.13.5",
+            "vulns": []
+          },
+          {
+            "name": "pydantic-core",
+            "version": "2.46.5",
+            "vulns": []
+          },
+          {
+            "name": "pygments",
+            "version": "2.21.0",
+            "vulns": []
+          },
+          {
+            "name": "pytest",
+            "version": "9.1.1",
+            "vulns": []
+          },
+          {
+            "name": "requests",
+            "version": "2.34.2",
+            "vulns": []
+          },
+          {
+            "name": "starlette",
+            "version": "1.7.0",
+            "vulns": []
+          },
+          {
+            "name": "trustme",
+            "version": "1.2.1",
+            "vulns": []
+          },
+          {
+            "name": "typing-extensions",
+            "version": "4.16.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-inspection",
+            "version": "0.4.4",
+            "vulns": []
+          },
+          {
+            "name": "urllib3",
+            "version": "2.8.0",
+            "vulns": []
+          },
+          {
+            "name": "uvicorn",
+            "version": "0.54.0",
+            "vulns": []
+          }
+        ],
+        "fixes": []
+      },
+      "skipped": 0
+    },
+    {
+      "known_vulnerabilities": 0,
+      "packages": 33,
+      "profile": "windows-contracts-py314-windows-amd64",
+      "report": {
+        "dependencies": [
+          {
+            "name": "annotated-doc",
+            "version": "0.0.5",
+            "vulns": []
+          },
+          {
+            "name": "annotated-types",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "anyio",
+            "version": "4.15.1",
+            "vulns": []
+          },
+          {
+            "name": "certifi",
+            "version": "2026.7.22",
+            "vulns": []
+          },
+          {
+            "name": "cffi",
+            "version": "2.1.1",
+            "vulns": []
+          },
+          {
+            "name": "charset-normalizer",
+            "version": "3.5.2",
+            "vulns": []
+          },
+          {
+            "name": "click",
+            "version": "8.5.0",
+            "vulns": []
+          },
+          {
+            "name": "colorama",
+            "version": "0.4.6",
+            "vulns": []
+          },
+          {
+            "name": "cryptography",
+            "version": "50.0.2",
+            "vulns": []
+          },
+          {
+            "name": "fastapi",
+            "version": "0.142.2",
+            "vulns": []
+          },
+          {
+            "name": "filelock",
+            "version": "3.32.3",
+            "vulns": []
+          },
+          {
+            "name": "h11",
+            "version": "0.16.0",
+            "vulns": []
+          },
+          {
+            "name": "httptools",
+            "version": "0.8.0",
+            "vulns": []
+          },
+          {
+            "name": "idna",
+            "version": "3.20",
+            "vulns": []
+          },
+          {
+            "name": "iniconfig",
+            "version": "2.3.0",
+            "vulns": []
+          },
+          {
+            "name": "numpy",
+            "version": "2.5.3",
+            "vulns": []
+          },
+          {
+            "name": "opentelemetry-api",
+            "version": "1.45.0",
+            "vulns": []
+          },
+          {
+            "name": "packaging",
+            "version": "26.3",
+            "vulns": []
+          },
+          {
+            "name": "pillow",
+            "version": "12.3.0",
+            "vulns": []
+          },
+          {
+            "name": "pip",
+            "version": "26.2.1",
+            "vulns": []
+          },
+          {
+            "name": "pluggy",
+            "version": "1.6.0",
+            "vulns": []
+          },
+          {
+            "name": "pycparser",
+            "version": "3.0",
+            "vulns": []
+          },
+          {
+            "name": "pydantic",
+            "version": "2.13.5",
+            "vulns": []
+          },
+          {
+            "name": "pydantic-core",
+            "version": "2.46.5",
+            "vulns": []
+          },
+          {
+            "name": "pygments",
+            "version": "2.21.0",
+            "vulns": []
+          },
+          {
+            "name": "pytest",
+            "version": "9.1.1",
+            "vulns": []
+          },
+          {
+            "name": "requests",
+            "version": "2.34.2",
+            "vulns": []
+          },
+          {
+            "name": "starlette",
+            "version": "1.7.0",
+            "vulns": []
+          },
+          {
+            "name": "trustme",
+            "version": "1.2.1",
+            "vulns": []
+          },
+          {
+            "name": "typing-extensions",
+            "version": "4.16.0",
+            "vulns": []
+          },
+          {
+            "name": "typing-inspection",
+            "version": "0.4.4",
+            "vulns": []
+          },
+          {
+            "name": "urllib3",
+            "version": "2.8.0",
+            "vulns": []
+          },
+          {
+            "name": "uvicorn",
+            "version": "0.54.0",
+            "vulns": []
+          }
+        ],
+        "fixes": []
+      },
+      "skipped": 0
+    }
+  ]
+}
