@@ -1,11 +1,13 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current direct-deployment/skill iteration starts from `e9bc00bb1e06b967951bf98a3b572f6920944d34` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current representative-workload/skill iteration starts from `b43272ba9f380f7488f1a70e5dafa70a91754b04` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
+| Representative poster/landscape/codec bursts with isolated HTTP client | Encoded-byte parity, observed receipt and separate client RSS | Synthetic fixtures; shared cgroup and model-owner probe overhead; finite bursts | Implemented; [workload design](representative-capacity.md), [skill extension](project-representative-capacity-skill.md) |
+| Close reviewed completed/superseded PRs | Clears obsolete proposals while preserving original commits and reopening | Requires a decision record; state alone does not explain local adoption | Eight closed unmerged; zero open remain; [cleanup record](aging-pr-cleanup.md) |
 | Explicit forwarding trust, disabled for direct Docker deployment | Caller headers cannot rotate public quota identities; ambient wildcard trust is ignored | Intentional proxies must configure controlled peers; Docker/NAT may share address quotas | Implemented; [direct deployment design](direct-deployment-trust.md), [skill extension](project-deployment-transport-skill.md) |
 | Stable public-probe and verified embedding quota identities | Closes rotated/empty-header bypasses; removes raw credentials from storage/logs | NAT clients share probe limits; a shared service credential shares embedding quota | Implemented; [identity design](public-probe-rate-limits.md), [skill extension](project-quota-identity-skill.md) |
 | Track inference owners beyond HTTP deadlines; preserve server signals and drain work | Preserves accounting during cancellation; cleanup cannot race workers | Running Python threads cannot be forcibly killed; supervisor deadlines must align | Implemented; [execution design](inference-execution.md) |
@@ -44,20 +46,28 @@ Assessment date: 2026-10-03. The current direct-deployment/skill iteration start
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Measure representative workload headroom and remote-client addresses on the actual direct deployment | Tests available margin and address sharing before concurrency tuning | Requires operator hardware, representative codecs/clients and real network traffic; no proxy is needed |
+| Next 1 | Separate CPU queue-wait/native durations for maximum batches, then replay caller/batch profiles on the deployment host | Targets the reproduced second 32-image request timeout before deadline or concurrency tuning | One caller up to 32 and two up to 8 pass locally; host load matters and external-client addresses still need real traffic; no proxy is needed |
 | Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. The [direct deployment follow-up](direct-deployment-trust.md) disables implicit forwarding trust after the operator confirmed that no proxy is used. Next measure representative workload and address preservation on that direct topology before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. The [direct deployment follow-up](direct-deployment-trust.md) disables implicit forwarding trust after the operator confirmed that no proxy is used. The [representative calibration](representative-capacity.md) adds the requested portrait, landscape and codec coverage with separate client RSS. Next replay it on the operator host and measure address preservation through real external traffic before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
 
 Keep the operator's direct Docker topology. The shipped launcher disables
 forwarding by default and accepts only explicit controlled IP peers/networks
 when a proxy is intentionally configured. Keep one worker, current admission
-budgets and backend memory containment. Next measure representative workload
-headroom and remote-client address preservation on the actual deployment host;
+budgets and backend memory containment. Use the representative poster/codec
+scenario with two bounded callers, encoded references and separate client RSS.
+Next measure target-host headroom and external-client address preservation;
 loopback Docker evidence does not establish either for every network. No proxy
 infrastructure is needed for the current deployment.
+
+The local CPU two-caller 32-image poster case returned 504 at the current
+45-second budget. One caller up to 32 and two callers up to 8 pass across the
+selected profiles; OpenVINO CPU passes two callers up to 32, with a 39.25-second
+slowest request. Keep these as measured comparison options and investigate
+queue-wait/native durations before changing deadlines or duplicating owners.
+Warm shared-page accounting does not replace earlier cold-memory evidence.
 
 Keep Python/FastAPI/AnyIO with small authenticated-router, credential, quota-identity, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Public probes use effective addresses; protected quotas use one verified nonsecret service principal or address fallback. Preserve separate counters, application-owned storage and server-owned proxy trust. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
 
@@ -74,6 +84,35 @@ Use a total 30-second upload budget that stops at complete body/disconnect/respo
 Use a separate total 30-second HTTP/1 response-send budget through the shipped asyncio launcher. Include terminal user-space and TLS ciphertext buffer drain; abort and confirm connection loss before cancellation releases ingress. Keep httptools/h11 parser selection automatic. Retest the narrow Uvicorn/CPython adapter on upgrades, use asyncio for TLS, and keep edge/HTTP2/WebSocket/background-work contracts explicit. Adopt the immutable Trivy v0.36.0 wrapper with the verified native binary selected by absolute path, disabled setup/cache and existing report/failure gates.
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
+
+## Representative workload delivery outcome
+
+The operator's poster/landscape PNG/JPEG/WebP cases now use fixed documented
+encoded fixtures and a separate bounded HTTP client process. CPU one-caller
+1/8/32 passes 24 cases, CPU two-caller 1/8 passes 32, and OpenVINO CPU two-caller
+1/8/32 passes 48. The CPU two-caller full-size run retains its second 32-image
+ViT-L-14 poster 504 at 45.08 seconds as failed capacity evidence. Every experiment
+reaps the client and settles ingress/native/waiting/readers without OOM/task
+events. Whole-cgroup accounting still includes both processes and shared-page
+charges; model-owner RSS retains sampler/reference overhead. The requested
+workload evidence does not establish actual production distributions.
+
+Full locked QA passes **1,112 tests**, with seven existing skips; coverage remains
+**95.38% / 90.42%** above unchanged floors. Schema, dependency graphs, inventories,
+quotas, production containment and direct topology remain unchanged. The separate
+[workload](representative-capacity.md), [skill](project-representative-capacity-skill.md)
+and [native archive](validation/representative-capacity-2026-10-03.json) record design,
+official October 2026 sources, pros/cons, results and limitations. There is
+[no suitable unapplied open PR](open-pr-availability.md); the requested
+[aging-PR cleanup](aging-pr-cleanup.md) closes all eight reviewed proposals,
+leaving zero open without merging their original commits. Next investigate CPU
+queue/native durations and target-host profiles; delivery stays on master with
+Unreleased changes and no release, tag or version bump.
+
+CodeQL Python security-extended queries cover 90 source files with no new alerts
+and two unchanged setup-publication context alerts. Fresh verified Gitleaks
+source and 90-commit baseline history scans find no secrets; public IR contract
+digests are explicitly archived as SHA-256 fields without suppression changes.
 
 ## Quota identity delivery outcome
 

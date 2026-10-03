@@ -48,12 +48,14 @@ class CapacityWorkload:
         repeats: int = 2,
         expected_device: str = "cpu",
         cuda=None,
+        clients: int = 2,
     ) -> None:
         self.embedder, self.models, self.sizes = embedder, models, sizes
         self.payloads, self.reader, self.emit = payloads, reader, emit
         self.interval, self.repeats = interval, repeats
         self.expected_device = expected_device
         self.cuda = cuda
+        self.clients = clients
         self.references: dict[str, list[np.ndarray]] = {}
 
     def measure(self, name: str, function: Callable[[], object]) -> object:
@@ -73,6 +75,8 @@ class CapacityWorkload:
                     "event": "phase_error",
                     "phase": name,
                     "error_type": type(error).__name__,
+                    "elapsed_seconds": time.monotonic() - started,
+                    "memory": getattr(sampler, "report", None),
                 }
             )
             raise
@@ -86,7 +90,7 @@ class CapacityWorkload:
         )
         return result
 
-    def load(self, overlap: bool) -> None:
+    def load(self, overlap: bool, references: bool = True) -> None:
         if overlap:
 
             def concurrent_loads():
@@ -104,6 +108,8 @@ class CapacityWorkload:
         if any(device != self.expected_device for device in devices.values()):
             raise AssertionError("Loaded model backend does not match the experiment")
         self.emit({"event": "models_loaded", "devices": devices})
+        if not references:
+            return
         for name in self.models:
 
             def reference():
@@ -237,7 +243,16 @@ class CapacityWorkload:
             await executor.close(300)
 
     def run(self, scenario: str) -> None:
-        self.load(overlap=scenario == "overlap")
+        self.load(overlap=scenario == "overlap", references=scenario != "representative")
+        if scenario == "representative":
+            from capacity_representative import check_representative
+
+            result = self.measure(
+                "representative_http_bursts",
+                lambda: asyncio.run(check_representative(self, self.clients)),
+            )
+            self.emit({"event": "representative_inputs", "result": result})
+            return
         self.serial_batches()
         if scenario == "detached":
             result = self.measure(

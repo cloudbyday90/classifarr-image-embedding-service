@@ -1,0 +1,5512 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline": "b43272ba9f380f7488f1a70e5dafa70a91754b04",
+  "images": [
+    {
+      "backend": "cpu",
+      "sha256": "5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7"
+    },
+    {
+      "backend": "openvino",
+      "sha256": "0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357"
+    },
+    {
+      "backend": "qa",
+      "sha256": "90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803"
+    }
+  ],
+  "experiments": [
+    {
+      "label": "cpu-two",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": null,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 170082304,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 170086400,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 251953152,
+          "process_rss_bytes": 251953152,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "representative_clients": 2,
+        "representative_fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "runtimes": {
+          "httpx": "0.28.1",
+          "numpy": "2.5.3",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0",
+          "uvicorn": "0.54.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "representative",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "result": {
+        "calibration_rate_limit": "1000/minute",
+        "client": {
+          "passed": false,
+          "pid": 52,
+          "process_peak_rss_bytes": 105639936,
+          "process_rss_bytes": 84701184,
+          "reaped": true,
+          "records": [
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 6.524340990989003,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115115,
+              "response_bytes": 16467,
+              "server_received_bytes": 115115,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 9.636049023014493,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 15511,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 10.87452530200244,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 123472,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 21.799019774014596,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925935,
+              "response_bytes": 131256,
+              "server_received_bytes": 925935,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 29.222907015995588,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703600,
+              "response_bytes": 493660,
+              "server_received_bytes": 3703600,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 45.08265131799271,
+              "error_type": "AssertionError",
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/32/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": false,
+              "repeat": 0,
+              "request_bytes": 3703599,
+              "response_bytes": 0,
+              "server_received_bytes": 3703599,
+              "server_status": 504,
+              "status": 504
+            }
+          ],
+          "returncode": 1
+        },
+        "clients": 2,
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "fixture_scope": "separate HTTP client process; shared container/cgroup; server RSS includes references/sampler",
+        "fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 0
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "phase_observations": [
+        {
+          "elapsed_seconds": 47.06589533499209,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 307249152,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 307687424,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 386555904,
+              "process_rss_bytes": 384872448,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 170082304,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 170086400,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 251953152,
+              "process_rss_bytes": 251953152,
+              "resources": {
+                "process_threads": 16,
+                "tasks": {
+                  "current": 16,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042409,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 446,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 307556352,
+              "cgroup_tasks": 22,
+              "process_rss_bytes": 384872448,
+              "process_threads": 22,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-L-14"
+        },
+        {
+          "elapsed_seconds": 9.168558498000493,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 308805632,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 309219328,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 387088384,
+              "process_rss_bytes": 387072000,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 307249152,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 307687424,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 386555904,
+              "process_rss_bytes": 384872448,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 91,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 308805632,
+              "cgroup_tasks": 22,
+              "process_rss_bytes": 387072000,
+              "process_threads": 22,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-B-16"
+        },
+        {
+          "elapsed_seconds": 197.29659072999493,
+          "error_type": "ClientFailed",
+          "event": "phase_error",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 481783808,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 1114615808,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 2680881152,
+              "process_rss_bytes": 2114809856,
+              "resources": {
+                "process_threads": 27,
+                "tasks": {
+                  "current": 27,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 308404224,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 309219328,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 387903488,
+              "process_rss_bytes": 387903488,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 1918,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 1111891968,
+              "cgroup_tasks": 51,
+              "process_rss_bytes": 2680832000,
+              "process_threads": 35,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "representative_http_bursts"
+        }
+      ],
+      "terminal_event": {
+        "error_type": "ClientFailed",
+        "event": "failed",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 477380608,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 1114615808,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 2680881152,
+          "process_rss_bytes": 2093477888,
+          "resources": {
+            "process_threads": 23,
+            "tasks": {
+              "current": 23,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        }
+      },
+      "artifacts": [
+        {
+          "kind": "journal",
+          "sha256": "29f30c35695aa18b31ef2b17b6df63080cc7a902df1af0a784e3f56e99890573"
+        },
+        {
+          "kind": "log",
+          "sha256": "d8b85da1b96a3e24ad4967a411511358a66bcb4e77bbcc08575bc8e169e7b41a"
+        }
+      ],
+      "source_snapshot": "original CRLF snapshot"
+    },
+    {
+      "label": "cpu-one",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": null,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 170921984,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 170921984,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 252022784,
+          "process_rss_bytes": 252022784,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "representative_clients": 1,
+        "representative_fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "runtimes": {
+          "httpx": "0.28.1",
+          "numpy": "2.5.3",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0",
+          "uvicorn": "0.54.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "representative",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "result": {
+        "calibration_rate_limit": "1000/minute",
+        "client": {
+          "passed": true,
+          "pid": 68,
+          "process_peak_rss_bytes": 105730048,
+          "process_rss_bytes": 93908992,
+          "reaped": true,
+          "records": [
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.2406266159960069,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 15511,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 5.622799270990072,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 123472,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 21.021138284995686,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703600,
+              "response_bytes": 493660,
+              "server_received_bytes": 3703600,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.8956010479887482,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 16508,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 4.994454327010317,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 131300,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 21.382598252006574,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128751,
+              "response_bytes": 524972,
+              "server_received_bytes": 128751,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.748995614994783,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 15504,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 5.014804631005973,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 123420,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 22.303670101013267,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463408,
+              "response_bytes": 493452,
+              "server_received_bytes": 1463408,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.0865860859921668,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 16452,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 7.562320406985236,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 131128,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 23.14133756197407,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442031,
+              "response_bytes": 524284,
+              "server_received_bytes": 6442031,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.30655609400128014,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 10497,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.004980080993846,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 83292,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 5.618999947997509,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703600,
+              "response_bytes": 332940,
+              "server_received_bytes": 3703600,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.2875643389998004,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 11024,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.3943112729757559,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 87796,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 5.403378424991388,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128751,
+              "response_bytes": 350956,
+              "server_received_bytes": 128751,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.30139484599931166,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 10480,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.5680766639998183,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 83424,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 6.065712964016711,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463408,
+              "response_bytes": 333468,
+              "server_received_bytes": 1463408,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.40477405398269184,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 11024,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.6637780180026311,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 87740,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 6.183426710020285,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442031,
+              "response_bytes": 350732,
+              "server_received_bytes": 6442031,
+              "server_status": 200,
+              "status": 200
+            }
+          ],
+          "returncode": 0
+        },
+        "clients": 1,
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "fixture_scope": "separate HTTP client process; shared container/cgroup; server RSS includes references/sampler",
+        "fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 0
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "phase_observations": [
+        {
+          "elapsed_seconds": 11.334817980998196,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 305954816,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 308342784,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 384643072,
+              "process_rss_bytes": 384618496,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 170921984,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 170921984,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 252022784,
+              "process_rss_bytes": 252022784,
+              "resources": {
+                "process_threads": 16,
+                "tasks": {
+                  "current": 16,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042409,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 108,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 307949568,
+              "cgroup_tasks": 22,
+              "process_rss_bytes": 384618496,
+              "process_threads": 22,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-L-14"
+        },
+        {
+          "elapsed_seconds": 2.1278475059953053,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 309436416,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 310009856,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 388968448,
+              "process_rss_bytes": 386879488,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 305954816,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 308342784,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 384643072,
+              "process_rss_bytes": 384618496,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 22,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 309436416,
+              "cgroup_tasks": 18,
+              "process_rss_bytes": 386879488,
+              "process_threads": 18,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-B-16"
+        },
+        {
+          "elapsed_seconds": 159.49168079698575,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 510943232,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 1146380288,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 2703769600,
+              "process_rss_bytes": 2145067008,
+              "resources": {
+                "process_threads": 35,
+                "tasks": {
+                  "current": 35,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 309829632,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 310009856,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 388968448,
+              "process_rss_bytes": 387686400,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 1560,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 1146007552,
+              "cgroup_tasks": 59,
+              "process_rss_bytes": 2703618048,
+              "process_threads": 43,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "representative_http_bursts"
+        }
+      ],
+      "terminal_event": {
+        "event": "complete",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 508276736,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 1146380288,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 2703769600,
+          "process_rss_bytes": 2147061760,
+          "resources": {
+            "process_threads": 17,
+            "tasks": {
+              "current": 17,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "passed": true
+      },
+      "artifacts": [
+        {
+          "kind": "journal",
+          "sha256": "f0131bb7be72bfee1b4ea3647192facf93893f0f2f88e47e17a0dc2f4b694820"
+        },
+        {
+          "kind": "log",
+          "sha256": "b7ed70cfc14697bb4ee916c655518568fff656e381648e0b1abcea66c1b0aa3f"
+        }
+      ],
+      "source_snapshot": "original CRLF snapshot"
+    },
+    {
+      "label": "cpu-two-small",
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8
+        ],
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": null,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 171274240,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 171274240,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 252047360,
+          "process_rss_bytes": 252047360,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "representative_clients": 2,
+        "representative_fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "runtimes": {
+          "httpx": "0.28.1",
+          "numpy": "2.5.3",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0",
+          "uvicorn": "0.54.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "representative",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "result": {
+        "calibration_rate_limit": "1000/minute",
+        "client": {
+          "passed": true,
+          "pid": 68,
+          "process_peak_rss_bytes": 105639936,
+          "process_rss_bytes": 84336640,
+          "reaped": true,
+          "records": [
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 1.0657065779960249,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115115,
+              "response_bytes": 16467,
+              "server_received_bytes": 115115,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.9345950149872806,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 15511,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 5.257221709005535,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 123472,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 11.204511813994031,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925935,
+              "response_bytes": 131256,
+              "server_received_bytes": 925935,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.3617559889971744,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 16508,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 2.5806805600004736,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4068,
+              "response_bytes": 15530,
+              "server_received_bytes": 4068,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 7.188278766989242,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 131300,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 13.813825179997366,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32224,
+              "response_bytes": 123672,
+              "server_received_bytes": 32224,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.0159359860117547,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 15504,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 1.7460957739967853,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46135,
+              "response_bytes": 16464,
+              "server_received_bytes": 46135,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 5.723258849000558,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 123420,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 12.762980806000996,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365887,
+              "response_bytes": 131144,
+              "server_received_bytes": 365887,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.2458156759967096,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 16452,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 2.640607409994118,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201360,
+              "response_bytes": 15503,
+              "server_received_bytes": 201360,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 8.482908014004352,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 131128,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 16.239920624997467,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610544,
+              "response_bytes": 123468,
+              "server_received_bytes": 1610544,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.5949618290178478,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 10497,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.8973721049842425,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115115,
+              "response_bytes": 11037,
+              "server_received_bytes": 115115,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.714794584986521,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 83292,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 3.3994927250023466,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925935,
+              "response_bytes": 87788,
+              "server_received_bytes": 925935,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.4444735310098622,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 11024,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.9471113359904848,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4068,
+              "response_bytes": 10494,
+              "server_received_bytes": 4068,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 2.991949518007459,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 87796,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 5.183792277995963,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32224,
+              "response_bytes": 83416,
+              "server_received_bytes": 32224,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.4881719230033923,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 10480,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.720232018007664,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46135,
+              "response_bytes": 11025,
+              "server_received_bytes": 46135,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 2.512946610018844,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 83424,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 4.553144789999351,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365887,
+              "response_bytes": 87792,
+              "server_received_bytes": 365887,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.3970155529968906,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 11024,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.7376695450220723,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201360,
+              "response_bytes": 10573,
+              "server_received_bytes": 201360,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 1.6809225459874142,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 87740,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 3.41987454998889,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610544,
+              "response_bytes": 83756,
+              "server_received_bytes": 1610544,
+              "server_status": 200,
+              "status": 200
+            }
+          ],
+          "returncode": 0
+        },
+        "clients": 2,
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "fixture_scope": "separate HTTP client process; shared container/cgroup; server RSS includes references/sampler",
+        "fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 0
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "phase_observations": [
+        {
+          "elapsed_seconds": 9.571768521011109,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 306167808,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 306339840,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 384884736,
+              "process_rss_bytes": 384868352,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 171274240,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 171274240,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 252047360,
+              "process_rss_bytes": 252047360,
+              "resources": {
+                "process_threads": 16,
+                "tasks": {
+                  "current": 16,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042409,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 88,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 306167808,
+              "cgroup_tasks": 22,
+              "process_rss_bytes": 384868352,
+              "process_threads": 22,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-L-14"
+        },
+        {
+          "elapsed_seconds": 0.7075487090041861,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 307277824,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 307716096,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 386965504,
+              "process_rss_bytes": 386949120,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 306167808,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 306339840,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 384884736,
+              "process_rss_bytes": 384868352,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 8,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 307585024,
+              "cgroup_tasks": 22,
+              "process_rss_bytes": 386949120,
+              "process_threads": 22,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-B-16"
+        },
+        {
+          "elapsed_seconds": 105.77244351699483,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 452182016,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 727912448,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 2291847168,
+              "process_rss_bytes": 2092646400,
+              "resources": {
+                "process_threads": 37,
+                "tasks": {
+                  "current": 21,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 307519488,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 4294967296,
+                "peak_bytes": 307716096,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 387710976,
+              "process_rss_bytes": 387710976,
+              "resources": {
+                "process_threads": 17,
+                "tasks": {
+                  "current": 17,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 1031,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 723169280,
+              "cgroup_tasks": 59,
+              "process_rss_bytes": 2291773440,
+              "process_threads": 43,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "representative_http_bursts"
+        }
+      ],
+      "terminal_event": {
+        "event": "complete",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 447578112,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 727912448,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 2291847168,
+          "process_rss_bytes": 2090467328,
+          "resources": {
+            "process_threads": 17,
+            "tasks": {
+              "current": 17,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "passed": true
+      },
+      "artifacts": [
+        {
+          "kind": "journal",
+          "sha256": "fed2de1bf61266ad0221a2b2b26e81f14ca744698cfa01ff2a3e3049f9ef9cbe"
+        },
+        {
+          "kind": "log",
+          "sha256": "914ab2ac769ae9e3a8db039c13ce180b9b8da21a52e2ba7bd7d4a49874f5b0b6"
+        }
+      ],
+      "source_snapshot": "final LF snapshot"
+    },
+    {
+      "label": "openvino-two",
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "event": "configuration",
+        "image_edge": null,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 170045440,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 170049536,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 251510784,
+          "process_rss_bytes": 251510784,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "representative_clients": 2,
+        "representative_fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "runtimes": {
+          "httpx": "0.28.1",
+          "numpy": "2.5.3",
+          "openvino": "2026.4.0",
+          "pillow": "12.3.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0",
+          "uvicorn": "0.54.0"
+        },
+        "sample_interval_seconds": 0.1,
+        "scenario": "representative",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "result": {
+        "calibration_rate_limit": "1000/minute",
+        "client": {
+          "passed": true,
+          "pid": 55,
+          "process_peak_rss_bytes": 105607168,
+          "process_rss_bytes": 105275392,
+          "reaped": true,
+          "records": [
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.8894085359934252,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115115,
+              "response_bytes": 16479,
+              "server_received_bytes": 115115,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.6799530389835127,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 15526,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 5.634865960018942,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 123560,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 10.53939226802322,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925935,
+              "response_bytes": 131228,
+              "server_received_bytes": 925935,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 17.784312637988478,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703600,
+              "response_bytes": 494012,
+              "server_received_bytes": 3703600,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 39.25374092601123,
+              "fixture": "poster-jpeg",
+              "label": "ViT-L-14/poster-jpeg/32/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703599,
+              "response_bytes": 524684,
+              "server_received_bytes": 3703599,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.205252751999069,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 16491,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 2.123332754999865,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4068,
+              "response_bytes": 15547,
+              "server_received_bytes": 4068,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 6.45955065698945,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 131272,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 12.844174550991738,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32224,
+              "response_bytes": 123720,
+              "server_received_bytes": 32224,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 18.613820576982107,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128751,
+              "response_bytes": 524860,
+              "server_received_bytes": 128751,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 35.46453000800102,
+              "fixture": "poster-png",
+              "label": "ViT-L-14/poster-png/32/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128752,
+              "response_bytes": 494652,
+              "server_received_bytes": 128752,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.5666156059887726,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 15532,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.9571409519994631,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46135,
+              "response_bytes": 16477,
+              "server_received_bytes": 46135,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 3.8110856320126913,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 123556,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 7.391585178003879,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365887,
+              "response_bytes": 131180,
+              "server_received_bytes": 365887,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 19.65707719299826,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463408,
+              "response_bytes": 493996,
+              "server_received_bytes": 1463408,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 34.34734641498653,
+              "fixture": "landscape-webp",
+              "label": "ViT-L-14/landscape-webp/32/0/1",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463407,
+              "response_bytes": 524492,
+              "server_received_bytes": 1463407,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 1.1331820859923027,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/1/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 16427,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 2.231296685000416,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/1/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201360,
+              "response_bytes": 15490,
+              "server_received_bytes": 201360,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 6.540618297003675,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/8/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 130972,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 12.998998833005317,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/8/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610544,
+              "response_bytes": 123416,
+              "server_received_bytes": 1610544,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 17.442930197983515,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/32/0/0",
+              "model": "ViT-L-14",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442031,
+              "response_bytes": 523660,
+              "server_received_bytes": 6442031,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 30.635640127991792,
+              "fixture": "noise-png",
+              "label": "ViT-L-14/noise-png/32/0/1",
+              "model": "ViT-L-14",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442032,
+              "response_bytes": 493436,
+              "server_received_bytes": 6442032,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.20403783101937734,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115116,
+              "response_bytes": 10478,
+              "server_received_bytes": 115116,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.2580824560136534,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 115115,
+              "response_bytes": 11037,
+              "server_received_bytes": 115115,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 0.8998692910245154,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925936,
+              "response_bytes": 83300,
+              "server_received_bytes": 925936,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 1.6651932109962218,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 925935,
+              "response_bytes": 87736,
+              "server_received_bytes": 925935,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 3.3391103709873278,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703600,
+              "response_bytes": 332972,
+              "server_received_bytes": 3703600,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 6.229577591002453,
+              "fixture": "poster-jpeg",
+              "label": "ViT-B-16/poster-jpeg/32/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 3703599,
+              "response_bytes": 350716,
+              "server_received_bytes": 3703599,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.12458856799639761,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4067,
+              "response_bytes": 11049,
+              "server_received_bytes": 4067,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.2681098510220181,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 4068,
+              "response_bytes": 10481,
+              "server_received_bytes": 4068,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 0.7688608810130972,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32223,
+              "response_bytes": 87712,
+              "server_received_bytes": 32223,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 1.5412139710097108,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 32224,
+              "response_bytes": 83280,
+              "server_received_bytes": 32224,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 3.1672600230085663,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128751,
+              "response_bytes": 350620,
+              "server_received_bytes": 128751,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 6.444688515999587,
+              "fixture": "poster-png",
+              "label": "ViT-B-16/poster-png/32/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 128752,
+              "response_bytes": 332892,
+              "server_received_bytes": 128752,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.24351397197460756,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46136,
+              "response_bytes": 10488,
+              "server_received_bytes": 46136,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.4864091399940662,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 46135,
+              "response_bytes": 11017,
+              "server_received_bytes": 46135,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 0.9093691529997159,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365888,
+              "response_bytes": 83368,
+              "server_received_bytes": 365888,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 1.8459310659964103,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 365887,
+              "response_bytes": 87636,
+              "server_received_bytes": 365887,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 2.9905565599910915,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463408,
+              "response_bytes": 333244,
+              "server_received_bytes": 1463408,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 5.997831440006848,
+              "fixture": "landscape-webp",
+              "label": "ViT-B-16/landscape-webp/32/0/1",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1463407,
+              "response_bytes": 350316,
+              "server_received_bytes": 1463407,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 0,
+              "elapsed_seconds": 0.1349521280208137,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/1/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201359,
+              "response_bytes": 11036,
+              "server_received_bytes": 201359,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 1,
+              "caller": 1,
+              "elapsed_seconds": 0.2826535089989193,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/1/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 201360,
+              "response_bytes": 10541,
+              "server_received_bytes": 201360,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 0,
+              "elapsed_seconds": 0.7463239450007677,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/8/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610543,
+              "response_bytes": 87860,
+              "server_received_bytes": 1610543,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 8,
+              "caller": 1,
+              "elapsed_seconds": 1.4277646620175801,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/8/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 1610544,
+              "response_bytes": 83824,
+              "server_received_bytes": 1610544,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 0,
+              "elapsed_seconds": 5.0245815080124885,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/32/0/0",
+              "model": "ViT-B-16",
+              "normalize": true,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442031,
+              "response_bytes": 351212,
+              "server_received_bytes": 6442031,
+              "server_status": 200,
+              "status": 200
+            },
+            {
+              "batch_size": 32,
+              "caller": 1,
+              "elapsed_seconds": 10.407413331995485,
+              "fixture": "noise-png",
+              "label": "ViT-B-16/noise-png/32/0/1",
+              "model": "ViT-B-16",
+              "normalize": false,
+              "passed": true,
+              "repeat": 0,
+              "request_bytes": 6442032,
+              "response_bytes": 335068,
+              "server_received_bytes": 6442032,
+              "server_status": 200,
+              "status": 200
+            }
+          ],
+          "returncode": 0
+        },
+        "clients": 2,
+        "codec_versions": {
+          "jpg": "6.2",
+          "webp": "1.6.0",
+          "zlib": "1.3"
+        },
+        "fixture_scope": "separate HTTP client process; shared container/cgroup; server RSS includes references/sampler",
+        "fixtures": [
+          {
+            "codec": "JPEG",
+            "height": 750,
+            "mode": "RGB",
+            "name": "poster-jpeg",
+            "save_options": {
+              "progressive": true,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 86286,
+                "sha256": "3e08e0e0325c648734cdc310564fdd8ac908d75a75fe96ef02f18c234cb90aef",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 87286,
+                "sha256": "7a7227df5aa124488d9d773d0e891d82b32e594c3a3c42139bc22763c2be9ff3",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "PNG",
+            "height": 750,
+            "mode": "RGBA",
+            "name": "poster-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 2999,
+                "sha256": "ef6c63f31ce474aa754e995c48388457be4ccc0ee2524acc06924bd37df5ba3d",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 3002,
+                "sha256": "809ce597082dfae656d168e02231b9335103fbc33118ccbc52489c50f845add6",
+                "variant": 1
+              }
+            ],
+            "width": 500
+          },
+          {
+            "codec": "WEBP",
+            "height": 500,
+            "mode": "RGB",
+            "name": "landscape-webp",
+            "save_options": {
+              "method": 4,
+              "quality": 85
+            },
+            "variants": [
+              {
+                "encoded_bytes": 34550,
+                "sha256": "3fe400f99c9018eda690c692f94868c35853755f5fe3ac465acd8b64dfcf25e0",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 34014,
+                "sha256": "2102abfbb41f7e0691f7c9d8e4f31bb79fd7eaf75f244b25714162df00a686c4",
+                "variant": 1
+              }
+            ],
+            "width": 750
+          },
+          {
+            "codec": "PNG",
+            "height": 224,
+            "mode": "RGB",
+            "name": "noise-png",
+            "save_options": {
+              "compress_level": 6
+            },
+            "variants": [
+              {
+                "encoded_bytes": 150969,
+                "sha256": "b9081fcccc323810370e67968e5d054645c64cbd22685b3248eca12219dd7668",
+                "variant": 0
+              },
+              {
+                "encoded_bytes": 150969,
+                "sha256": "3d4f5ad1b3f1957f42d862ccfe50fc51de959cf6cd8595ba05d59c31273d4bdb",
+                "variant": 1
+              }
+            ],
+            "width": 224
+          }
+        ],
+        "settled_ingress": {
+          "active": 0,
+          "maximum": 8,
+          "rejected": 0
+        },
+        "settled_queue": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "transport": "direct-loopback-http1",
+        "unauthenticated_received_bytes": 0,
+        "unauthenticated_status": 401
+      },
+      "phase_observations": [
+        {
+          "elapsed_seconds": 9.844488895992981,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 1169965056,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 1169965056,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 2471092224,
+              "process_rss_bytes": 2471092224,
+              "resources": {
+                "process_threads": 18,
+                "tasks": {
+                  "current": 18,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 170045440,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 170049536,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 251510784,
+              "process_rss_bytes": 251510784,
+              "resources": {
+                "process_threads": 16,
+                "tasks": {
+                  "current": 16,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042409,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 93,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 1169965056,
+              "cgroup_tasks": 19,
+              "process_rss_bytes": 2471092224,
+              "process_threads": 19,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-L-14"
+        },
+        {
+          "elapsed_seconds": 1.0597829479957,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 1417211904,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 1417351168,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 3061895168,
+              "process_rss_bytes": 3061895168,
+              "resources": {
+                "process_threads": 20,
+                "tasks": {
+                  "current": 20,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 1169842176,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 1169965056,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 2471092224,
+              "process_rss_bytes": 2471092224,
+              "resources": {
+                "process_threads": 18,
+                "tasks": {
+                  "current": 18,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 12,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 1417211904,
+              "cgroup_tasks": 21,
+              "process_rss_bytes": 3061895168,
+              "process_threads": 21,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "load/ViT-B-16"
+        },
+        {
+          "elapsed_seconds": 241.0141835739778,
+          "event": "phase_end",
+          "memory": {
+            "after": {
+              "cgroup": {
+                "current_bytes": 2748563456,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 2878160896,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 4463869952,
+              "process_rss_bytes": 4412698624,
+              "resources": {
+                "process_threads": 22,
+                "tasks": {
+                  "current": 22,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "before": {
+              "cgroup": {
+                "current_bytes": 1417621504,
+                "events": {
+                  "memory.failcnt": 0,
+                  "memory.memsw.failcnt": 0,
+                  "oom_kill": 0
+                },
+                "limit_bytes": 8589934592,
+                "peak_bytes": 1417863168,
+                "swap_limit_bytes": 0,
+                "version": 1
+              },
+              "cuda": null,
+              "process_peak_rss_bytes": 3063988224,
+              "process_rss_bytes": 3063988224,
+              "resources": {
+                "process_threads": 20,
+                "tasks": {
+                  "current": 20,
+                  "events": {
+                    "max": 0
+                  },
+                  "lifetime_peak": null,
+                  "limit": 1024,
+                  "version": 1
+                },
+                "temporary_filesystem": {
+                  "available_bytes": 134217728,
+                  "available_inodes": 2042408,
+                  "capacity_bytes": 134217728,
+                  "path": "/tmp",
+                  "used_bytes": 0
+                }
+              }
+            },
+            "cgroup_event_delta": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "sample_count": 2368,
+            "sampled_minima": {
+              "temporary_available_bytes": 134217728,
+              "temporary_available_inodes": 2042408
+            },
+            "sampled_peaks": {
+              "cgroup_current_bytes": 2869145600,
+              "cgroup_tasks": 41,
+              "process_rss_bytes": 4451438592,
+              "process_threads": 25,
+              "temporary_used_bytes": 0
+            },
+            "task_event_delta": {
+              "max": 0
+            }
+          },
+          "phase": "representative_http_bursts"
+        }
+      ],
+      "terminal_event": {
+        "event": "complete",
+        "memory": {
+          "cgroup": {
+            "current_bytes": 2748518400,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 2878160896,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 4463869952,
+          "process_rss_bytes": 4412702720,
+          "resources": {
+            "process_threads": 21,
+            "tasks": {
+              "current": 21,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042408,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "passed": true
+      },
+      "artifacts": [
+        {
+          "kind": "journal",
+          "sha256": "1cc802b8e3c74ca64e313e03da0c60095ea8ce4d0e5fe27089fc5171712a1ea0"
+        },
+        {
+          "kind": "log",
+          "sha256": "61f66f775daf5eb90afc65c341c6e848f30050ac2fb0623aef4f4e4877c6ed1e"
+        }
+      ],
+      "source_snapshot": "final LF snapshot"
+    }
+  ],
+  "container_settings": {
+    "user": 1001,
+    "network": "none",
+    "pids_limit": 1024,
+    "tmpfs_bytes": 134217728,
+    "swap_bytes": 0,
+    "cap_drop": [
+      "ALL"
+    ],
+    "no_new_privileges": true,
+    "publisher_assets": "read-only",
+    "openvino_ir": "existing ov_ir subdirectory writable via volume-subpath"
+  },
+  "dependency_contracts": {
+    "profiles": 13,
+    "artifacts": 26,
+    "qa_wheels": 70,
+    "cpu_wheels": 56,
+    "openvino_wheels": 58,
+    "locks_unchanged": true
+  },
+  "qa": {
+    "total": 1119,
+    "skipped": 7,
+    "passed": 1112,
+    "time_seconds": 126.857,
+    "openapi": {
+      "sha256": "74ed5f5e2ed776296fd487c09edb905f0ad9498bb55c0a0cb3b07ac6fb422517"
+    },
+    "coverage": {
+      "line_rate": 0.9538,
+      "branch_rate": 0.9042
+    },
+    "runtimes": {
+      "pillow": "12.3.0",
+      "numpy": "2.5.3",
+      "httpx": "0.28.1",
+      "uvicorn": "0.54.0",
+      "torch": "2.14.1+cpu",
+      "transformers": "5.18.0",
+      "pydantic": "2.13.5",
+      "pydantic-core": "2.46.5"
+    }
+  },
+  "native_source_hashes": [
+    {
+      "path": "scripts/capacity_api.py",
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+    },
+    {
+      "path": "scripts/capacity_client_process.py",
+      "sha256": "1c637f819de30da3b60a1fe9ad789f4a8d86bca24d52656394069c892f04151e"
+    },
+    {
+      "path": "scripts/capacity_cuda.py",
+      "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+    },
+    {
+      "path": "scripts/capacity_image_fixtures.py",
+      "sha256": "2a9cf19145ed4d22cef850a56e148a999f7f3e25685e300ca8d307637d451eb1"
+    },
+    {
+      "path": "scripts/capacity_metrics.py",
+      "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+    },
+    {
+      "path": "scripts/capacity_mixed.py",
+      "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+    },
+    {
+      "path": "scripts/capacity_probe.py",
+      "sha256": "da3a33ff45235a3768950ee6f67b2d1051b6193edf26465b66f00459b330aaf8"
+    },
+    {
+      "path": "scripts/capacity_receive_observer.py",
+      "sha256": "1f0a6a6eb3cd21ead3043b5c92c1e76a767d947fbe0f405978ff328de354e96e"
+    },
+    {
+      "path": "scripts/capacity_remote_fixture.py",
+      "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+    },
+    {
+      "path": "scripts/capacity_representative.py",
+      "sha256": "601c57688e126770fd757da1e3793022574690a0f90169a5eb1d0badfe1b08cf"
+    },
+    {
+      "path": "scripts/capacity_representative_client.py",
+      "sha256": "46cc47ee61ad637ae0baafd412f0784ac8a845b79362e3da4a1691539d53cc5b"
+    },
+    {
+      "path": "scripts/capacity_resources.py",
+      "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+    },
+    {
+      "path": "scripts/capacity_socket.py",
+      "sha256": "d33038c7552d022b064c434333e1d0fdb74816b48532d1131d1d5efb1ce297ef"
+    },
+    {
+      "path": "scripts/capacity_socket_mixed.py",
+      "sha256": "ebc3f433c0f90873862e937663546276a72a47b164df91cab6375943909df226"
+    },
+    {
+      "path": "scripts/capacity_socket_server.py",
+      "sha256": "9bafd9aa325b78271e6740d5a4fb7c93f92e031a0213bfd60c0d41ca454761a9"
+    },
+    {
+      "path": "scripts/capacity_socket_upload.py",
+      "sha256": "161ec61d176414c19e03db8cf21ab39496b616528429ea6ff4e895177cf21e53"
+    },
+    {
+      "path": "scripts/capacity_upload_body.py",
+      "sha256": "a83ea42f0c4fc696e6a66e90bc98d5c76d60a9c0a6b77aeb6895224dc1b26970"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "sha256": "8b394ab91d8f756b434929c6646e8d2e2cf4beea388533c3f7a8adcf53f2c03f"
+    },
+    {
+      "path": "src/image_embedder/admission.py",
+      "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+    },
+    {
+      "path": "src/image_embedder/artifact_integrity.py",
+      "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+    },
+    {
+      "path": "src/image_embedder/authenticated_router.py",
+      "sha256": "3624b54491eedfec6ab58266d2dbf63349e415eec723984877237fd58e61337e"
+    },
+    {
+      "path": "src/image_embedder/batch.py",
+      "sha256": "d80379051c95ccf2883fe83a27c8715dffeaaf6f63bca516b2f5fea97317e177"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "67c4b613369bb0fb70a413c630ac496a294218c1a031eb1e4947f7278136fee5"
+    },
+    {
+      "path": "src/image_embedder/credentials.py",
+      "sha256": "fb7d51eb24b6b0654aa23b95992df1634324cd727cd8404481e8d546d9ef0f2e"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "cc2ad92b552cc18753bb047e497caa3ae168a879b49957c937df6e51034c06d7"
+    },
+    {
+      "path": "src/image_embedder/execution.py",
+      "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+    },
+    {
+      "path": "src/image_embedder/forwarding.py",
+      "sha256": "1dd160b54e42dda8e497214577872e827ed5e4a760c2cf73bd13ba07b36884cc"
+    },
+    {
+      "path": "src/image_embedder/healthcheck.py",
+      "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+    },
+    {
+      "path": "src/image_embedder/image_input.py",
+      "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+    },
+    {
+      "path": "src/image_embedder/ingress.py",
+      "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+    },
+    {
+      "path": "src/image_embedder/ingress_middleware.py",
+      "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+    },
+    {
+      "path": "src/image_embedder/input_limits.py",
+      "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+    },
+    {
+      "path": "src/image_embedder/ir_cache.py",
+      "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+    },
+    {
+      "path": "src/image_embedder/lifecycle.py",
+      "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+    },
+    {
+      "path": "src/image_embedder/logging_config.py",
+      "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+    },
+    {
+      "path": "src/image_embedder/main.py",
+      "sha256": "d9f69abc54577b0a5d43ad76db8f0243bedc70454dc6e8e017c918e118a43a5a"
+    },
+    {
+      "path": "src/image_embedder/memory.py",
+      "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+    },
+    {
+      "path": "src/image_embedder/models.py",
+      "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+    },
+    {
+      "path": "src/image_embedder/model_catalog.py",
+      "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+    },
+    {
+      "path": "src/image_embedder/model_initialization.py",
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+    },
+    {
+      "path": "src/image_embedder/model_loading.py",
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+    },
+    {
+      "path": "src/image_embedder/openvino_models.py",
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+    },
+    {
+      "path": "src/image_embedder/queue.py",
+      "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+    },
+    {
+      "path": "src/image_embedder/rate_limits.py",
+      "sha256": "6fe39de34a34a4cd629644e65e77142c30cbd4123e67a1298e13cc4e148c2b8c"
+    },
+    {
+      "path": "src/image_embedder/remote_budget.py",
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+    },
+    {
+      "path": "src/image_embedder/remote_fetch.py",
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+    },
+    {
+      "path": "src/image_embedder/remote_protocol.py",
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+    },
+    {
+      "path": "src/image_embedder/remote_url.py",
+      "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+    },
+    {
+      "path": "src/image_embedder/remote_worker.py",
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+    },
+    {
+      "path": "src/image_embedder/request_body_deadline.py",
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+    },
+    {
+      "path": "src/image_embedder/response_http_protocol.py",
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+    },
+    {
+      "path": "src/image_embedder/response_send_deadline.py",
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+    },
+    {
+      "path": "src/image_embedder/security.py",
+      "sha256": "ff74f5f467238587608a7f6bbaf9b96f82a874d73a729d25427ede4df61ea13a"
+    },
+    {
+      "path": "src/image_embedder/server.py",
+      "sha256": "12e46c476511fcbf29772956c6d532b34cc20d36fd59a28d840288241583d424"
+    },
+    {
+      "path": "src/image_embedder/__init__.py",
+      "sha256": "411d21b5f19dec74d6fdf6b44d7ae33f1fd495b436f0bdb97bf0e8b3e74b982e"
+    },
+    {
+      "path": "src/image_embedder/routes/admin.py",
+      "sha256": "ceacbab97b8162e67ecd0bb874447247a4b1f745b0f06aa2a8d66c4e599af768"
+    },
+    {
+      "path": "src/image_embedder/routes/batch.py",
+      "sha256": "362e39a7219c8b2b1fcf3d326bc0d2db5939792b7f875e7aedd3b61946f420bd"
+    },
+    {
+      "path": "src/image_embedder/routes/embed.py",
+      "sha256": "bd490d786fc4f8e4f4fe5e7736d2c2d3c57a74b79fd74d53fc753b2ee755ed4b"
+    },
+    {
+      "path": "src/image_embedder/routes/health.py",
+      "sha256": "586da8acd32af7110207de1aa5358a466511e7ea98a3036740ae016743280013"
+    },
+    {
+      "path": "src/image_embedder/routes/models.py",
+      "sha256": "389d9cdc470846e80292f4cf09e06b768efe5743146c237917d4a59d3bb9e27f"
+    },
+    {
+      "path": "src/image_embedder/routes/__init__.py",
+      "sha256": "4a7c0a2dd570ef163a4caf03662d2fba92d72b6bb8e6766f834589375457f9a7"
+    }
+  ],
+  "source_equivalence": [
+    {
+      "path": "scripts/capacity_probe.py",
+      "native_sha256": "da3a33ff45235a3768950ee6f67b2d1051b6193edf26465b66f00459b330aaf8",
+      "git_sha256": "2c283b90e10dd0d875092164b235edb88b122b84769e63a2296be73a7b13f5ec",
+      "normalization": "CRLF to LF only"
+    },
+    {
+      "path": "scripts/capacity_representative_client.py",
+      "native_sha256": "46cc47ee61ad637ae0baafd412f0784ac8a845b79362e3da4a1691539d53cc5b",
+      "git_sha256": "2a834d1f107ddec598087ebc963aa476e45620b2098abc48c204974253b38d7a",
+      "normalization": "CRLF to LF only"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "native_sha256": "8b394ab91d8f756b434929c6646e8d2e2cf4beea388533c3f7a8adcf53f2c03f",
+      "git_sha256": "0373dfde5798f289647baa1742cb1ed60d2f6a9cad078aa023197339252fde3c",
+      "normalization": "CRLF to LF only"
+    }
+  ],
+  "ir_artifacts_unchanged": [
+    {
+      "model": "ViT-L-14",
+      "files": [
+        {
+          "path": "model.xml",
+          "sha256": "c7999779a56f503a1d8a80bf83437e911116f3bb6ff709d6e91e8b5c0fc52836",
+          "bytes": 725772
+        },
+        {
+          "path": "model.bin",
+          "sha256": "64d38b35e0d7e35f55c9087999a40e1336fff13970e8889782048dc018c71e35",
+          "bytes": 1215864972
+        },
+        {
+          "path": "manifest.json",
+          "sha256": "80e04c857070ac2ec2ee1595016489700350525ed95594efde0603e21f1576e7",
+          "bytes": 987
+        }
+      ],
+      "contract": {
+        "sha256": "bcc701e18559386349474a95cbec8b1cdeeafe4f4285cdff917bd80c5cf9d0cf"
+      }
+    },
+    {
+      "model": "ViT-B-16",
+      "files": [
+        {
+          "path": "model.xml",
+          "sha256": "120d188d19d70431018d0da4aa882035c2402556b82a1f6ac41a87a0c4eb062e",
+          "bytes": 369049
+        },
+        {
+          "path": "model.bin",
+          "sha256": "851e27c4ab04d8b09e622022c15e504da330b6b565bbc61a235e16773805fa6c",
+          "bytes": 344770700
+        },
+        {
+          "path": "manifest.json",
+          "sha256": "d8d19d29aa85cd188116dec046f52646eb73ad04ff40fb0531c74b1eca3f1f94",
+          "bytes": 985
+        }
+      ],
+      "contract": {
+        "sha256": "e7bb0cdfe22879b28d419499101add1fb6a1b3032bcdec068fc9f19bcab058f5"
+      }
+    }
+  ],
+  "qa_fixture_mount_failures": [
+    {
+      "kind": "qa-noexec-fixture-failure",
+      "log": {
+        "sha256": "eaa4bdd212a528590c82018378f8d21dfc8cb1e710558e68fd6bb857e3fa770b"
+      },
+      "outcome": "existing launcher stub refused by noexec tmpfs; native exec diagnostic and focused replay pass after explicit exec"
+    },
+    {
+      "kind": "qa-implicit-noexec-fixture-failure",
+      "log": {
+        "sha256": "9bff583d790c26f3dee4c10b202ba3f3b1bcfe7e703bf9608796cbe66461c965"
+      },
+      "outcome": "existing launcher stub refused by noexec tmpfs; native exec diagnostic and focused replay pass after explicit exec"
+    }
+  ],
+  "setup_failures": [
+    {
+      "kind": "initial CPU diagnostic iteration",
+      "journal": {
+        "sha256": "833b04c2d0835d4e29f1c55ea10f7378649d4957218b0e59960ea2c280e8d6ce"
+      },
+      "log": {
+        "sha256": "d515da7c211ac6c0aa6a64e86bd1563ef343f3f4dea0c029086e849d41b1cecf"
+      },
+      "outcome": "45-second batch deadline, native drain completed, no OOM/task events"
+    },
+    {
+      "kind": "initial OpenVINO cache mount",
+      "journal": {
+        "sha256": "2a3a090c338759235d74a784592c7dec4b3ce7386afe54c330588bdb4cb6b2df"
+      },
+      "log": {
+        "sha256": "ec151c3f9daeaa2f097fa6f14e4dc436e695c7b6614fd74d384f1a53c63bc996"
+      },
+      "outcome": "read-only IR lock failed before client creation; retry limited writable scope to ov_ir"
+    }
+  ],
+  "limitations": [
+    "synthetic fixed dimensions/content, not measured production distribution",
+    "finite bursts, not sustained throughput or percentiles",
+    "server RSS includes fixture/reference/sampler overhead; client RSS is independent",
+    "whole cgroup includes both processes, shared pages/page cache/kernel/socket charges",
+    "sampled peaks are lower bounds; PID v1 lifetime peak unavailable",
+    "warm/cache/host conditions differ; independent peaks cannot be added/subtracted",
+    "loopback does not establish real external-client address preservation",
+    "hosted CI, Windows, accelerator capacity and production-host workload gates remain separate"
+  ],
+  "security_scans": {
+    "codeql": {
+      "version": "2.27.1",
+      "python_queries_version": "1.8.11",
+      "suite": "python-security-extended",
+      "python_source_files": 90,
+      "workflow_extraction_files": 10,
+      "actions_security_queries_executed": false,
+      "alerts": [
+        {
+          "rule": "py/clear-text-logging-sensitive-data",
+          "path": "scripts/generate_env.py",
+          "line": 57
+        },
+        {
+          "rule": "py/overly-permissive-file",
+          "path": "scripts/secret_publication.py",
+          "line": 105
+        }
+      ],
+      "new_alerts": 0,
+      "baseline_alerts_unchanged": true,
+      "suppression_changes": false,
+      "report": {
+        "sha256": "882c5203d8cc2b26e43bcbda5f03a58e171cbe69f6e1ccc70f0500832bc37da5"
+      },
+      "bundle": {
+        "sha256": "1d380f79896ededc654c7b21fafb3360136f1aeb678ad4df4df9af3910c6b815"
+      },
+      "context": [
+        "Explicit opt-in --show-key display; unchanged",
+        "Readable nonsecret configuration publication; unchanged"
+      ]
+    },
+    "gitleaks": {
+      "version": "8.30.1",
+      "artifact": {
+        "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+      },
+      "source": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "findings": 0
+      },
+      "baseline_history": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "findings": 0,
+        "commits": 90
+      },
+      "scope": "Filtered final source snapshot and all local baseline Git refs; redacted reports",
+      "suppression_changes": false,
+      "initial_source_findings": {
+        "count": 2,
+        "rule": "generic-api-key",
+        "classification": "Public OpenVINO IR contract digests, verified against unchanged model-cache contracts",
+        "resolution": "Represent archived public digests explicitly as contract.sha256; no allowlist changes",
+        "report": {
+          "sha256": "d9e61d260bf94e02809bca21d15bb62d4707426b614ff31dd922158201a22397"
+        }
+      }
+    }
+  },
+  "final_qa_source_hashes": [
+    {
+      "path": "scripts/capacity_api.py",
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+    },
+    {
+      "path": "scripts/capacity_client_process.py",
+      "sha256": "1c637f819de30da3b60a1fe9ad789f4a8d86bca24d52656394069c892f04151e"
+    },
+    {
+      "path": "scripts/capacity_cuda.py",
+      "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+    },
+    {
+      "path": "scripts/capacity_image_fixtures.py",
+      "sha256": "2a9cf19145ed4d22cef850a56e148a999f7f3e25685e300ca8d307637d451eb1"
+    },
+    {
+      "path": "scripts/capacity_metrics.py",
+      "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+    },
+    {
+      "path": "scripts/capacity_mixed.py",
+      "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+    },
+    {
+      "path": "scripts/capacity_probe.py",
+      "sha256": "2c283b90e10dd0d875092164b235edb88b122b84769e63a2296be73a7b13f5ec"
+    },
+    {
+      "path": "scripts/capacity_receive_observer.py",
+      "sha256": "1f0a6a6eb3cd21ead3043b5c92c1e76a767d947fbe0f405978ff328de354e96e"
+    },
+    {
+      "path": "scripts/capacity_remote_fixture.py",
+      "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+    },
+    {
+      "path": "scripts/capacity_representative.py",
+      "sha256": "601c57688e126770fd757da1e3793022574690a0f90169a5eb1d0badfe1b08cf"
+    },
+    {
+      "path": "scripts/capacity_representative_client.py",
+      "sha256": "2a834d1f107ddec598087ebc963aa476e45620b2098abc48c204974253b38d7a"
+    },
+    {
+      "path": "scripts/capacity_resources.py",
+      "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+    },
+    {
+      "path": "scripts/capacity_socket.py",
+      "sha256": "d33038c7552d022b064c434333e1d0fdb74816b48532d1131d1d5efb1ce297ef"
+    },
+    {
+      "path": "scripts/capacity_socket_mixed.py",
+      "sha256": "ebc3f433c0f90873862e937663546276a72a47b164df91cab6375943909df226"
+    },
+    {
+      "path": "scripts/capacity_socket_server.py",
+      "sha256": "9bafd9aa325b78271e6740d5a4fb7c93f92e031a0213bfd60c0d41ca454761a9"
+    },
+    {
+      "path": "scripts/capacity_socket_upload.py",
+      "sha256": "161ec61d176414c19e03db8cf21ab39496b616528429ea6ff4e895177cf21e53"
+    },
+    {
+      "path": "scripts/capacity_upload_body.py",
+      "sha256": "a83ea42f0c4fc696e6a66e90bc98d5c76d60a9c0a6b77aeb6895224dc1b26970"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "sha256": "0373dfde5798f289647baa1742cb1ed60d2f6a9cad078aa023197339252fde3c"
+    },
+    {
+      "path": "src/image_embedder/admission.py",
+      "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+    },
+    {
+      "path": "src/image_embedder/artifact_integrity.py",
+      "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+    },
+    {
+      "path": "src/image_embedder/authenticated_router.py",
+      "sha256": "3624b54491eedfec6ab58266d2dbf63349e415eec723984877237fd58e61337e"
+    },
+    {
+      "path": "src/image_embedder/batch.py",
+      "sha256": "d80379051c95ccf2883fe83a27c8715dffeaaf6f63bca516b2f5fea97317e177"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "67c4b613369bb0fb70a413c630ac496a294218c1a031eb1e4947f7278136fee5"
+    },
+    {
+      "path": "src/image_embedder/credentials.py",
+      "sha256": "fb7d51eb24b6b0654aa23b95992df1634324cd727cd8404481e8d546d9ef0f2e"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "cc2ad92b552cc18753bb047e497caa3ae168a879b49957c937df6e51034c06d7"
+    },
+    {
+      "path": "src/image_embedder/execution.py",
+      "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+    },
+    {
+      "path": "src/image_embedder/forwarding.py",
+      "sha256": "1dd160b54e42dda8e497214577872e827ed5e4a760c2cf73bd13ba07b36884cc"
+    },
+    {
+      "path": "src/image_embedder/healthcheck.py",
+      "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+    },
+    {
+      "path": "src/image_embedder/image_input.py",
+      "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+    },
+    {
+      "path": "src/image_embedder/ingress.py",
+      "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+    },
+    {
+      "path": "src/image_embedder/ingress_middleware.py",
+      "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+    },
+    {
+      "path": "src/image_embedder/input_limits.py",
+      "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+    },
+    {
+      "path": "src/image_embedder/ir_cache.py",
+      "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+    },
+    {
+      "path": "src/image_embedder/lifecycle.py",
+      "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+    },
+    {
+      "path": "src/image_embedder/logging_config.py",
+      "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+    },
+    {
+      "path": "src/image_embedder/main.py",
+      "sha256": "d9f69abc54577b0a5d43ad76db8f0243bedc70454dc6e8e017c918e118a43a5a"
+    },
+    {
+      "path": "src/image_embedder/memory.py",
+      "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+    },
+    {
+      "path": "src/image_embedder/models.py",
+      "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+    },
+    {
+      "path": "src/image_embedder/model_catalog.py",
+      "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+    },
+    {
+      "path": "src/image_embedder/model_initialization.py",
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+    },
+    {
+      "path": "src/image_embedder/model_loading.py",
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+    },
+    {
+      "path": "src/image_embedder/openvino_models.py",
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+    },
+    {
+      "path": "src/image_embedder/queue.py",
+      "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+    },
+    {
+      "path": "src/image_embedder/rate_limits.py",
+      "sha256": "6fe39de34a34a4cd629644e65e77142c30cbd4123e67a1298e13cc4e148c2b8c"
+    },
+    {
+      "path": "src/image_embedder/remote_budget.py",
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+    },
+    {
+      "path": "src/image_embedder/remote_fetch.py",
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+    },
+    {
+      "path": "src/image_embedder/remote_protocol.py",
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+    },
+    {
+      "path": "src/image_embedder/remote_url.py",
+      "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+    },
+    {
+      "path": "src/image_embedder/remote_worker.py",
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+    },
+    {
+      "path": "src/image_embedder/request_body_deadline.py",
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+    },
+    {
+      "path": "src/image_embedder/response_http_protocol.py",
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+    },
+    {
+      "path": "src/image_embedder/response_send_deadline.py",
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+    },
+    {
+      "path": "src/image_embedder/security.py",
+      "sha256": "ff74f5f467238587608a7f6bbaf9b96f82a874d73a729d25427ede4df61ea13a"
+    },
+    {
+      "path": "src/image_embedder/server.py",
+      "sha256": "12e46c476511fcbf29772956c6d532b34cc20d36fd59a28d840288241583d424"
+    },
+    {
+      "path": "src/image_embedder/__init__.py",
+      "sha256": "411d21b5f19dec74d6fdf6b44d7ae33f1fd495b436f0bdb97bf0e8b3e74b982e"
+    },
+    {
+      "path": "src/image_embedder/routes/admin.py",
+      "sha256": "ceacbab97b8162e67ecd0bb874447247a4b1f745b0f06aa2a8d66c4e599af768"
+    },
+    {
+      "path": "src/image_embedder/routes/batch.py",
+      "sha256": "362e39a7219c8b2b1fcf3d326bc0d2db5939792b7f875e7aedd3b61946f420bd"
+    },
+    {
+      "path": "src/image_embedder/routes/embed.py",
+      "sha256": "bd490d786fc4f8e4f4fe5e7736d2c2d3c57a74b79fd74d53fc753b2ee755ed4b"
+    },
+    {
+      "path": "src/image_embedder/routes/health.py",
+      "sha256": "586da8acd32af7110207de1aa5358a466511e7ea98a3036740ae016743280013"
+    },
+    {
+      "path": "src/image_embedder/routes/models.py",
+      "sha256": "389d9cdc470846e80292f4cf09e06b768efe5743146c237917d4a59d3bb9e27f"
+    },
+    {
+      "path": "src/image_embedder/routes/__init__.py",
+      "sha256": "4a7c0a2dd570ef163a4caf03662d2fba92d72b6bb8e6766f834589375457f9a7"
+    }
+  ],
+  "committed_source_hashes": [
+    {
+      "path": "scripts/capacity_api.py",
+      "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+    },
+    {
+      "path": "scripts/capacity_client_process.py",
+      "sha256": "1c637f819de30da3b60a1fe9ad789f4a8d86bca24d52656394069c892f04151e"
+    },
+    {
+      "path": "scripts/capacity_cuda.py",
+      "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+    },
+    {
+      "path": "scripts/capacity_image_fixtures.py",
+      "sha256": "2a9cf19145ed4d22cef850a56e148a999f7f3e25685e300ca8d307637d451eb1"
+    },
+    {
+      "path": "scripts/capacity_metrics.py",
+      "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+    },
+    {
+      "path": "scripts/capacity_mixed.py",
+      "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+    },
+    {
+      "path": "scripts/capacity_probe.py",
+      "sha256": "2c283b90e10dd0d875092164b235edb88b122b84769e63a2296be73a7b13f5ec"
+    },
+    {
+      "path": "scripts/capacity_receive_observer.py",
+      "sha256": "1f0a6a6eb3cd21ead3043b5c92c1e76a767d947fbe0f405978ff328de354e96e"
+    },
+    {
+      "path": "scripts/capacity_remote_fixture.py",
+      "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+    },
+    {
+      "path": "scripts/capacity_representative.py",
+      "sha256": "601c57688e126770fd757da1e3793022574690a0f90169a5eb1d0badfe1b08cf"
+    },
+    {
+      "path": "scripts/capacity_representative_client.py",
+      "sha256": "2a834d1f107ddec598087ebc963aa476e45620b2098abc48c204974253b38d7a"
+    },
+    {
+      "path": "scripts/capacity_resources.py",
+      "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+    },
+    {
+      "path": "scripts/capacity_socket.py",
+      "sha256": "d33038c7552d022b064c434333e1d0fdb74816b48532d1131d1d5efb1ce297ef"
+    },
+    {
+      "path": "scripts/capacity_socket_mixed.py",
+      "sha256": "ebc3f433c0f90873862e937663546276a72a47b164df91cab6375943909df226"
+    },
+    {
+      "path": "scripts/capacity_socket_server.py",
+      "sha256": "9bafd9aa325b78271e6740d5a4fb7c93f92e031a0213bfd60c0d41ca454761a9"
+    },
+    {
+      "path": "scripts/capacity_socket_upload.py",
+      "sha256": "161ec61d176414c19e03db8cf21ab39496b616528429ea6ff4e895177cf21e53"
+    },
+    {
+      "path": "scripts/capacity_upload_body.py",
+      "sha256": "a83ea42f0c4fc696e6a66e90bc98d5c76d60a9c0a6b77aeb6895224dc1b26970"
+    },
+    {
+      "path": "scripts/capacity_workload.py",
+      "sha256": "0373dfde5798f289647baa1742cb1ed60d2f6a9cad078aa023197339252fde3c"
+    },
+    {
+      "path": "src/image_embedder/admission.py",
+      "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+    },
+    {
+      "path": "src/image_embedder/artifact_integrity.py",
+      "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+    },
+    {
+      "path": "src/image_embedder/authenticated_router.py",
+      "sha256": "3624b54491eedfec6ab58266d2dbf63349e415eec723984877237fd58e61337e"
+    },
+    {
+      "path": "src/image_embedder/batch.py",
+      "sha256": "d80379051c95ccf2883fe83a27c8715dffeaaf6f63bca516b2f5fea97317e177"
+    },
+    {
+      "path": "src/image_embedder/config.py",
+      "sha256": "67c4b613369bb0fb70a413c630ac496a294218c1a031eb1e4947f7278136fee5"
+    },
+    {
+      "path": "src/image_embedder/credentials.py",
+      "sha256": "fb7d51eb24b6b0654aa23b95992df1634324cd727cd8404481e8d546d9ef0f2e"
+    },
+    {
+      "path": "src/image_embedder/deadlines.py",
+      "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+    },
+    {
+      "path": "src/image_embedder/embedder.py",
+      "sha256": "cc2ad92b552cc18753bb047e497caa3ae168a879b49957c937df6e51034c06d7"
+    },
+    {
+      "path": "src/image_embedder/execution.py",
+      "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+    },
+    {
+      "path": "src/image_embedder/forwarding.py",
+      "sha256": "1dd160b54e42dda8e497214577872e827ed5e4a760c2cf73bd13ba07b36884cc"
+    },
+    {
+      "path": "src/image_embedder/healthcheck.py",
+      "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+    },
+    {
+      "path": "src/image_embedder/image_input.py",
+      "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+    },
+    {
+      "path": "src/image_embedder/ingress.py",
+      "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+    },
+    {
+      "path": "src/image_embedder/ingress_middleware.py",
+      "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+    },
+    {
+      "path": "src/image_embedder/input_limits.py",
+      "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+    },
+    {
+      "path": "src/image_embedder/ir_cache.py",
+      "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+    },
+    {
+      "path": "src/image_embedder/lifecycle.py",
+      "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+    },
+    {
+      "path": "src/image_embedder/logging_config.py",
+      "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+    },
+    {
+      "path": "src/image_embedder/main.py",
+      "sha256": "d9f69abc54577b0a5d43ad76db8f0243bedc70454dc6e8e017c918e118a43a5a"
+    },
+    {
+      "path": "src/image_embedder/memory.py",
+      "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+    },
+    {
+      "path": "src/image_embedder/models.py",
+      "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+    },
+    {
+      "path": "src/image_embedder/model_catalog.py",
+      "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+    },
+    {
+      "path": "src/image_embedder/model_initialization.py",
+      "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+    },
+    {
+      "path": "src/image_embedder/model_loading.py",
+      "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+    },
+    {
+      "path": "src/image_embedder/openvino_models.py",
+      "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+    },
+    {
+      "path": "src/image_embedder/queue.py",
+      "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+    },
+    {
+      "path": "src/image_embedder/rate_limits.py",
+      "sha256": "6fe39de34a34a4cd629644e65e77142c30cbd4123e67a1298e13cc4e148c2b8c"
+    },
+    {
+      "path": "src/image_embedder/remote_budget.py",
+      "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+    },
+    {
+      "path": "src/image_embedder/remote_fetch.py",
+      "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+    },
+    {
+      "path": "src/image_embedder/remote_process.py",
+      "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+    },
+    {
+      "path": "src/image_embedder/remote_protocol.py",
+      "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+    },
+    {
+      "path": "src/image_embedder/remote_url.py",
+      "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+    },
+    {
+      "path": "src/image_embedder/remote_worker.py",
+      "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+    },
+    {
+      "path": "src/image_embedder/request_body_deadline.py",
+      "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+    },
+    {
+      "path": "src/image_embedder/response_http_protocol.py",
+      "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+    },
+    {
+      "path": "src/image_embedder/response_send_deadline.py",
+      "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+    },
+    {
+      "path": "src/image_embedder/security.py",
+      "sha256": "ff74f5f467238587608a7f6bbaf9b96f82a874d73a729d25427ede4df61ea13a"
+    },
+    {
+      "path": "src/image_embedder/server.py",
+      "sha256": "12e46c476511fcbf29772956c6d532b34cc20d36fd59a28d840288241583d424"
+    },
+    {
+      "path": "src/image_embedder/__init__.py",
+      "sha256": "411d21b5f19dec74d6fdf6b44d7ae33f1fd495b436f0bdb97bf0e8b3e74b982e"
+    },
+    {
+      "path": "src/image_embedder/routes/admin.py",
+      "sha256": "ceacbab97b8162e67ecd0bb874447247a4b1f745b0f06aa2a8d66c4e599af768"
+    },
+    {
+      "path": "src/image_embedder/routes/batch.py",
+      "sha256": "362e39a7219c8b2b1fcf3d326bc0d2db5939792b7f875e7aedd3b61946f420bd"
+    },
+    {
+      "path": "src/image_embedder/routes/embed.py",
+      "sha256": "bd490d786fc4f8e4f4fe5e7736d2c2d3c57a74b79fd74d53fc753b2ee755ed4b"
+    },
+    {
+      "path": "src/image_embedder/routes/health.py",
+      "sha256": "586da8acd32af7110207de1aa5358a466511e7ea98a3036740ae016743280013"
+    },
+    {
+      "path": "src/image_embedder/routes/models.py",
+      "sha256": "389d9cdc470846e80292f4cf09e06b768efe5743146c237917d4a59d3bb9e27f"
+    },
+    {
+      "path": "src/image_embedder/routes/__init__.py",
+      "sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1"
+    }
+  ],
+  "qa_checkout_normalization": {
+    "compared_files": 330,
+    "python_files": 164,
+    "changed_files_match_final_qa_snapshot": true,
+    "unchanged_baseline_line_ending_differences": [
+      {
+        "path": ".dockerignore",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "a51b4b6cbcaf993569e2f6e2493e99a781049ee7eba7ca8ed56b4706ca302886"
+        },
+        "qa_source": {
+          "sha256": "81da8ad70bfcd903993c325dc7abf93648952381937686374748730d4af4e260"
+        }
+      },
+      {
+        "path": ".gitignore",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "b263a2beae29aba0be397d5394592b7aa107d95d59d817f7b1ebabce50dd1a11"
+        },
+        "qa_source": {
+          "sha256": "2db54be7cd422b5f817f46bd8800be2133dd0b6c29031f9baf25e42a755056e7"
+        }
+      },
+      {
+        "path": "LICENSE",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "b70cb94854fe58df3d9f19bdf3b589d5d5cf44b3c4eef42621ed72eeecdb4171"
+        },
+        "qa_source": {
+          "sha256": "7b866274ffe3ecd6b69e37b52c1cebe8e8275927d9cb631c4196730f8bb80bc7"
+        }
+      },
+      {
+        "path": "OPENAI.md",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "ce78ba608bc2ff97e8b9f9e70798dea0a1951dbd31563753b6dd89925e941bf3"
+        },
+        "qa_source": {
+          "sha256": "eeb8f8a238065cd43e8a3a438f58e7fcbe9bd7483e786005faa5929c55c4f441"
+        }
+      },
+      {
+        "path": "SECURITY.md",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "36ce3526cbc11a11578ab9a40dcf8236320cce31a09f3f35e7c89dab1409c4ce"
+        },
+        "qa_source": {
+          "sha256": "c2d482e0cb81d4da19f36db5340bfbf8481ce7ba4c4ec0bff74e1b130550fa08"
+        }
+      },
+      {
+        "path": "release.md",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "74427001405140a49bb4c6ff61e1b95f8c4a95d12a28dc23c15a220afafef11c"
+        },
+        "qa_source": {
+          "sha256": "1d52eeecc33657826fef198db1f0068e5dba69f9c486eedc10a56ab974db07d5"
+        }
+      },
+      {
+        "path": "scripts/check_copyright.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "b14fb9601b3e9c4af22ac2ea19b02d6c1d6ed443f660927c146f9da5497996da"
+        },
+        "qa_source": {
+          "sha256": "df4d39195fe28ac53758aa5eda7d0c28110f1ee5418f65a79faff63b834b3fae"
+        }
+      },
+      {
+        "path": "scripts/check_coverage_ratchet.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "ff8dcae86ee35e2e3a6c8cb781b29b9c7cb41186d130635ea03a9ce88d353ee9"
+        },
+        "qa_source": {
+          "sha256": "f703242806c1b0f2c5a95bc01d007d7cd3d49068aa9f2559de39cc31da82f75a"
+        }
+      },
+      {
+        "path": "scripts/update_coverage_baseline.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "a4c2ac28856c11031e1df475e057d5fa38edee5206b94606e00a23e1a0dec800"
+        },
+        "qa_source": {
+          "sha256": "8781ea01c8f79a2c6901178cc130b1ad9af0abb1c1dd5aa850883caf50f6698f"
+        }
+      },
+      {
+        "path": "src/image_embedder/routes/__init__.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1"
+        },
+        "qa_source": {
+          "sha256": "4a7c0a2dd570ef163a4caf03662d2fba92d72b6bb8e6766f834589375457f9a7"
+        }
+      },
+      {
+        "path": "tests/conftest.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "52ed9b75c7e51c120a66519a3ea2d294e04942f43f649e8547d343c70cd6db4f"
+        },
+        "qa_source": {
+          "sha256": "3d1320ad974f92b3fcade866bf43ce52a11af3925728c74043361847883a35fb"
+        }
+      },
+      {
+        "path": "tests/test_auth.py",
+        "baseline_file_unchanged": true,
+        "line_endings_only": true,
+        "committed_source": {
+          "sha256": "79e16be3e97fdfeba05db6d63535d07f4606de3febebc6294de1379fc90b9a45"
+        },
+        "qa_source": {
+          "sha256": "a4e2741b7f9685daed7d8d1c9900c5bb441082a5e6d3fced80e4ce70e7fcdeb9"
+        }
+      }
+    ]
+  }
+}

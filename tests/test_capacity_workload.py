@@ -99,11 +99,12 @@ def test_failed_phase_records_only_error_type():
 
     with pytest.raises(ValueError):
         workload(events).measure("fixture", failure)
-    assert events[-1] == {
+    assert {key: events[-1][key] for key in ("event", "phase", "error_type")} == {
         "event": "phase_error",
         "phase": "fixture",
         "error_type": "ValueError",
     }
+    assert events[-1]["memory"]["sample_count"] >= 2
     assert "private image payload" not in str(events)
 
 

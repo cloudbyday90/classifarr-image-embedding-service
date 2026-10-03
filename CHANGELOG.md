@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Representative poster, landscape and PNG/JPEG/WebP capacity calibration with an isolated bounded HTTP client, native vector parity and separate client RSS evidence.
+- Workload/accounting guidance for the capacity-calibration AI skill, with separate design and outcome records.
 - Explicit trusted proxy peers with forwarding disabled by default for direct Docker deployments, plus native parser regressions, published-port validation and separate design/outcome records.
 - Direct-port transport guidance for the capacity-calibration AI skill and refreshed bounded CPU/OpenVINO capacity evidence.
 - A quota-identity reference for the resource-contract AI skill, with separate design/outcome records and native forwarding-trust regressions.
@@ -37,6 +39,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Include representative images and concurrent callers in manual CPU/OpenVINO calibration while preserving production quotas, containment and direct Docker topology.
+- Document closure of eight completed, superseded or unsuitable PRs with their reviewed heads and decisions; no original PRs were merged.
 - Separate credential verification and quota identity into small service modules; retain existing quota values, endpoint scopes and application-owned limiter state.
 - Require zero-body header-only authentication rejection in socket calibration, with real CPU/OpenVINO recovery checks and a documented public-probe quota follow-up.
 - Include socket uploads in manual CPU/OpenVINO capacity calibration; retain existing production limits and document authentication before body receipt as the next fix.

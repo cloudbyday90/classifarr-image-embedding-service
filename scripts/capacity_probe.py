@@ -38,14 +38,19 @@ def main() -> None:
     )
     parser.add_argument(
         "--scenario",
-        choices=["serial", "overlap", "detached", "api", "mixed", "socket"],
+        choices=["serial", "overlap", "detached", "api", "mixed", "socket", "representative"],
         default="serial",
     )
     parser.add_argument(
         "--cold-ir", action="store_true", help="Export into a private temporary cache"
     )
-    parser.add_argument("--image-edge", type=positive_int, default=224)
+    parser.add_argument("--image-edge", type=positive_int, default=224,
+                        help="Square fixture edge; representative uses its fixed image profiles")
     parser.add_argument("--repeats", type=positive_int, default=2)
+    parser.add_argument("--clients", type=positive_int, default=2,
+                        help="Concurrent HTTP callers in the representative scenario (1..8)")
+    parser.add_argument("--batch-sizes", type=positive_int, nargs="+",
+                        help="Representative subset of 1/internal/API ceilings; default all")
     parser.add_argument("--sample-interval", type=float, default=0.1)
     parser.add_argument("--output", type=Path, help="Flushed JSONL measurement journal")
     args = parser.parse_args()
@@ -96,9 +101,27 @@ def main() -> None:
         parser.error(
             "This bounded experiment supports positive batch ceilings up to 32"
         )
+    if args.batch_sizes is not None:
+        if args.scenario != "representative" or not set(args.batch_sizes) <= set(sizes):
+            parser.error("--batch-sizes requires representative and configured batch ceilings")
+        sizes = sorted(set(args.batch_sizes))
     # Square images account for both source pixels and the 224-pixel preprocessing resize.
-    if max(sizes) * (args.image_edge**2 + 224**2) > settings.max_batch_image_pixels:
+    if args.scenario != "representative" and max(sizes) * (args.image_edge**2 + 224**2) > settings.max_batch_image_pixels:
         parser.error("Image edge and batch ceilings exceed the aggregate pixel budget")
+    fixtures = None
+    if args.scenario == "representative":
+        from capacity_image_fixtures import (
+            codec_versions,
+            make_fixtures,
+            validate_fixtures,
+        )
+
+        fixtures = make_fixtures()
+        try:
+            validate_fixtures(fixtures, settings, [MODEL_CATALOG[name] for name in args.models],
+                              sizes, args.clients, args.repeats)
+        except ValueError as error:
+            parser.error(str(error))
     with ExitStack() as resources:
         stream = (
             resources.enter_context(args.output.open("w", encoding="utf-8"))
@@ -131,7 +154,7 @@ def main() -> None:
             models = list(dict.fromkeys(args.models))
             runtimes = {
                 name: version(name)
-                for name in ("torch", "transformers", "pydantic", "pydantic-core")
+                for name in ("torch", "transformers", "pydantic", "pydantic-core", "pillow", "numpy", "httpx", "uvicorn")
             }
             if args.backend == "openvino":
                 runtimes["openvino"] = version("openvino")
@@ -143,8 +166,12 @@ def main() -> None:
                     "cold_ir": args.cold_ir,
                     "models": {name: MODEL_CATALOG[name].revision for name in models},
                     "batch_sizes": sizes,
-                    "image_edge": args.image_edge,
+                    "image_edge": args.image_edge if fixtures is None else None,
                     "repeats": args.repeats,
+                    "representative_clients": args.clients if fixtures is not None else None,
+                    "representative_fixtures": [fixture.metadata for fixture in fixtures]
+                    if fixtures is not None else None,
+                    "codec_versions": codec_versions() if fixtures is not None else None,
                     "sample_interval_seconds": args.sample_interval,
                     "torch_threads": torch.get_num_threads(),
                     "torch_interop_threads": torch.get_num_interop_threads(),
@@ -163,7 +190,7 @@ def main() -> None:
                 ImageEmbedder(settings),
                 models,
                 sizes,
-                make_payloads(args.image_edge),
+                make_payloads(args.image_edge) if fixtures is None else [],
                 reader,
                 emit,
                 args.sample_interval,
@@ -172,6 +199,7 @@ def main() -> None:
                     args.backend
                 ],
                 cuda=cuda,
+                clients=args.clients,
             )
             workload.run(args.scenario)
             emit({"event": "complete", "passed": True, "memory": reader()})

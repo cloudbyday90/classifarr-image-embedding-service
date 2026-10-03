@@ -50,7 +50,7 @@ jobs:
           --cap-drop ALL --security-opt no-new-privileges
           --mount type=volume,source=capacity-model-cache,target=/app/.cache
           --entrypoint python capacity:local scripts/production_model_probe.py --download-only
-      - name: Measure cached, socket, mixed and detached owners
+      - name: Measure cached, socket, representative, mixed and detached owners
         env:
           BACKEND: ${{ matrix.backend }}
           MEMORY_LIMIT: ${{ matrix.memory }}
@@ -59,10 +59,13 @@ jobs:
         run: |
           mkdir -p validation
           chmod 0777 validation
-          for scenario in serial api overlap detached mixed socket; do
+          for scenario in serial api overlap detached mixed socket representative; do
             extra=()
             if [ "$BACKEND" = openvino ] && [ "$scenario" = overlap ]; then
               extra+=(--cold-ir)
+            fi
+            if [ "$scenario" = representative ]; then
+              extra+=(--clients 2)
             fi
             docker run --rm --network none --no-healthcheck \
               --memory "$MEMORY_LIMIT" --memory-swap "$MEMORY_LIMIT" \

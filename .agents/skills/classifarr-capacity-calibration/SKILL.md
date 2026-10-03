@@ -1,6 +1,6 @@
 ---
 name: classifarr-capacity-calibration
-description: Design, run and interpret Classifarr deployment capacity experiments with real pinned models, direct-port or proxy trust boundaries, concurrent inputs, detached owners, cgroup tasks, temporary storage and CUDA allocator evidence. Use for resource sizing, deployment transport or changes to capacity probes; not dependency-only updates, generic GPU advice or release operations.
+description: Design, run and interpret Classifarr deployment capacity experiments with real pinned models, representative poster/codec workloads, isolated HTTP clients, direct-port or proxy trust boundaries, concurrent inputs, detached owners, cgroup tasks, temporary storage and CUDA allocator evidence. Use for resource sizing, deployment transport or changes to capacity probes; not dependency-only updates, generic GPU advice or release operations.
 ---
 
 # Classifarr capacity calibration
@@ -8,6 +8,8 @@ description: Design, run and interpret Classifarr deployment capacity experiment
 Read [measurement contracts](references/measurement-contracts.md) when designing or interpreting an experiment. Reuse the repository probes instead of creating another benchmark runner.
 
 For native upload pressure, also read [socket upload experiments](references/socket-upload-experiments.md). Require observed server receipt before EOF, disconnect settlement and recovered vectors; require header-only authentication rejection with zero application body receipt.
+
+For operator-selected shapes/codecs or separating client RSS, read [representative workloads](references/representative-workloads.md). Require encoded-byte references, bounded/reaped client processes and separate process versus whole-cgroup scopes; do not treat synthetic dimensions or finite bursts as production distributions or sustained throughput.
 
 For direct-port or proxy questions, read [deployment transport](references/deployment-transport.md). Establish the actual topology before adding infrastructure. Verify effective-address trust through that transport and label Docker/NAT address collapse; never infer real client preservation from a loopback test.
 

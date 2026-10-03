@@ -2,21 +2,23 @@
 
 Assessment: 2026-10-03. GitHub MCP returned eight open PRs; their fetched diffs and
 immutable heads were compared with the local master baseline
-`e9bc00bb1e06b967951bf98a3b572f6920944d34`.
+`b43272ba9f380f7488f1a70e5dafa70a91754b04`.
 
 ## Design and decision
 
 Only suitable unapplied work belongs in a new local PR adoption. The user clarified:
 "if none exists, then just move on with a note thre is none to choose".
-No random PR adoption is included in this iteration. No original PR was merged,
-closed, commented on or otherwise changed.
+No random PR adoption is included in this iteration. The user subsequently
+requested cleanup of aging PRs. After rechecking their states and heads, all
+eight were closed without merging. The [cleanup record](aging-pr-cleanup.md)
+details the design and verified outcome.
 
-| Open PR | Reviewed head | Reason excluded |
+| Closed PR | Reviewed head | Reason excluded and closed |
 |---|---|---|
 | [#44](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/44) | `e66ea84b748833448eb7dd8efbf91eb78f551239` | Ubuntu 25.10 reached end of life on July 9, 2026; retain the supported 24.04 base. |
 | [#42](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/42) | `c174b4d4ce6c8a54e3d5583998aa0fa08414c3ee` | Checkout v7 is already adopted with the reviewed v7.0.1 immutable reference. |
 | [#41](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/41) | `66ba03671b3deea9e808de88ff6ce7fb038c4681` | The action was adopted earlier and subsequently replaced by verified native Gitleaks scanning. |
-| [#40](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/40) | `a28cf48f141fa165599d0b9d93341c212664af48` | The proposed action has been replaced by strict native installed-environment audits. |
+| [#40](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/40) | `a28cf48f141fa165599d0b9d93341c212664af48` | The v2.3.8 update was adopted with an immutable native entrypoint; strict installed-environment audits supersede the mutable wrapper proposal. |
 | [#35](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/35) | `e01c22ffad5997bb99a4bc6eecfb944068d6ee31` | The ordered range includes a forbidden local-version label and would force CPU selection into shared requirements; current generic floor and exact backend locks supersede it. |
 | [#34](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/34) | `b4d4ccc31d1a24bdfc3a628ba56b91ba2e2546b2` | The HTTPX 0.28.1 SDK/probe floor is already implemented. |
 | [#33](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/33) | `5054ede6625ba6fc860c3a563644f8402a5f5769` | The pytest-cov 7.1.0 floor is already implemented. |
@@ -30,12 +32,14 @@ These URLs were discovered and fetched through web services rather than construc
 
 ## Outcome and recommendation
 
-There is no suitable unapplied open PR to choose. Continuing the recommended
-direct-deployment work avoids replaying already delivered changes or weakening the
+There was no suitable unapplied open PR to choose. Continuing the recommended
+representative-workload calibration avoids replaying already delivered changes or weakening the
 platform. Recheck the current open list in the next iteration; PR state and heads
-can change. The [direct deployment design and outcome](direct-deployment-trust.md) records
+can change. The [representative workload design and outcome](representative-capacity.md) records
 this iteration's actual implementation and validation. The eight heads were
 refetched through GitHub MCP's repository-provided pull collection and individual
-diff services and remain unchanged from the quota-identity iteration. The generic
+diff services and remain unchanged from the direct-deployment iteration. The generic
 issue search returned issues despite its PR qualifier; it was not used as the
-authoritative PR inventory.
+authoritative PR inventory. A fresh repository-provided pull collection after
+cleanup returns zero open PRs. Closed proposals can be reopened for renewed work;
+closure does not establish that their original commits were merged.
