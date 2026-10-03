@@ -414,7 +414,7 @@ docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges \
   classifarr-image-embedder:cpu-smoke scripts/production_model_probe.py --backend cpu --model ViT-L-14
 ```
 
-Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. The subsequent [capacity calibration](docs/capacity-calibration.md) exercises both resident models, maximum batches and detached owners on CPU/OpenVINO CPU; accelerator VRAM and every concurrent-input combination remain hardware/workload gates. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
+Repeat with `ViT-B-16`; use an OpenVINO image and `--backend openvino` for export/reload checks. The probe reports process peak RSS before its extra reference/reload validation and the full validation peak. Local ViT-L-14 cold OpenVINO export reached 4.40 GiB before the extra validation owners; the OpenVINO Compose override therefore defaults to 8 GiB/no swap. The full probe itself reached 7.83 GiB. CPU/CUDA retain the initial 4 GiB default. The [capacity calibration](docs/capacity-calibration.md) and [deployment extension](docs/deployment-capacity.md) exercise both resident models, maximum batches, mixed inputs and detached owners on CPU/OpenVINO CPU/NVIDIA CUDA. Other devices, socket/proxy buffering and broader concurrent-input combinations remain hardware/workload gates. Keep generated IR on application-owned local storage with working process locks; a writer controlling both files and manifests can replace the attestations. Runtime/export changes create new cache entries, so monitor disk use.
 
 ### Capacity calibration
 
@@ -424,12 +424,13 @@ After the verified asset prefetch above, run the separate bounded probe without 
 docker run --rm --network none --no-healthcheck \
   --cap-drop ALL --security-opt no-new-privileges \
   --memory 4g --memory-swap 4g -v classifarr-model-contracts:/app/.cache \
+  --pids-limit 1024 --tmpfs /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777 \
   -e HF_HUB_OFFLINE=1 -e TRANSFORMERS_OFFLINE=1 --entrypoint python \
   classifarr-image-embedder:cpu-smoke scripts/capacity_probe.py \
   --backend cpu --scenario api --image-edge 974 --repeats 1
 ```
 
-Run `serial`, `overlap`, `api` and `detached` in separate fresh containers. For OpenVINO use its image, `--backend openvino` and an 8 GiB/no-swap limit; add `--cold-ir` to measure private export without invalidating the original cache. Cold initialization is serialized within each process; cached inference retains its direct path. The CLI verifies the loaded backend and emits flushed JSONL phase records with process/cgroup memory and event counters. The manual **Production Capacity Calibration** workflow retains those records; routine tests remain offline and small. Measurements are workload observations, so retain one worker and current admission limits until target-host evidence supports tuning.
+Run `serial`, `overlap`, `api`, `detached` and `mixed` in separate fresh containers. For OpenVINO use its image, `--backend openvino` and an 8 GiB/no-swap limit; add `--cold-ir` to measure private export without invalidating the original cache. CUDA requires its image, Docker `--gpus all` and `--backend cuda`; GPU absence or a mismatched loaded device fails the probe. The CLI emits flushed JSONL memory, task/thread, temporary-filesystem and CUDA allocator records. The manual **Production Capacity Calibration** workflow includes mixed concurrent inline/remote inputs and detached owners on CPU/OpenVINO. Its PID/tmpfs bounds are experiment settings; tmpfs consumes the memory budget. See [measured headroom and limitations](docs/deployment-capacity.md) and the [capacity AI skill](docs/project-capacity-skill.md). Retain one worker/owner until target-host evidence supports tuning.
 
 ## API
 ### GET /health

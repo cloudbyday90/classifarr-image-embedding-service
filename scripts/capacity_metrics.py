@@ -39,7 +39,9 @@ def _unescape_mount(value: str) -> str:
     return re.sub(r"\\([0-7]{3})", lambda match: chr(int(match[1], 8)), value)
 
 
-def discover_cgroup(proc: Path = Path("/proc/self")) -> tuple[int, Path] | None:
+def discover_cgroup(
+    proc: Path = Path("/proc/self"), controller: str = "memory"
+) -> tuple[int, Path] | None:
     """Resolve membership relative to the controller mount, including Docker roots."""
     memberships = []
     for line in _text(proc / "cgroup").splitlines():
@@ -54,12 +56,12 @@ def discover_cgroup(proc: Path = Path("/proc/self")) -> tuple[int, Path] | None:
         if filesystem[0] not in ("cgroup", "cgroup2"):
             continue
         version = 2 if filesystem[0] == "cgroup2" else 1
-        if version == 1 and "memory" not in filesystem[2].split(","):
+        if version == 1 and controller not in filesystem[2].split(","):
             continue
         mount_root = PurePosixPath(_unescape_mount(fields[3]))
         mount_point = Path(_unescape_mount(fields[4]))
         for controllers, member in memberships:
-            if (version == 1 and "memory" not in controllers) or (
+            if (version == 1 and controller not in controllers) or (
                 version == 2 and controllers != [""]
             ):
                 continue
@@ -73,7 +75,11 @@ def discover_cgroup(proc: Path = Path("/proc/self")) -> tuple[int, Path] | None:
                     continue
                 relative = PurePosixPath(".")
             candidate = mount_point / str(relative)
-            filename = "memory.current" if version == 2 else "memory.usage_in_bytes"
+            filename = (
+                "memory.usage_in_bytes"
+                if controller == "memory" and version == 1
+                else f"{controller}.current"
+            )
             if (candidate / filename).is_file():
                 return version, candidate
     return None
@@ -148,6 +154,7 @@ class MemorySampler:
             )
         self.reader, self.interval = reader, interval
         self.peaks: dict[str, int] = {}
+        self.minima: dict[str, int] = {}
         self.samples = 0
         self._stop = threading.Event()
         self._thread = threading.Thread(target=self._loop, daemon=True)
@@ -159,9 +166,29 @@ class MemorySampler:
             "process_rss_bytes": snapshot["process_rss_bytes"],
             "cgroup_current_bytes": (snapshot["cgroup"] or {}).get("current_bytes"),
         }
+        resources = snapshot.get("resources", {})
+        tasks = resources.get("tasks") or {}
+        storage = resources.get("temporary_filesystem") or {}
+        cuda = snapshot.get("cuda") or {}
+        values.update(
+            {
+                "process_threads": resources.get("process_threads"),
+                "cgroup_tasks": tasks.get("current"),
+                "temporary_used_bytes": storage.get("used_bytes"),
+                "cuda_allocated_bytes": cuda.get("allocated_bytes"),
+                "cuda_reserved_bytes": cuda.get("reserved_bytes"),
+            }
+        )
         for key, value in values.items():
             if value is not None:
                 self.peaks[key] = max(self.peaks.get(key, 0), value)
+        for key, value in {
+            "temporary_available_bytes": storage.get("available_bytes"),
+            "temporary_available_inodes": storage.get("available_inodes"),
+            "cuda_device_free_bytes": cuda.get("device_free_bytes"),
+        }.items():
+            if isinstance(value, int):
+                self.minima[key] = min(self.minima.get(key, value), value)
         self.samples += 1
         return snapshot
 
@@ -188,9 +215,18 @@ class MemorySampler:
             "after": after,
             "sample_count": self.samples,
             "sampled_peaks": self.peaks,
+            "sampled_minima": self.minima,
             "cgroup_event_delta": {
                 key: end[key] - start[key] for key in start.keys() & end.keys()
             },
+        }
+        start_tasks = (self.before.get("resources", {}).get("tasks") or {}).get(
+            "events", {}
+        )
+        end_tasks = (after.get("resources", {}).get("tasks") or {}).get("events", {})
+        self.report["task_event_delta"] = {
+            key: end_tasks[key] - start_tasks[key]
+            for key in start_tasks.keys() & end_tasks.keys()
         }
         if self._error is not None and exc_type is None:
             raise RuntimeError("Memory sampling failed") from self._error

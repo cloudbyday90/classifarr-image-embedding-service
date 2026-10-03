@@ -12,9 +12,10 @@ import platform
 from contextlib import ExitStack
 from importlib.metadata import version
 from pathlib import Path
-from tempfile import TemporaryDirectory
+from tempfile import TemporaryDirectory, gettempdir
 
 from capacity_metrics import MemoryReader
+from capacity_resources import ResourceReader
 from capacity_workload import CapacityWorkload, make_payloads
 
 from image_embedder.config import Settings
@@ -31,12 +32,14 @@ def positive_int(value: str) -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--backend", choices=["cpu", "openvino"], required=True)
+    parser.add_argument("--backend", choices=["cpu", "openvino", "cuda"], required=True)
     parser.add_argument(
         "--models", choices=list(MODEL_CATALOG), nargs="+", default=list(MODEL_CATALOG)
     )
     parser.add_argument(
-        "--scenario", choices=["serial", "overlap", "detached", "api"], default="serial"
+        "--scenario",
+        choices=["serial", "overlap", "detached", "api", "mixed"],
+        default="serial",
     )
     parser.add_argument(
         "--cold-ir", action="store_true", help="Export into a private temporary cache"
@@ -57,18 +60,30 @@ def main() -> None:
         parser.error("Populate verified assets first, then set both offline flags to 1")
     if args.cold_ir and args.backend != "openvino":
         parser.error("--cold-ir requires OpenVINO")
-    reader = MemoryReader()
+    memory_reader = MemoryReader()
+    resource_reader = ResourceReader(Path(gettempdir()))
+    cuda = None
+
+    def reader() -> dict:
+        return {
+            **memory_reader(),
+            "resources": resource_reader(),
+            "cuda": cuda() if cuda is not None else None,
+        }
+
     memory = reader()
     if not memory["cgroup"] or memory["cgroup"]["limit_bytes"] is None:
         parser.error("A finite cgroup memory limit is required")
     settings = Settings(
-        device="cpu" if args.backend == "cpu" else "openvino:CPU",
+        device={"cpu": "cpu", "openvino": "openvino:CPU", "cuda": "cuda"}[args.backend],
         warmup_on_startup=False,
         embed_cache_size=0,
         require_api_key=False,
         cleanup_on_shutdown=False,
         embed_concurrency=1,
         embed_batch_window_ms=0,
+        allow_remote_urls=args.scenario == "mixed",
+        allowed_remote_hosts=["capacity.example"] if args.scenario == "mixed" else [],
     )
     sizes = sorted(
         {1, settings.embed_batch_max_size, settings.embed_batch_api_max_items}
@@ -104,6 +119,11 @@ def main() -> None:
         try:
             import torch
 
+            if args.backend == "cuda":
+                from capacity_cuda import CudaReader
+
+                cuda = CudaReader(torch.cuda)
+
             models = list(dict.fromkeys(args.models))
             runtimes = {
                 name: version(name)
@@ -132,7 +152,7 @@ def main() -> None:
                     "load_pressure_concurrency": len(models)
                     if args.scenario == "overlap"
                     else 1,
-                    "memory": memory,
+                    "memory": reader(),
                 }
             )
             workload = CapacityWorkload(
@@ -144,7 +164,10 @@ def main() -> None:
                 emit,
                 args.sample_interval,
                 args.repeats,
-                expected_device="cpu" if args.backend == "cpu" else "ov:CPU",
+                expected_device={"cpu": "cpu", "openvino": "ov:CPU", "cuda": "cuda"}[
+                    args.backend
+                ],
+                cuda=cuda,
             )
             workload.run(args.scenario)
             emit({"event": "complete", "passed": True, "memory": reader()})

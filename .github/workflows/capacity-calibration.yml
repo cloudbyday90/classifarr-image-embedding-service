@@ -50,7 +50,7 @@ jobs:
           --cap-drop ALL --security-opt no-new-privileges
           --mount type=volume,source=capacity-model-cache,target=/app/.cache
           --entrypoint python capacity:local scripts/production_model_probe.py --download-only
-      - name: Measure fresh, cached, overlapping and detached owners
+      - name: Measure cached, concurrent mixed and detached owners
         env:
           BACKEND: ${{ matrix.backend }}
           MEMORY_LIMIT: ${{ matrix.memory }}
@@ -59,13 +59,14 @@ jobs:
         run: |
           mkdir -p validation
           chmod 0777 validation
-          for scenario in serial api overlap detached; do
+          for scenario in serial api overlap detached mixed; do
             extra=()
             if [ "$BACKEND" = openvino ] && [ "$scenario" = overlap ]; then
               extra+=(--cold-ir)
             fi
             docker run --rm --network none --no-healthcheck \
               --memory "$MEMORY_LIMIT" --memory-swap "$MEMORY_LIMIT" \
+              --pids-limit 1024 --tmpfs /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777 \
               --cap-drop ALL --security-opt no-new-privileges \
               --mount type=volume,source=capacity-model-cache,target=/app/.cache \
               --mount "type=bind,source=$PWD/validation,target=/results" \

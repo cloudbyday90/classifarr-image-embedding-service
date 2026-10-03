@@ -1,0 +1,7 @@
+interface:
+  display_name: "Classifarr Capacity Calibration"
+  short_description: "Measure model, task, storage and GPU capacity"
+  default_prompt: "Use $classifarr-capacity-calibration to calibrate a Classifarr deployment and document measured headroom."
+
+policy:
+  allow_implicit_invocation: true

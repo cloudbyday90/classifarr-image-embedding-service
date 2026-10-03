@@ -1,0 +1,2325 @@
+{
+  "assessment_date": "2026-10-03",
+  "baseline_commit": "f45ee654295f313e428063707dd049bda4c79d99",
+  "delivery": "master; no PR merge or release",
+  "dependency_profiles": [
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": false,
+      "profile": "audit-py312-linux-amd64",
+      "wheels": 29
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": false,
+      "profile": "audit-py312-linux-arm64",
+      "wheels": 29
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": false,
+      "profile": "bootstrap",
+      "wheels": 1
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "cpu-py312-linux-amd64",
+      "wheels": 56
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "cpu-py312-linux-arm64",
+      "wheels": 56
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "cuda-legacy-py312-linux-amd64",
+      "wheels": 75
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "cuda-py312-linux-amd64",
+      "wheels": 75
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "openvino-py312-linux-amd64",
+      "wheels": 58
+    },
+    {
+      "artifacts_and_rendered_lock_unchanged": true,
+      "only_input_attestation_changed": true,
+      "profile": "qa-py312-linux-amd64",
+      "wheels": 67
+    }
+  ],
+  "evidence_file_hashes": [
+    {
+      "path": "codeql.log",
+      "sha256": "8e32e0cf3c9565dc924e6cf5b9d1e1c8807d60f5a638972646bdadcd7f386a8d"
+    },
+    {
+      "path": "gitleaks-final-changes.log",
+      "sha256": "1d51da2923949cd193e1b19677fe952b2ec574e4917c2befc4cd3b40dfda6a12"
+    },
+    {
+      "path": "gitleaks-final-source.log",
+      "sha256": "f30c0c1e44a9aa58b58304683818a78522f0aa42bba2e27ba4b6e9ff579de929"
+    },
+    {
+      "path": "gitleaks-history.log",
+      "sha256": "f4385c6c070f318624169685a42b7ee6e2090a22fdceebc8a54cc177f61c2324"
+    },
+    {
+      "path": "gitleaks-initial.log",
+      "sha256": "5ed76ae6c735af79487569776d983affc07751cec4df3bd20792769fd1ebaaa7"
+    },
+    {
+      "path": "inventory-locked-cpu-amd64.log",
+      "sha256": "c192d40fa36f7fa7514f902c9ff14236fd6e8a8322a4e8ce9c5608d400d6ca7c"
+    },
+    {
+      "path": "inventory-locked-cpu-arm64.log",
+      "sha256": "8ef97f8d5339181f3949f8c0c74e0caf111e9ae1bddd5fb308c8c74ab2834122"
+    },
+    {
+      "path": "inventory-locked-cuda-amd64.log",
+      "sha256": "e3833c59a4f20b4dd921c4f793ce1c2ad814d113d35e2ad44b86fbe280a6f6a2"
+    },
+    {
+      "path": "inventory-locked-cuda-legacy-amd64.log",
+      "sha256": "85930c30304590cc654a9527c15e4c112441e7d72b0dae94806f8f36f8d6b1e8"
+    },
+    {
+      "path": "inventory-locked-openvino-amd64.log",
+      "sha256": "ab5bb67b71bfed6c0eb0d3bac62f3fc1638a1c7d009f650892cd589a35a34113"
+    },
+    {
+      "path": "inventory-locked-qa-amd64.log",
+      "sha256": "944d5448532723e825a6718ba4ef7a0e4362f099140de2493e1cc4b1f3f75fa0"
+    },
+    {
+      "path": "pyright-final.log",
+      "sha256": "c584b21ee012de391dc2799d5455db619d3fefbb192ab07ea4ba83fb0d704c14"
+    },
+    {
+      "path": "pytest-full-passing.log",
+      "sha256": "66a1708daf76cb58e0f0a2d9aa6a2416894ff1dd72384560a1cd58ec949f9c8e"
+    },
+    {
+      "path": "qa-temp-fixture-replay.log",
+      "sha256": "7b93738d112e1267f7b0019776bbc4207a2cd6b2b3437ddcd2942a8449c3089e"
+    }
+  ],
+  "experiments": [
+    {
+      "configuration": {
+        "backend": "cpu",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 165941248,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 165941248,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 242446336,
+          "process_rss_bytes": 242446336,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "mixed",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "final": {
+        "cgroup": {
+          "current_bytes": 647499776,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1221275648,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "cuda": null,
+        "process_peak_rss_bytes": 2739920896,
+        "process_rss_bytes": 2168205312,
+        "resources": {
+          "process_threads": 24,
+          "tasks": {
+            "current": 24,
+            "events": {
+              "max": 0
+            },
+            "lifetime_peak": null,
+            "limit": 1024,
+            "version": 1
+          },
+          "temporary_filesystem": {
+            "available_bytes": 134217728,
+            "available_inodes": 2042408,
+            "capacity_bytes": 134217728,
+            "path": "/tmp",
+            "used_bytes": 0
+          }
+        }
+      },
+      "image_id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "journal_sha256": "09fad318615c23b17ef1faa2e9816e4bd43cad98ab1061bfc1d680c3aaf9d8ac",
+      "loaded_devices": {
+        "ViT-B-16": "cpu",
+        "ViT-L-14": "cpu"
+      },
+      "mixed_inputs": {
+        "batch_size": 32,
+        "child_count": 4,
+        "children_reaped": true,
+        "detached_owner": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "queued": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 1
+        },
+        "remote_body_bytes": 8388608,
+        "remote_items_per_batch": 2,
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "successful_pair_seconds": 45.04579267598456,
+        "transport": "in-process ASGI with probe-only loopback child transport",
+        "unauthenticated_status": 401,
+        "validated_native_batches": 4
+      },
+      "name": "cpu-mixed-final",
+      "passed": true,
+      "phases": [
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 11.976382463006303,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-L-14",
+          "sample_count": 484,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 403988480,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 379502592,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 2.3621960260206833,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-B-16",
+          "sample_count": 90,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 405651456,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 381485056,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 2.558022130979225,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-L-14",
+          "sample_count": 121,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 461197312,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 1622274048,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.8409658220189158,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-B-16",
+          "sample_count": 40,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 461803520,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 1965731840,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.6619948629813734,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/1/1",
+          "sample_count": 32,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 461914112,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 1965731840,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 6.365819566999562,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/8/1",
+          "sample_count": 298,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 664784896,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 2183688192,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 24.04527660200256,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/32/1",
+          "sample_count": 1119,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1168322560,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 2685054976,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 1.1817514529975597,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/1/1",
+          "sample_count": 57,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 477417472,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 1997488128,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 2.7365763729903847,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/8/1",
+          "sample_count": 130,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 603508736,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 2119176192,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 7.310166212002514,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/32/1",
+          "sample_count": 343,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1026801664,
+            "cgroup_tasks": 25,
+            "process_rss_bytes": 2543222784,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 79.51176354498602,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "concurrent_mixed_and_detached_inputs",
+          "sample_count": 3614,
+          "sampled_minima": {
+            "temporary_available_bytes": 125825024,
+            "temporary_available_inodes": 2042407
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1221275648,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 2739765248,
+            "process_threads": 42,
+            "temporary_used_bytes": 8392704
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        }
+      ],
+      "source_snapshot": "measured-source"
+    },
+    {
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 284684288,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 284684288,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 241500160,
+          "process_rss_bytes": 241500160,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "mixed",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "final": {
+        "cgroup": {
+          "current_bytes": 4943921152,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 4944084992,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "cuda": null,
+        "process_peak_rss_bytes": 4750262272,
+        "process_rss_bytes": 4750262272,
+        "resources": {
+          "process_threads": 21,
+          "tasks": {
+            "current": 21,
+            "events": {
+              "max": 0
+            },
+            "lifetime_peak": null,
+            "limit": 1024,
+            "version": 1
+          },
+          "temporary_filesystem": {
+            "available_bytes": 134217728,
+            "available_inodes": 2042408,
+            "capacity_bytes": 134217728,
+            "path": "/tmp",
+            "used_bytes": 0
+          }
+        }
+      },
+      "image_id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "journal_sha256": "6627e7b53cf0c5b8c303769c1f0deb492397ca30fc98d2d7659c29396c3440bc",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "mixed_inputs": {
+        "batch_size": 32,
+        "child_count": 4,
+        "children_reaped": true,
+        "detached_owner": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "queued": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 1
+        },
+        "remote_body_bytes": 8388608,
+        "remote_items_per_batch": 2,
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "successful_pair_seconds": 23.68847418198129,
+        "transport": "in-process ASGI with probe-only loopback child transport",
+        "unauthenticated_status": 401,
+        "validated_native_batches": 4
+      },
+      "name": "openvino-mixed-final",
+      "passed": true,
+      "phases": [
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 17.25056703601149,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-L-14",
+          "sample_count": 715,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 2657566720,
+            "cgroup_tasks": 17,
+            "process_rss_bytes": 2459394048,
+            "process_threads": 17,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 1.915397551987553,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-B-16",
+          "sample_count": 90,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3251507200,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 3046486016,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 3.742121210991172,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-L-14",
+          "sample_count": 175,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3692900352,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 3506073600,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 1.3683652009931393,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-B-16",
+          "sample_count": 61,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3817934848,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 3631325184,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 1.5909966499893926,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/1/1",
+          "sample_count": 63,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3817967616,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 3631538176,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 5.524349204992177,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/8/1",
+          "sample_count": 255,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3946012672,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 3749728256,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 16.467087026976515,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/32/1",
+          "sample_count": 763,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4406714368,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 4217266176,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.401706862001447,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/1/1",
+          "sample_count": 20,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4379037696,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 4191739904,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.9808865389786661,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/8/1",
+          "sample_count": 47,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4379250688,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 4191932416,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 4.673156324017327,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/32/1",
+          "sample_count": 218,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4614590464,
+            "cgroup_tasks": 22,
+            "process_rss_bytes": 4426764288,
+            "process_threads": 22,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 55.387676874001045,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "concurrent_mixed_and_detached_inputs",
+          "sample_count": 2464,
+          "sampled_minima": {
+            "temporary_available_bytes": 125825024,
+            "temporary_available_inodes": 2042407
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4944084992,
+            "cgroup_tasks": 26,
+            "process_rss_bytes": 4750237696,
+            "process_threads": 25,
+            "temporary_used_bytes": 8392704
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        }
+      ],
+      "source_snapshot": "tracked-repo"
+    },
+    {
+      "configuration": {
+        "backend": "cuda",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": false,
+        "embedding_timeout_seconds": 45.0,
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 1,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 336760832,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 4294967296,
+            "peak_bytes": 336760832,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": {
+            "allocated_bytes": 0,
+            "allocator_backend": "native",
+            "device_free_bytes": 15738077184,
+            "device_index": 0,
+            "device_name": "NVIDIA GeForce RTX 5070 Ti",
+            "device_total_bytes": 17066033152,
+            "phase_peak_allocated_bytes": 0,
+            "phase_peak_reserved_bytes": 0,
+            "reserved_bytes": 0
+          },
+          "process_peak_rss_bytes": 564744192,
+          "process_rss_bytes": 564744192,
+          "resources": {
+            "process_threads": 17,
+            "tasks": {
+              "current": 17,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cu130",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "mixed",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "final": {
+        "cgroup": {
+          "current_bytes": 1487470592,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 4294967296,
+          "peak_bytes": 1556332544,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "cuda": {
+          "allocated_bytes": 1629006336,
+          "allocator_backend": "native",
+          "device_free_bytes": 13118734336,
+          "device_index": 0,
+          "device_name": "NVIDIA GeForce RTX 5070 Ti",
+          "device_total_bytes": 17066033152,
+          "phase_peak_allocated_bytes": 2187241984,
+          "phase_peak_reserved_bytes": 2541748224,
+          "reserved_bytes": 2541748224
+        },
+        "process_peak_rss_bytes": 2081165312,
+        "process_rss_bytes": 1897848832,
+        "resources": {
+          "process_threads": 20,
+          "tasks": {
+            "current": 20,
+            "events": {
+              "max": 0
+            },
+            "lifetime_peak": null,
+            "limit": 1024,
+            "version": 1
+          },
+          "temporary_filesystem": {
+            "available_bytes": 134217728,
+            "available_inodes": 2042408,
+            "capacity_bytes": 134217728,
+            "path": "/tmp",
+            "used_bytes": 0
+          }
+        }
+      },
+      "image_id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "journal_sha256": "7cf70340c1f24dbd0a21b2e6483c3699b83549e4767ffebfac3e7f5eeb462d2c",
+      "loaded_devices": {
+        "ViT-B-16": "cuda",
+        "ViT-L-14": "cuda"
+      },
+      "mixed_inputs": {
+        "batch_size": 32,
+        "child_count": 4,
+        "children_reaped": true,
+        "detached_owner": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "queued": {
+          "concurrency": 1,
+          "in_flight": 1,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 1,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 1
+        },
+        "remote_body_bytes": 8388608,
+        "remote_items_per_batch": 2,
+        "settled": {
+          "concurrency": 1,
+          "in_flight": 0,
+          "max_queue": 100,
+          "max_wait_seconds": 60,
+          "rw_readers": 0,
+          "rw_writer": false,
+          "rw_writer_waiters": 0,
+          "waiting": 0
+        },
+        "successful_pair_seconds": 3.473540867009433,
+        "transport": "in-process ASGI with probe-only loopback child transport",
+        "unauthenticated_status": 401,
+        "validated_native_batches": 4
+      },
+      "name": "cuda-mixed-frozen",
+      "passed": true,
+      "phases": [
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1216600576,
+            "phase_peak_reserved_bytes": 1226833920
+          },
+          "elapsed_seconds": 17.087013827986084,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-L-14",
+          "sample_count": 707,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 14511243264,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 585728000,
+            "cgroup_tasks": 25,
+            "cuda_allocated_bytes": 1216600576,
+            "cuda_reserved_bytes": 1226833920,
+            "process_rss_bytes": 2033586176,
+            "process_threads": 25,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1561897472,
+            "phase_peak_reserved_bytes": 1606418432
+          },
+          "elapsed_seconds": 3.9930224030104,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "load/ViT-B-16",
+          "sample_count": 181,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 14131658752,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 587018240,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1561897472,
+            "cuda_reserved_bytes": 1606418432,
+            "process_rss_bytes": 1190477824,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1617828352,
+            "phase_peak_reserved_bytes": 1660944384
+          },
+          "elapsed_seconds": 14.9222252460022,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-L-14",
+          "sample_count": 685,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 14010023936,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 967364608,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1615731200,
+            "cuda_reserved_bytes": 1660944384,
+            "process_rss_bytes": 1367375872,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1605736960,
+            "phase_peak_reserved_bytes": 1667235840
+          },
+          "elapsed_seconds": 0.3249340259935707,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-B-16",
+          "sample_count": 16,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 14003732480,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 979795968,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1599685120,
+            "cuda_reserved_bytes": 1667235840,
+            "process_rss_bytes": 1381027840,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1617828352,
+            "phase_peak_reserved_bytes": 1667235840
+          },
+          "elapsed_seconds": 0.05025230400497094,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/1/1",
+          "sample_count": 4,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 14003732480,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 979922944,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1606540288,
+            "cuda_reserved_bytes": 1667235840,
+            "process_rss_bytes": 1381027840,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1735010816,
+            "phase_peak_reserved_bytes": 1832910848
+          },
+          "elapsed_seconds": 1.6632950339990202,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/8/1",
+          "sample_count": 78,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13838057472,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1150197760,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1676061184,
+            "cuda_reserved_bytes": 1832910848,
+            "process_rss_bytes": 1556881408,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 2153687552,
+            "phase_peak_reserved_bytes": 2405433344
+          },
+          "elapsed_seconds": 1.1637489220011048,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/32/1",
+          "sample_count": 55,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13265534976,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1361100800,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1703504896,
+            "cuda_reserved_bytes": 2405433344,
+            "process_rss_bytes": 1767313408,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1605736960,
+            "phase_peak_reserved_bytes": 2405433344
+          },
+          "elapsed_seconds": 0.03880128901801072,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/1/1",
+          "sample_count": 3,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13265534976,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1274212352,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1597261312,
+            "cuda_reserved_bytes": 2405433344,
+            "process_rss_bytes": 1681518592,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1677732352,
+            "phase_peak_reserved_bytes": 2405433344
+          },
+          "elapsed_seconds": 0.19187362500815652,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/8/1",
+          "sample_count": 10,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13265534976,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1274204160,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1600285184,
+            "cuda_reserved_bytes": 2405433344,
+            "process_rss_bytes": 1681518592,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 1924573696,
+            "phase_peak_reserved_bytes": 2405433344
+          },
+          "elapsed_seconds": 0.7951883200148586,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/32/1",
+          "sample_count": 38,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13265534976,
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1403379712,
+            "cgroup_tasks": 21,
+            "cuda_allocated_bytes": 1614785024,
+            "cuda_reserved_bytes": 2405433344,
+            "process_rss_bytes": 1810440192,
+            "process_threads": 21,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {
+            "phase_peak_allocated_bytes": 2187241984,
+            "phase_peak_reserved_bytes": 2541748224
+          },
+          "elapsed_seconds": 7.94815155499964,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "concurrent_mixed_and_detached_inputs",
+          "sample_count": 353,
+          "sampled_minima": {
+            "cuda_device_free_bytes": 13118734336,
+            "temporary_available_bytes": 125825024,
+            "temporary_available_inodes": 2042407
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 1554235392,
+            "cgroup_tasks": 25,
+            "cuda_allocated_bytes": 1951443456,
+            "cuda_reserved_bytes": 2541748224,
+            "process_rss_bytes": 1964359680,
+            "process_threads": 24,
+            "temporary_used_bytes": 8392704
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        }
+      ],
+      "source_snapshot": "tracked-repo"
+    },
+    {
+      "configuration": {
+        "backend": "openvino",
+        "batch_sizes": [
+          1,
+          8,
+          32
+        ],
+        "cold_ir": true,
+        "embedding_timeout_seconds": 45.0,
+        "image_edge": 974,
+        "inference_concurrency": 1,
+        "load_pressure_concurrency": 2,
+        "memory": {
+          "cgroup": {
+            "current_bytes": 165937152,
+            "events": {
+              "memory.failcnt": 0,
+              "memory.memsw.failcnt": 0,
+              "oom_kill": 0
+            },
+            "limit_bytes": 8589934592,
+            "peak_bytes": 165937152,
+            "swap_limit_bytes": 0,
+            "version": 1
+          },
+          "cuda": null,
+          "process_peak_rss_bytes": 242552832,
+          "process_rss_bytes": 242552832,
+          "resources": {
+            "process_threads": 16,
+            "tasks": {
+              "current": 16,
+              "events": {
+                "max": 0
+              },
+              "lifetime_peak": null,
+              "limit": 1024,
+              "version": 1
+            },
+            "temporary_filesystem": {
+              "available_bytes": 134217728,
+              "available_inodes": 2042409,
+              "capacity_bytes": 134217728,
+              "path": "/tmp",
+              "used_bytes": 0
+            }
+          }
+        },
+        "models": {
+          "ViT-B-16": "57c216476eefef5ab752ec549e440a49ae4ae5f3",
+          "ViT-L-14": "32bd64288804d66eefd0ccbe215aa642df71cc41"
+        },
+        "remote_hop_timeout_seconds": 15.0,
+        "repeats": 1,
+        "runtimes": {
+          "openvino": "2026.4.0",
+          "pydantic": "2.13.5",
+          "pydantic-core": "2.46.5",
+          "torch": "2.14.1+cpu",
+          "transformers": "5.18.0"
+        },
+        "sample_interval_seconds": 0.02,
+        "scenario": "overlap",
+        "torch_interop_threads": 16,
+        "torch_threads": 8,
+        "worker_processes": 1
+      },
+      "final": {
+        "cgroup": {
+          "current_bytes": 5218398208,
+          "events": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "limit_bytes": 8589934592,
+          "peak_bytes": 5220110336,
+          "swap_limit_bytes": 0,
+          "version": 1
+        },
+        "cuda": null,
+        "process_peak_rss_bytes": 6805852160,
+        "process_rss_bytes": 6805852160,
+        "resources": {
+          "process_threads": 41,
+          "tasks": {
+            "current": 41,
+            "events": {
+              "max": 0
+            },
+            "lifetime_peak": null,
+            "limit": 1024,
+            "version": 1
+          },
+          "temporary_filesystem": {
+            "available_bytes": 134217728,
+            "available_inodes": 2042408,
+            "capacity_bytes": 134217728,
+            "path": "/tmp",
+            "used_bytes": 0
+          }
+        }
+      },
+      "image_id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "journal_sha256": "6d37a0641ad6301960a8ec0d284424c6c2be0202e6d67127011c84bee107e49f",
+      "loaded_devices": {
+        "ViT-B-16": "ov:CPU",
+        "ViT-L-14": "ov:CPU"
+      },
+      "mixed_inputs": null,
+      "name": "openvino-cold-final",
+      "passed": true,
+      "phases": [
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 44.00418649500352,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "overlapping_model_loads",
+          "sample_count": 1579,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 3870367744,
+            "cgroup_tasks": 58,
+            "process_rss_bytes": 5414047744,
+            "process_threads": 58,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 2.2101400709943846,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-L-14",
+          "sample_count": 104,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4295221248,
+            "cgroup_tasks": 49,
+            "process_rss_bytes": 5878833152,
+            "process_threads": 49,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.9214256060076877,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "single_references/ViT-B-16",
+          "sample_count": 45,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4420571136,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6005497856,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.7169544899952598,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/1/1",
+          "sample_count": 35,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4420833280,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6005821440,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 5.086327783006709,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/8/1",
+          "sample_count": 238,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4547227648,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6135173120,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 15.553482652991079,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-L-14/32/1",
+          "sample_count": 725,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 5013094400,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6599634944,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.15650587898562662,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/1/1",
+          "sample_count": 9,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4980318208,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6567333888,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 0.9754415029892698,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/8/1",
+          "sample_count": 47,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 4980682752,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6567804928,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        },
+        {
+          "cuda_phase_peaks": {},
+          "elapsed_seconds": 3.6756330619973596,
+          "memory_event_delta": {
+            "memory.failcnt": 0,
+            "memory.memsw.failcnt": 0,
+            "oom_kill": 0
+          },
+          "phase": "batch/ViT-B-16/32/1",
+          "sample_count": 172,
+          "sampled_minima": {
+            "temporary_available_bytes": 134217728,
+            "temporary_available_inodes": 2042408
+          },
+          "sampled_peaks": {
+            "cgroup_current_bytes": 5218537472,
+            "cgroup_tasks": 42,
+            "process_rss_bytes": 6805852160,
+            "process_threads": 42,
+            "temporary_used_bytes": 0
+          },
+          "task_event_delta": {
+            "max": 0
+          }
+        }
+      ],
+      "source_snapshot": "tracked-repo"
+    }
+  ],
+  "hardware": {
+    "driver": "616.92",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "host": "shared Windows host with Linux Docker containers; not a paired backend benchmark",
+    "nvidia_smi_total_mib": 16303
+  },
+  "limitations": [
+    "cgroup v1 exercised natively; v2 and split v1 PID mounts tested synthetically",
+    "PID lifetime peak unavailable on this kernel; sampled task/thread peaks are lower bounds",
+    "Device-wide free memory includes unrelated applications; CUDA phase peaks are allocator-specific",
+    "Temporary filesystem observations cover /tmp anonymous worker output, not persistent model/IR volume growth",
+    "In-process protected ASGI does not measure native socket/proxy buffering or every codec/byte/pixel combination",
+    "Source-overlay native runs; production image rebuilds and hosted workflow execution not claimed",
+    "CPU run overlapped CodeQL; OpenVINO/CUDA runs overlapped routine QA; individual request deadline headroom is target-specific",
+    "Intel GPU and CUDA ARM remain separate hardware/upstream metadata gates"
+  ],
+  "native_inventory": {
+    "pip_check": "QA67, CPU amd64/arm64 56, OpenVINO58, CUDA/legacy75 pass",
+    "profiles": {
+      "locked-cpu-amd64": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+      "locked-cpu-arm64": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+      "locked-cuda-amd64": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+      "locked-cuda-legacy-amd64": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+      "locked-openvino-amd64": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+      "locked-qa-amd64": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf"
+    }
+  },
+  "qa": {
+    "branch_coverage_percent": 90.12,
+    "image_id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+    "initial_failure": "Default/noexec tmpfs blocked the existing setup launcher fixture; focused explicit-exec replay and final full suite pass; no application/test behavior weakened",
+    "line_coverage_percent": 95.22,
+    "passed": 928,
+    "skipped": 7,
+    "source_overlay": true,
+    "tmpfs": "256 MiB rw,exec,nosuid,nodev for executable setup-test stub",
+    "unchanged_floors_percent": {
+      "branches": 79.37,
+      "lines": 89.42
+    },
+    "warning": "Existing Starlette TestClient HTTPX2 deprecation",
+    "warnings": 1
+  },
+  "quality": {
+    "actionlint": "changed manual workflow passes",
+    "copyright": "passes",
+    "markdown_links": "checked at final checkout snapshot",
+    "pyright": "1.1.414; seven changed probe modules; existing native typing environment plus scripts import root; zero errors",
+    "ruff": "0.16.10; E,F,I except E501; py312; all capacity scripts/tests pass",
+    "skills": "both quick_validate passes; six manual capacity-skill scenarios; no independent model invocation/discovery benchmark",
+    "whitespace": "git diff --check passes"
+  },
+  "random_pr": {
+    "applied": "numpy>=2.5.3; six input attestations; no dependency graph refresh",
+    "eligible_pool": [
+      46,
+      48
+    ],
+    "head": "c17fe91c0ff1716dd2d927a0952d0d278143b37b",
+    "merge_operation": false,
+    "number": 48,
+    "state_at_selection": "open",
+    "uniform_draw": 0.5890290584185915,
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/48"
+  },
+  "schema_version": 1,
+  "security": {
+    "codeql": "Verified native 2.27.1 Python security-extended; exact source archive checked against measured-source; no new findings",
+    "existing_context_findings": [
+      {
+        "line": 57,
+        "path": "scripts/generate_env.py",
+        "rule": "py/clear-text-logging-sensitive-data"
+      },
+      {
+        "line": 105,
+        "path": "scripts/secret_publication.py",
+        "rule": "py/overly-permissive-file"
+      }
+    ],
+    "gitleaks": "Previously SHA-verified native 8.30.1; unchanged repository configuration; source and 83-commit history zero findings; final source and changed-files scans also zero",
+    "gitleaks_binary_sha256": "88f91962aa2f93ac6ab281d553b9e125f5197bbbce38f9f2437f7299c32e5509"
+  },
+  "source_difference": "CPU and CodeQL used measured-source; only capacity_workload.py reader annotation/import differs from final executable code (MemoryReader annotation -> Callable[[], dict]). CUDA/OpenVINO used frozen final probe code.",
+  "source_snapshots": {
+    "measured-source": [
+      {
+        "path": "scripts/capacity_api.py",
+        "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+      },
+      {
+        "path": "scripts/capacity_cuda.py",
+        "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+      },
+      {
+        "path": "scripts/capacity_metrics.py",
+        "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+      },
+      {
+        "path": "scripts/capacity_mixed.py",
+        "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+      },
+      {
+        "path": "scripts/capacity_probe.py",
+        "sha256": "05a7400192cbccc54c7a03038b947ba5cd864e08a89065f5589fd7a2a41f1808"
+      },
+      {
+        "path": "scripts/capacity_remote_fixture.py",
+        "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+      },
+      {
+        "path": "scripts/capacity_resources.py",
+        "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+      },
+      {
+        "path": "scripts/capacity_workload.py",
+        "sha256": "e89b136c1fcd4a57e2dca813a40d30c4f24aa76e4c3adf4c90a49c23480c3deb"
+      },
+      {
+        "path": "src/image_embedder/__init__.py",
+        "sha256": "d353412e242436afceb2fef9c23356cbbc49aa6ca79f77048c66163b62ac90eb"
+      },
+      {
+        "path": "src/image_embedder/admission.py",
+        "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+      },
+      {
+        "path": "src/image_embedder/artifact_integrity.py",
+        "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+      },
+      {
+        "path": "src/image_embedder/batch.py",
+        "sha256": "6d04c4c27753dc779a4dccd53d4a1af51a52f6f83856f32035880d45686350a8"
+      },
+      {
+        "path": "src/image_embedder/config.py",
+        "sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9"
+      },
+      {
+        "path": "src/image_embedder/deadlines.py",
+        "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+      },
+      {
+        "path": "src/image_embedder/embedder.py",
+        "sha256": "e984d232983395f8964a868f7e83d3261a3841e54b5aaeaa4a3d32cc85aeca5d"
+      },
+      {
+        "path": "src/image_embedder/execution.py",
+        "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+      },
+      {
+        "path": "src/image_embedder/healthcheck.py",
+        "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+      },
+      {
+        "path": "src/image_embedder/image_input.py",
+        "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+      },
+      {
+        "path": "src/image_embedder/ingress.py",
+        "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+      },
+      {
+        "path": "src/image_embedder/ingress_middleware.py",
+        "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+      },
+      {
+        "path": "src/image_embedder/input_limits.py",
+        "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+      },
+      {
+        "path": "src/image_embedder/ir_cache.py",
+        "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+      },
+      {
+        "path": "src/image_embedder/lifecycle.py",
+        "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+      },
+      {
+        "path": "src/image_embedder/logging_config.py",
+        "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+      },
+      {
+        "path": "src/image_embedder/main.py",
+        "sha256": "dc067f77b967a9634180b63d3dffb78b7ec4d0bfce0ffe23aafd255689473500"
+      },
+      {
+        "path": "src/image_embedder/memory.py",
+        "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+      },
+      {
+        "path": "src/image_embedder/model_catalog.py",
+        "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+      },
+      {
+        "path": "src/image_embedder/model_initialization.py",
+        "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+      },
+      {
+        "path": "src/image_embedder/model_loading.py",
+        "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+      },
+      {
+        "path": "src/image_embedder/models.py",
+        "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+      },
+      {
+        "path": "src/image_embedder/openvino_models.py",
+        "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+      },
+      {
+        "path": "src/image_embedder/queue.py",
+        "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+      },
+      {
+        "path": "src/image_embedder/remote_budget.py",
+        "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+      },
+      {
+        "path": "src/image_embedder/remote_fetch.py",
+        "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+      },
+      {
+        "path": "src/image_embedder/remote_process.py",
+        "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+      },
+      {
+        "path": "src/image_embedder/remote_protocol.py",
+        "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+      },
+      {
+        "path": "src/image_embedder/remote_url.py",
+        "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+      },
+      {
+        "path": "src/image_embedder/remote_worker.py",
+        "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+      },
+      {
+        "path": "src/image_embedder/request_body_deadline.py",
+        "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+      },
+      {
+        "path": "src/image_embedder/response_http_protocol.py",
+        "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+      },
+      {
+        "path": "src/image_embedder/response_send_deadline.py",
+        "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+      },
+      {
+        "path": "src/image_embedder/routes/__init__.py",
+        "sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1"
+      },
+      {
+        "path": "src/image_embedder/routes/admin.py",
+        "sha256": "28bd989577b2227af4156935825abd6bf977aec644767945585d7e28ee213693"
+      },
+      {
+        "path": "src/image_embedder/routes/batch.py",
+        "sha256": "35af357e1fef293926861c3e394da35a2a596273651cda5d80faa4f3b2f271b9"
+      },
+      {
+        "path": "src/image_embedder/routes/embed.py",
+        "sha256": "568a3c8aabaedc1859ccbd557d3098e6c73bf2d0dd9c964d2351535064ad0a5b"
+      },
+      {
+        "path": "src/image_embedder/routes/health.py",
+        "sha256": "5590d0924454636dffdbb860a4e997e97ba9c4838958395c9f0dd03df68cffb8"
+      },
+      {
+        "path": "src/image_embedder/routes/models.py",
+        "sha256": "7606f41bbbf54aff7ed69e48447dd6d44e746565f2c7d67316af70cc1b5aa0aa"
+      },
+      {
+        "path": "src/image_embedder/security.py",
+        "sha256": "3011a8fe7eca7a8619ab89aa9d6a24f6c60110b90a54dfdd44df45b903412eb4"
+      },
+      {
+        "path": "src/image_embedder/server.py",
+        "sha256": "3d802717237af543c28224df24786a1f51805bb4b70afe97a1f9389f2eca0fb3"
+      }
+    ],
+    "tracked-repo": [
+      {
+        "path": "scripts/capacity_api.py",
+        "sha256": "cebdc2eb2ca2faa494fbb2e2fcebf677e74a87309279a9b6fc6055e634c5b11d"
+      },
+      {
+        "path": "scripts/capacity_cuda.py",
+        "sha256": "b7bfcffcb1fc072c9e213c13a5c317a2e5ac7ff1fa22c79fad051080dc3e13f3"
+      },
+      {
+        "path": "scripts/capacity_metrics.py",
+        "sha256": "663cdcc1f75649a59ff1e9b5d170179eb688c0dd9ec83b5ebb3d855beac7f242"
+      },
+      {
+        "path": "scripts/capacity_mixed.py",
+        "sha256": "aa857a5098eaacf3e272827c6242ba568e1e2afdaf3bc533bf29caf3791f6fd4"
+      },
+      {
+        "path": "scripts/capacity_probe.py",
+        "sha256": "05a7400192cbccc54c7a03038b947ba5cd864e08a89065f5589fd7a2a41f1808"
+      },
+      {
+        "path": "scripts/capacity_remote_fixture.py",
+        "sha256": "c44558e3ac2176fa3bbe81d6f057988800b93999f0aef60bbf0e7a3b718a51bc"
+      },
+      {
+        "path": "scripts/capacity_resources.py",
+        "sha256": "58fc91889382f7b7928437667c22651482ba876a14b3ff2fc24552b5f6e9a929"
+      },
+      {
+        "path": "scripts/capacity_workload.py",
+        "sha256": "248a639e7e693115083ee0d5bd8bc28d53426b3738b334df7fcf1261229e54e3"
+      },
+      {
+        "path": "src/image_embedder/__init__.py",
+        "sha256": "d353412e242436afceb2fef9c23356cbbc49aa6ca79f77048c66163b62ac90eb"
+      },
+      {
+        "path": "src/image_embedder/admission.py",
+        "sha256": "a916b6f43edd0d3d9919d3d8708559386b1230876113aed598e8359936c323c2"
+      },
+      {
+        "path": "src/image_embedder/artifact_integrity.py",
+        "sha256": "ba53f416727e496e546f137d8fb4a0ee2de805de0ad49d52ff7429949774d7da"
+      },
+      {
+        "path": "src/image_embedder/batch.py",
+        "sha256": "6d04c4c27753dc779a4dccd53d4a1af51a52f6f83856f32035880d45686350a8"
+      },
+      {
+        "path": "src/image_embedder/config.py",
+        "sha256": "b465b0561c727a1914a98688440378c26956e948697043a5f0dde4ef6d1d7ca9"
+      },
+      {
+        "path": "src/image_embedder/deadlines.py",
+        "sha256": "b940e579ac9a534d6774699eddb8b5479104b7d8d5ff9455b49ba425a3ba7a66"
+      },
+      {
+        "path": "src/image_embedder/embedder.py",
+        "sha256": "e984d232983395f8964a868f7e83d3261a3841e54b5aaeaa4a3d32cc85aeca5d"
+      },
+      {
+        "path": "src/image_embedder/execution.py",
+        "sha256": "3c3ee161df03cd4f6eab6eba780988c1c3c1565f4f78c11780942499efbaf5ec"
+      },
+      {
+        "path": "src/image_embedder/healthcheck.py",
+        "sha256": "cfe24a543ce7a11fd3a2cd71c5056a3f3ec46002a239e30359075c9a3bdbc35f"
+      },
+      {
+        "path": "src/image_embedder/image_input.py",
+        "sha256": "2c18649f5f8a65764d932b9955d4c5492213197eaa86caa0a79cd55d05c17d02"
+      },
+      {
+        "path": "src/image_embedder/ingress.py",
+        "sha256": "e96e0530ab493d1baf8d104a5bdaa087ab169865043cc7d34f1c1ba63648ec17"
+      },
+      {
+        "path": "src/image_embedder/ingress_middleware.py",
+        "sha256": "082c96ea79031f9b0bda7dc7a1eac31b6570024f9172c39ba152434fc2527ec2"
+      },
+      {
+        "path": "src/image_embedder/input_limits.py",
+        "sha256": "85219e881b252c3a1c4a03e4f0138ad505beaec239c057b932634d2ef302f672"
+      },
+      {
+        "path": "src/image_embedder/ir_cache.py",
+        "sha256": "b4e048cd79d9002bbe133c1a273a5168ee9da04efade0130755e482e2ff5350a"
+      },
+      {
+        "path": "src/image_embedder/lifecycle.py",
+        "sha256": "ad421a28861dbd984403ec2a0f74d20187f4e71342c92e2ced0fc37a3ea7125a"
+      },
+      {
+        "path": "src/image_embedder/logging_config.py",
+        "sha256": "3aafb080be39cea117292471b0a098ad9953c0add263bf179495fb3e286acab2"
+      },
+      {
+        "path": "src/image_embedder/main.py",
+        "sha256": "dc067f77b967a9634180b63d3dffb78b7ec4d0bfce0ffe23aafd255689473500"
+      },
+      {
+        "path": "src/image_embedder/memory.py",
+        "sha256": "2704059b1adb80c82d0fab80b371d1e8e02aca6ddecf1e8a7e2ab6156bab5895"
+      },
+      {
+        "path": "src/image_embedder/model_catalog.py",
+        "sha256": "95ddc8acfc351e2bfd7b3b147841cc1871c8ac608cbf6d655bf9d9e2bcfb2b49"
+      },
+      {
+        "path": "src/image_embedder/model_initialization.py",
+        "sha256": "42c08cb630079b95ae93d8e3530a364aaeb73b4e013efc75a3d2a846ade2773a"
+      },
+      {
+        "path": "src/image_embedder/model_loading.py",
+        "sha256": "cded1af59a9af4e448fdb2029a60a8b67f6e5bea47e713ea0fa105e8c750ad80"
+      },
+      {
+        "path": "src/image_embedder/models.py",
+        "sha256": "f60384dd39da3e3eb84ee5a561588cd93886ddf9bd2f6bacda7b648a80cd558f"
+      },
+      {
+        "path": "src/image_embedder/openvino_models.py",
+        "sha256": "75c9857e4121989bc693d95f7a0f5f72322bffc439287d508bcb630322db01f8"
+      },
+      {
+        "path": "src/image_embedder/queue.py",
+        "sha256": "7169f50226225f9d99c6fd7b5b0ba3c9ae6b6feb342a540e4bb361ead718b40c"
+      },
+      {
+        "path": "src/image_embedder/remote_budget.py",
+        "sha256": "b7c3baf1899063b0facb20ceccdf754a42c74648730dc65365c3c9734b89a4f2"
+      },
+      {
+        "path": "src/image_embedder/remote_fetch.py",
+        "sha256": "be6db8de08f90a83fc63e1db7407eeaf3a7d0b1a97b3df03b27d0a4effec29c0"
+      },
+      {
+        "path": "src/image_embedder/remote_process.py",
+        "sha256": "7ce58a27ecb5f7a305daa3b068a45be1f56b88e612b245ccde31f30ff7be6ddc"
+      },
+      {
+        "path": "src/image_embedder/remote_protocol.py",
+        "sha256": "dbed8d41db43a4f08ec25d299e0fcfd8cc44eb8e2e11bf8710cbad250c798565"
+      },
+      {
+        "path": "src/image_embedder/remote_url.py",
+        "sha256": "353bf5c1440ce1dc4d9cd0133752dbbddb74b533d67da13842e1b85869b439df"
+      },
+      {
+        "path": "src/image_embedder/remote_worker.py",
+        "sha256": "c5200b5bd8ebe4ad6898ce41a1c4a06f8e78ca5bfcff46f8510b8d43a2eeab16"
+      },
+      {
+        "path": "src/image_embedder/request_body_deadline.py",
+        "sha256": "817579515d511d24aea47ced04615d3de1ed5ea008fbd749a2d70583ffc049de"
+      },
+      {
+        "path": "src/image_embedder/response_http_protocol.py",
+        "sha256": "b4974865978c794889ad1dfc0557f07b54cbda0fdf43bcdfa8f3bb2a15da0cb9"
+      },
+      {
+        "path": "src/image_embedder/response_send_deadline.py",
+        "sha256": "34354c9139293e1760802b98758bf99a73b3e1fb0aa33b5d69d959bcb9c5f812"
+      },
+      {
+        "path": "src/image_embedder/routes/__init__.py",
+        "sha256": "ceef246309511b2076f06f2afe55dec04807786b72b745fa8c0a8495b8f6a9b1"
+      },
+      {
+        "path": "src/image_embedder/routes/admin.py",
+        "sha256": "28bd989577b2227af4156935825abd6bf977aec644767945585d7e28ee213693"
+      },
+      {
+        "path": "src/image_embedder/routes/batch.py",
+        "sha256": "35af357e1fef293926861c3e394da35a2a596273651cda5d80faa4f3b2f271b9"
+      },
+      {
+        "path": "src/image_embedder/routes/embed.py",
+        "sha256": "568a3c8aabaedc1859ccbd557d3098e6c73bf2d0dd9c964d2351535064ad0a5b"
+      },
+      {
+        "path": "src/image_embedder/routes/health.py",
+        "sha256": "5590d0924454636dffdbb860a4e997e97ba9c4838958395c9f0dd03df68cffb8"
+      },
+      {
+        "path": "src/image_embedder/routes/models.py",
+        "sha256": "7606f41bbbf54aff7ed69e48447dd6d44e746565f2c7d67316af70cc1b5aa0aa"
+      },
+      {
+        "path": "src/image_embedder/security.py",
+        "sha256": "3011a8fe7eca7a8619ab89aa9d6a24f6c60110b90a54dfdd44df45b903412eb4"
+      },
+      {
+        "path": "src/image_embedder/server.py",
+        "sha256": "3d802717237af543c28224df24786a1f51805bb4b70afe97a1f9389f2eca0fb3"
+      }
+    ]
+  }
+}

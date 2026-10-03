@@ -14,7 +14,7 @@ from dataclasses import asdict
 from io import BytesIO
 
 import numpy as np
-from capacity_metrics import MemoryReader, MemorySampler
+from capacity_metrics import MemorySampler
 from PIL import Image
 
 from image_embedder.embedder import BatchItem, ImageEmbedder
@@ -42,25 +42,31 @@ class CapacityWorkload:
         models: list[str],
         sizes: list[int],
         payloads: list[str],
-        reader: MemoryReader,
+        reader: Callable[[], dict],
         emit: Callable[[dict], None],
         interval: float = 0.1,
         repeats: int = 2,
         expected_device: str = "cpu",
+        cuda=None,
     ) -> None:
         self.embedder, self.models, self.sizes = embedder, models, sizes
         self.payloads, self.reader, self.emit = payloads, reader, emit
         self.interval, self.repeats = interval, repeats
         self.expected_device = expected_device
+        self.cuda = cuda
         self.references: dict[str, list[np.ndarray]] = {}
 
     def measure(self, name: str, function: Callable[[], object]) -> object:
+        if self.cuda is not None:
+            self.cuda.begin_phase()
         started = time.monotonic()
         sampler = MemorySampler(self.reader, self.interval)
         self.emit({"event": "phase_start", "phase": name, "memory": self.reader()})
         try:
             with sampler:
                 result = function()
+                if self.cuda is not None:
+                    self.cuda.end_phase()
         except Exception as error:
             self.emit(
                 {
@@ -256,3 +262,11 @@ class CapacityWorkload:
                 ),
             )
             self.emit({"event": "api_deadline", "result": result})
+        elif scenario == "mixed":
+            from capacity_mixed import check_mixed_capacity
+
+            result = self.measure(
+                "concurrent_mixed_and_detached_inputs",
+                lambda: asyncio.run(check_mixed_capacity(self)),
+            )
+            self.emit({"event": "mixed_inputs", "result": result})

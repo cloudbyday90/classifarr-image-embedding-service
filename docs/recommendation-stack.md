@@ -1,6 +1,6 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current shared-batch/AI-skill iteration starts from `d1280b73cc8496f18c9d0b494c7829f9f52f8758` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-03. The current deployment-capacity/AI-skill iteration starts from `f45ee654295f313e428063707dd049bda4c79d99` and is delivered directly on `master`. Python is retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
 
 ## Completed recommendations and tradeoffs
 
@@ -31,17 +31,18 @@ Assessment date: 2026-10-03. The current shared-batch/AI-skill iteration starts 
 | Repository resource-contract AI skill | Focused repeatable ownership and validation routing, versioned with source | Manual scenario evaluation; not an independent model-discovery benchmark | Implemented; [skill design](project-resource-skill.md) |
 | Local Trivy PR 27 and FastAPI PR 46 adoption | Reviewed action/floor updates without original PR merges | Hosted action orchestration is separate; FastAPI wheel graphs remain unchanged | [PR 27](pr-27-local-validation.md), [PR 46](pr-46-local-validation.md) |
 | Selected PRs implemented locally through verified immutable refs | Requested maintenance updates without upstream merges | Hosted reporting/cache behavior remains CI work | [PR 28](pr-28-local-validation.md), [42](pr-42-local-validation.md), [40](pr-40-local-validation.md), [33](pr-33-local-validation.md), [49](pr-49-local-validation.md), [51](pr-51-local-validation.md), [41](pr-41-local-validation.md), [45](pr-45-local-validation.md), [PR 50](pr-50-local-validation.md), [PR 54](pr-54-local-validation.md), random [PR 34](pr-34-local-validation.md), and now [PR 52](pr-52-local-validation.md) |
+| Task/storage/CUDA capacity extension and focused calibration skill | Real mixed inputs, child/owner settlement and accelerator allocation evidence | Shared host and sampled peaks remain workload-specific; socket/proxy buffering is separate | Implemented; [capacity](deployment-capacity.md), [skill](project-capacity-skill.md), random [NumPy PR 48](pr-48-local-validation.md) |
 | Retain modular Python and measure before language changes | Builds on native inference and tested contracts | Python footprint remains; Rust benefit is unmeasured here | User confirmed; [language decision](language-platform-decision.md) |
 
 ## Next items
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Calibrate selected accelerator/concurrent-input deployments, PID/thread and temporary storage headroom; restore CUDA ARM after upstream metadata repair | Measures device/process/storage capacity before scaling owners | Hardware/runner cost; cuSPARSELt ARM metadata currently fails strict pip check |
-| Next 2 | Add recurring native Windows setup, fetch-worker and response-transport validation, including shared batch budgets | Protects ACL, rotation, termination and platform buffering behavior | Separate Windows runner/tooling; Linux runtime profiles remain unchanged |
-| Next 3 | Evaluate the new Starlette TestClient HTTPX2 migration separately | Resolves the observed upstream deprecation | Requires a reviewed test-tool graph and compatibility validation; current tests still pass |
+| Next 1 | Add recurring native Windows setup, fetch-worker and response-transport validation, including shared batch budgets | Protects ACL, rotation, termination and platform buffering behavior already tested locally | Separate Windows runner/tooling; retain Linux profile contracts |
+| Next 2 | Evaluate Starlette TestClient HTTPX2 migration separately | Resolves the observed upstream deprecation | Reviewed test-tool graph and compatibility checks; current tests still pass |
+| Next 3 | Extend deployment-specific capacity coverage before scaling owners; restore CUDA ARM after upstream metadata repair | Other codecs, actual socket/proxy uploads, cold-export task counts and Intel GPU measurements improve sizing | Hardware/runner cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-The next implementation should extend the existing manual capacity workflow to measure mixed concurrent inline/remote inputs, resident models, native accelerator execution, PID/thread peaks and temporary-storage high-water marks under success and detached-owner cases. Shared [batch fetch preparation](remote-batch-budget.md) now has a lazy 30-second deadline in addition to per-image, upload and response budgets. Preserve complete dependency/model/IR contracts and calibrate deployment headroom before raising concurrency or choosing PID/storage ceilings. Use the [resource-contract skill](project-resource-skill.md) to select the relevant ownership and validation boundaries.
+Next implement the native Windows CI matrix for private setup/publication, supervised remote child termination and HTTP parser/response lifetime checks. The [capacity extension](deployment-capacity.md) now measures resident models and maximum batches on this CPU/OpenVINO/NVIDIA host, mixed concurrent inline/remote inputs, canceled owners, task/thread peaks and anonymous temporary storage. Keep production worker/owner counts unchanged and preserve target-hardware gates for broader deployments. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing evidence and the [resource-contract skill](project-resource-skill.md) for ownership changes.
 
 ## Final recommendation stack
 
@@ -58,6 +59,8 @@ Retain one worker, eight complete HTTP ingress owners, server concurrency 64 and
 Use a total 30-second upload budget that stops at complete body/disconnect/response start and preserves ingress through cooperative cleanup and JSON 408 completion. Give every enabled remote fetch a separate total 15-second parent-owned budget, including interpreter startup, DNS, TLS, all hops/addresses and decoded reads. Keep the socket/hop budget independent. Kill/reap before the inference owner releases capacity; keep bounded non-executable messages and private auto-deleted image storage. Measured three-byte fetches add roughly 264 ms and 28â€“31 MiB child RSS here; this is accepted for termination of blocked synchronous DNS/network work, with deployment calibration required.
 
 Use a separate total 30-second HTTP/1 response-send budget through the shipped asyncio launcher. Include terminal user-space and TLS ciphertext buffer drain; abort and confirm connection loss before cancellation releases ingress. Keep httptools/h11 parser selection automatic. Retest the narrow Uvicorn/CPython adapter on upgrades, use asyncio for TLS, and keep edge/HTTP2/WebSocket/background-work contracts explicit. Adopt the immutable Trivy v0.36.0 wrapper with the verified native binary selected by absolute path, disabled setup/cache and existing report/failure gates.
+
+Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
 
 ## Response-send delivery outcome
 

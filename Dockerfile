@@ -42,7 +42,7 @@ COPY --from=builder /opt/venv /opt/venv
 WORKDIR /app
 COPY src ./src
 COPY scripts/backend_probe.py scripts/smoke_backend.py scripts/production_model_probe.py ./scripts/
-COPY scripts/capacity_metrics.py scripts/capacity_workload.py scripts/capacity_api.py scripts/capacity_probe.py ./scripts/
+COPY scripts/capacity_*.py ./scripts/
 COPY scripts/dependency_*.py scripts/install_dependencies.py ./scripts/
 COPY requirements*.txt ./
 COPY requirements/locks ./requirements/locks/
