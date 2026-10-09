@@ -2,7 +2,7 @@
 -r requirements.txt
 
 # Match Python bindings in our venv to the pinned Intel runtime base.
-openvino==2026.4.0
+openvino==2026.4.1
 
 # Direct openvino.convert_model() preserves CLIP's projection output.
 # CPU Torch is required for the first model export, not the inference hot path.
