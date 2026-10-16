@@ -10,7 +10,7 @@ pytest==9.1.1
 pydantic==2.13.5
 requests==2.34.2
 slowapi==0.1.10
-starlette==1.7.0
+starlette==1.8.0
 trustme==1.2.1
 urllib3==2.8.0
 uvicorn==0.54.0
