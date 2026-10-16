@@ -21,6 +21,7 @@ PHASES = frozenset(
         "dispatched",
         "native_started",
         "native_failed",
+        "native_cancelled",
         "native_finished",
         "waiter_detached",
         "owner_failed",
@@ -76,7 +77,7 @@ class ExecutionTimeline:
             raise AssertionError("Capacity inference timeline did not settle")
         if "native_started" in events and "native_finished" not in events:
             raise AssertionError("Capacity native timeline did not settle")
-        if "native_finished" in events and native_result_verified is None:
+        if "native_finished" in events and "native_cancelled" not in events and native_result_verified is None:
             raise AssertionError("Capacity native result was not verified")
 
         def interval(start, finish):
@@ -121,6 +122,7 @@ class ExecutionTimeline:
             "durations_seconds": durations,
             "waiter_detached": "waiter_detached" in events,
             "native_failed": "native_failed" in events,
+            "native_cancelled": "native_cancelled" in events,
             "native_result_verified": native_result_verified,
             "owner_failed": "owner_failed" in events,
             "owner_cancelled": "owner_cancelled" in events,

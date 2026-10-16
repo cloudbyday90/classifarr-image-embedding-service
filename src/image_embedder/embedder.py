@@ -14,7 +14,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 from PIL import Image
 
+from .batch_inference import infer_batch
 from .config import Settings
+from .execution_cancellation import cancellation_checkpoint
 from .image_input import decode_base64, load_rgb
 from .input_limits import BatchInputBudget
 from .model_catalog import MODEL_CATALOG, ModelSpec
@@ -378,6 +380,7 @@ class ImageEmbedder:
         normalize: bool,
         image_size: Optional[int]
     ) -> Tuple[List[float], int, str, str, int]:
+        cancellation_checkpoint()
         spec = self.resolve_model(model)
         if image_size is not None and image_size != spec.image_size:
             raise ValueError(
@@ -389,6 +392,7 @@ class ImageEmbedder:
             raise ValueError("image_size must be a positive integer")
 
         image_bytes = self._resolve_image_bytes(image_url, image_base64)
+        cancellation_checkpoint()
 
         # Cache check — skip inference entirely on a hit.
         if self._embedding_cache is not None:
@@ -411,7 +415,9 @@ class ImageEmbedder:
         self, spec: ModelSpec, target_size: int, normalize: bool,
         image: Image.Image, cache_key: str,
     ) -> EmbedResult:
+        cancellation_checkpoint()
         model_obj, processor, device = self._load_model(spec)
+        cancellation_checkpoint()
 
         if device.startswith("ov:"):
             # OpenVINO path: processor returns numpy tensors; compiled model
@@ -421,6 +427,7 @@ class ImageEmbedder:
                 return_tensors="np",
                 size={"shortest_edge": target_size},
             )
+            cancellation_checkpoint()
             raw_result = model_obj(dict(inputs))  # type: ignore[operator]
             raw_output = raw_result[0].astype(np.float32)  # expected shape (1, dims)
             if raw_output.ndim != 2 or raw_output.shape[0] != 1 or raw_output.shape[1] != spec.dims:
@@ -439,6 +446,7 @@ class ImageEmbedder:
                 size={"shortest_edge": target_size},
             )
             inputs = {k: v.to(device) for k, v in inputs.items()}
+            cancellation_checkpoint()
 
             import torch
 
@@ -471,7 +479,7 @@ class ImageEmbedder:
         target_size: int,
         items: List[BatchItem],
     ) -> List[Union[Tuple[List[float], int, str, str, int], Exception]]:
-        """Run a batch of images through the model in one forward pass.
+        """Run ordered results through bounded cooperative forward chunks.
 
         All items share the same resolved *spec* and *target_size*.
         Returns one result (or ``Exception``) per item, in the same order.
@@ -480,6 +488,7 @@ class ImageEmbedder:
         """
         if not items:
             return []
+        cancellation_checkpoint()
 
         # Close decoded images even when model loading or preprocessing fails.
         with ExitStack() as images:
@@ -498,6 +507,7 @@ class ImageEmbedder:
         uncached_cache_keys: List[str] = []
         if self._embedding_cache is not None:
             for i, item in enumerate(items):
+                cancellation_checkpoint()
                 try:
                     image_bytes = self._resolve_image_bytes(
                         item.image_url, item.image_base64, remote_budget=remote_budget,
@@ -519,6 +529,7 @@ class ImageEmbedder:
                     uncached_cache_keys.append(key)
         else:
             for i, item in enumerate(items):
+                cancellation_checkpoint()
                 try:
                     image_bytes = self._resolve_image_bytes(
                         item.image_url, item.image_base64, remote_budget=remote_budget,
@@ -541,6 +552,7 @@ class ImageEmbedder:
         pil_images: List[Optional[Image.Image]] = []
         load_errors: List[Optional[Exception]] = []
         for _item, image_bytes in uncached_payloads:
+            cancellation_checkpoint()
             try:
                 image = self._image_from_bytes(image_bytes, target_size=target_size, budget=budget)
                 images.callback(image.close)
@@ -551,67 +563,19 @@ class ImageEmbedder:
                 load_errors.append(exc)
 
         valid_sub_idx = [i for i, img in enumerate(pil_images) if img is not None]
-        valid_images = [pil_images[i] for i in valid_sub_idx]
+        valid_images = [image for image in pil_images if image is not None]
 
         # Partial outcomes for uncached items (index within uncached_items).
         uncached_outcomes: List[Any] = list(load_errors)
         device: str | None = None
 
         if valid_images:
-            model_obj, processor, device = self._load_model(spec)
-            if device.startswith("ov:"):
-                # OpenVINO path: batch all valid images in one compiled model call.
-                inputs = processor(  # type: ignore[operator]
-                    images=valid_images,
-                    return_tensors="np",
-                    size={"shortest_edge": target_size},
-                )
-                raw_result = model_obj(dict(inputs))  # type: ignore[operator]
-                n_valid = len(valid_images)
-                raw_output = raw_result[0].astype(np.float32)  # expected shape (N, dims)
-                if raw_output.ndim != 2 or raw_output.shape[0] != n_valid or raw_output.shape[1] != spec.dims:
-                    raise ValueError(
-                        f"OpenVINO model returned unexpected output shape {raw_output.shape!r} "
-                        f"(expected ({n_valid}, {spec.dims})) for model={spec.name}"
-                    )
-                features_np = raw_output
-
-                for batch_pos, sub_idx in enumerate(valid_sub_idx):
-                    feat = features_np[batch_pos]
-                    try:
-                        if uncached_items[sub_idx].normalize:
-                            feat = self._normalize_embedding_np(feat)
-                        embedding_list = feat.tolist()
-                        dims = len(embedding_list)
-                        self._validate_embedding_result(spec, embedding_list, dims)
-                        uncached_outcomes[sub_idx] = (embedding_list, dims, "local", spec.name, target_size)
-                    except ValueError as exc:
-                        uncached_outcomes[sub_idx] = exc
-            else:
-                import torch
-
-                inputs = processor(  # type: ignore[operator]
-                    images=valid_images,
-                    return_tensors="pt",
-                    size={"shortest_edge": target_size},
-                )
-                inputs = {k: v.to(device) for k, v in inputs.items()}
-
-                with torch.no_grad():
-                    features = model_obj(**inputs).image_embeds  # type: ignore[operator]
-
-                for batch_pos, sub_idx in enumerate(valid_sub_idx):
-                    feat = features[batch_pos]
-                    if uncached_items[sub_idx].normalize:
-                        feat = torch.nn.functional.normalize(
-                            feat.unsqueeze(0), p=2, dim=-1
-                        ).squeeze(0)
-                    embedding = feat.detach().cpu().numpy().astype(np.float32).tolist()
-                    try:
-                        self._validate_embedding_result(spec, embedding, len(embedding))
-                        uncached_outcomes[sub_idx] = (embedding, len(embedding), "local", spec.name, target_size)
-                    except ValueError as exc:
-                        uncached_outcomes[sub_idx] = exc
+            inferred, device = infer_batch(
+                self, spec, target_size,
+                [uncached_items[i] for i in valid_sub_idx], valid_images,
+            )
+            for sub_idx, outcome in zip(valid_sub_idx, inferred, strict=True):
+                uncached_outcomes[sub_idx] = outcome
 
         # Merge uncached results back into the full outcomes list.
         for sub_idx, orig_idx in enumerate(uncached_indices):

@@ -1,6 +1,18 @@
 # Open PR availability
 
-## Current assessment: 2026-10-15
+## Current assessment: 2026-10-16
+
+GitHub MCP search returned seven open proposals: #55, #56, #58, #59, #60, #61
+and #62. An unbiased local `secrets.choice` draw over that complete list selected
+[PR #58](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/58),
+head `76710614970d513c84ba191057ec441d2eb231ee`. The actual fetched patch raises
+the Setuptools floor to its already locked 84.0.0 wheel. The
+[local adoption record](pr-58-local-validation.md) separates input-attestation
+renewal from an artifact migration. The original PR is not merged by this task.
+This assessment supersedes the previous availability count; historical cleanup
+decisions below retain their original dates and evidence.
+
+## Earlier assessment: 2026-10-15
 
 GitHub MCP's repository-provided pull collection returned eight new open PRs,
 #55–#62, created on October 9. Their patches were fetched and reviewed. An

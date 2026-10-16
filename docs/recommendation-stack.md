@@ -1,14 +1,15 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-15. The current execution-timing/PR 57 iteration starts from `e5b55d03ac61ce36c16bf611bc5017c8c01c4955` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records. Earlier delivery sections retain their dated evidence.
+Assessment date: 2026-10-16. The current cooperative-inference/PR 58 iteration starts from `c38092c926c894c3b7da819b7f83dbf75000df9b` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records. Earlier delivery sections retain their dated evidence.
 
 ## Completed recommendations and tradeoffs
 
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
+| Cooperative per-owner stop checkpoints and bounded native chunks | Skips future work after the last waiter leaves; keeps active calls owned; preserves live coalesced siblings | Extra forward calls; cannot interrupt a hung active call or detect post-upload socket disconnects | Implemented; [cancellation outcome](cooperative-inference-cancellation.md), [skill](project-cooperative-inference-skill.md), random [PR 58](pr-58-local-validation.md) |
 | Optional execution phases and private native-result validation after HTTP expiry | Separates admission/native costs and checks detached results without publishing vectors | Trusted internal callbacks; synthetic finite bursts on a shared host; not kernel profiling | Implemented; [timing outcome](execution-timing-calibration.md), [skill](project-execution-timing-skill.md), random [PR 57](pr-57-local-validation.md) |
 | Representative poster/landscape/codec bursts with isolated HTTP client | Encoded-byte parity, observed receipt and separate client RSS | Synthetic fixtures; shared cgroup and model-owner probe overhead; finite bursts | Implemented; [workload design](representative-capacity.md), [skill extension](project-representative-capacity-skill.md) |
-| Close reviewed completed/superseded PRs | Clears obsolete proposals while preserving original commits and reopening | Requires a decision record; state alone does not explain local adoption | Eight closed unmerged on October 3; eight new October 9 proposals now exist; [cleanup record](aging-pr-cleanup.md), [current availability](open-pr-availability.md) |
+| Close reviewed completed/superseded PRs | Clears obsolete proposals while preserving original commits and reopening | Requires a decision record; state alone does not explain local adoption | Eight closed unmerged on October 3; current October 16 search returns seven newer proposals; [cleanup record](aging-pr-cleanup.md), [current availability](open-pr-availability.md) |
 | Explicit forwarding trust, disabled for direct Docker deployment | Caller headers cannot rotate public quota identities; ambient wildcard trust is ignored | Intentional proxies must configure controlled peers; Docker/NAT may share address quotas | Implemented; [direct deployment design](direct-deployment-trust.md), [skill extension](project-deployment-transport-skill.md) |
 | Stable public-probe and verified embedding quota identities | Closes rotated/empty-header bypasses; removes raw credentials from storage/logs | NAT clients share probe limits; a shared service credential shares embedding quota | Implemented; [identity design](public-probe-rate-limits.md), [skill extension](project-quota-identity-skill.md) |
 | Track inference owners beyond HTTP deadlines; preserve server signals and drain work | Preserves accounting during cancellation; cleanup cannot race workers | Running Python threads cannot be forcibly killed; supervisor deadlines must align | Implemented; [execution design](inference-execution.md) |
@@ -47,10 +48,11 @@ Assessment date: 2026-10-15. The current execution-timing/PR 57 iteration starts
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Design cooperative cancellation between native micro-batches; replay smaller caller/batch profiles on the deployment host | Targets the observed 14.957-second detached native tail without duplicating models | Keep active native work/read locks/images owned; coalesced live members need separate accounting; extra small requests consume quota; host load matters |
-| Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
+| Next 1 | Propagate post-upload HTTP disconnects into matched embedding waiter cancellation | Lets the cooperative stop signal reflect a caller that has actually left, before the embedding deadline | One receive owner; no competing body consumers; preserve response/ingress ownership and live coalesced members; requires native socket evidence |
+| Next 2 | Calibrate native chunk size and caller/batch pressure on the deployment host | Balances checkpoint frequency, memory and batching efficiency with actual workload evidence | Finite shared-host runs do not establish universal capacity; extra small API requests consume quota |
+| Next 3 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-The [timing follow-up](execution-timing-calibration.md) now separates queue wait and native work and validates results after HTTP expiry. Next use the capacity skill for target-host replay and the resource-contract skill for cancellation design: skip only future chunks after all relevant waiters leave, with event-controlled regressions for active-owner settlement and shared live callers. Preserve the [quota identity](public-probe-rate-limits.md) and [direct deployment](direct-deployment-trust.md) boundaries. External-client address preservation still needs real traffic; the [Windows matrix](windows-native-validation.md) still needs observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+The [cooperative follow-up](cooperative-inference-cancellation.md) now skips future native chunks after the last relevant waiter leaves. The current matched routes await inference without monitoring post-upload receive events. The [ASGI specification](https://asgi.readthedocs.io/en/stable/specs/www.html) exposes a separate disconnect event; from these sources we infer that an early socket close may leave useful stop signalling delayed until the existing embedding deadline. Next design one bounded receive owner after body completion, with real socket regressions and unchanged response/ingress settlement. Use the resource-contract skill for that boundary and the capacity skill for target-host replay. Preserve quota identities, direct publishing, external-address validation and the remaining hosted/hardware gates.
 
 ## Final recommendation stack
 
@@ -69,9 +71,11 @@ spends 28.784 seconds in admission and 31.167 seconds in native work, including
 queued owners never dispatch. Four eight-image callers pass all 32 cases with
 a 32.863-second slowest request; OpenVINO CPU passes all 16 two-caller 32-image
 cases with a 41.808-second slowest request. These are finite comparison profiles,
-not universal capacity or paired speedup results. Keep current deadlines and
-one owner, replay on the deployment host, then design cooperative checkpoints
-between micro-batches. Increasing deadlines retains ingress longer; adding
+not universal capacity or paired speedup results. Those runs predate the new
+native chunking default. Keep current deadlines and one owner; use the new
+eight-image native chunk setting as a target-host calibration starting point.
+Cooperative checkpoints preserve active ownership while skipping future chunks.
+Increasing deadlines retains ingress longer; adding
 owners duplicates models and needs fresh memory sizing. Warm shared-page
 accounting does not replace earlier cold-memory evidence.
 
@@ -91,7 +95,39 @@ Use a separate total 30-second HTTP/1 response-send budget through the shipped a
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
 
-## Execution timing and PR 57 delivery outcome
+## Cooperative inference and PR 58 delivery outcome
+
+Full locked QA passes **1,162 tests**, with seven existing skips and **30 new
+cases**. Coverage is **95.79% lines / 91.08% branches**, above unchanged floors;
+the four execution/cancellation/observation/forward modules have complete
+line/branch coverage. Both pinned models pass CPU/OpenVINO/RTX 5070 Ti committed
+chunk/recovery checks: each verifies eight active images privately, skips 24
+future images and preserves queued recovery. Default native chunks also pass
+1/8/32 raw/normalized parity on all three backends. CPU/OpenVINO poster/codec
+HTTP checks pass 8/8 each, with 33.609/17.134-second slowest observations.
+
+Keep the eight-image native cap as the calibration starting point, with one
+owner and existing deadlines/containment. The CPU serial comparison observes
+20.501 seconds at cap 32 versus 42.514 seconds at cap eight for a 32-image
+ViT-L-14 batch, alongside lower observed RSS. Retain that throughput/memory
+tradeoff and shared-host limitations; do not claim chunking is a speedup.
+CPU/OpenVINO eight-item mixed runs each validate three complete batches and one
+cooperative stop, reap all three children and settle ownership. See the separate
+[cancellation](cooperative-inference-cancellation.md),
+[skill](project-cooperative-inference-skill.md) and
+[archive](validation/cooperative-inference-2026-10-16.json) records.
+
+Random **PR 58** raises the Setuptools minimum to already locked **84.0.0**.
+Six manifests renew only input attestations; all 13 artifact lists and wheel-lock
+text files remain unchanged. Six native inventories/pip checks pass, including
+ARM under QEMU; fresh complete OSV reports cover five installed amd64 graphs and
+29 audit-tool packages without known vulnerabilities/skips. CodeQL Python
+security-extended retains only two existing setup alerts, scoped typing is clean
+and OpenAPI is byte-identical. The [PR record](pr-58-local-validation.md) preserves
+local adoption separately from the unmerged original. Delivery remains on
+master with Unreleased changes and no release, tag or version bump.
+
+## Execution timing and PR 57 delivery outcome (2026-10-15)
 
 Full locked Linux QA passes **1,132 tests**, with seven existing skips and
 **20 new cases**. Coverage is **95.46% lines / 90.56% branches**, above unchanged

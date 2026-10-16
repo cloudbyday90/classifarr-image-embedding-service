@@ -133,3 +133,11 @@ resources and both initial/final outcomes without vectors, images or keys.
    owners duplicate resident models and require measured memory headroom.
    Physical ARM/GPU capacity, external client-address preservation and hosted
    platform evidence remain separate gates. No reverse proxy is required.
+
+## October 16 follow-up
+
+The recommended [cooperative inference change](cooperative-inference-cancellation.md)
+now introduces bounded forward chunks and last-waiter checkpoints. The October
+15 timings above describe the previous whole-batch path, not the new default.
+Incomplete cooperative stops retain unknown full-batch parity; the separate
+cooperative probe validates the committed chunk and queued recovery privately.

@@ -19,6 +19,7 @@ from PIL import Image
 
 from image_embedder.embedder import BatchItem, ImageEmbedder
 from image_embedder.execution import InferenceExecutor
+from image_embedder.execution_cancellation import InferenceCancelled
 from image_embedder.queue import EmbedQueue
 
 
@@ -174,12 +175,19 @@ class CapacityWorkload:
                 if not release.wait(30):
                     raise TimeoutError("Dispatch barrier was not released")
             native_start = time.monotonic()
-            self.batch(name, size)
+            outcome = "verified_complete_batch"
+            try:
+                self.batch(name, size)
+            except InferenceCancelled:
+                if not held:
+                    raise
+                outcome = "cooperatively_cancelled_before_batch_completion"
             timings[label] = {
                 "model": name,
                 "batch_size": size,
                 "submission_to_dispatch_seconds": dispatched - queued_at,
                 "native_and_validation_seconds": time.monotonic() - native_start,
+                "outcome": outcome,
             }
 
         first = asyncio.create_task(
@@ -252,6 +260,15 @@ class CapacityWorkload:
                 lambda: asyncio.run(check_representative(self, self.clients)),
             )
             self.emit({"event": "representative_inputs", "result": result})
+            return
+        if scenario == "cooperative":
+            from capacity_cancellation import check_cooperative_capacity
+
+            result = self.measure(
+                "cooperative_native_chunks",
+                lambda: asyncio.run(check_cooperative_capacity(self)),
+            )
+            self.emit({"event": "cooperative_inference", "result": result})
             return
         self.serial_batches()
         if scenario == "detached":

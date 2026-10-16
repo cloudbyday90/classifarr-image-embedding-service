@@ -355,7 +355,7 @@
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
     "requirements-torch-cpu.txt": "1d7163adbadfe000aee8b7e40b84ad3c67e2cac42d6b1479319366a82f8c0e5e",
-    "requirements.txt": "b83f0e729117f9be02ec2069eb4ac41c2ec06065f6f8d5551561eee02fb362c3"
+    "requirements.txt": "fc597a13b6b5ba397ff60a0687141ac966c8f058a859a73e7703c8cac7716219"
   },
   "profile": "cpu-py312-linux-amd64",
   "python": "3.12",

@@ -147,6 +147,7 @@ class Settings:
     embed_batch_max_size: int = field(default_factory=lambda: _int("EMBED_BATCH_MAX_SIZE", "queue", "batch_max_size", 8))
     embed_batch_api_max_items: int = field(default_factory=lambda: _int("EMBED_BATCH_API_MAX_ITEMS", "queue", "batch_api_max_items", 32))
     embed_cache_size: int = field(default_factory=lambda: _int("EMBED_CACHE_SIZE", "model", "embed_cache_size", 1000))
+    inference_batch_size: int = field(default_factory=lambda: _positive_int("EMBED_INFERENCE_BATCH_SIZE", "model", "inference_batch_size", 8))
     warmup_on_startup: bool = field(default_factory=lambda: _bool("WARMUP_ON_STARTUP", "model", "warmup_on_startup", True))
 
     log_level: str = field(default_factory=lambda: _str("LOG_LEVEL", "logging", "level", "INFO"))
@@ -191,7 +192,7 @@ class Settings:
         )
         for name in ("max_image_bytes", "max_request_body_bytes", "max_image_pixels",
                      "max_batch_image_bytes", "max_batch_image_pixels", "max_http_requests",
-                     "server_workers", "server_concurrency", "server_backlog"):
+                     "server_workers", "server_concurrency", "server_backlog", "inference_batch_size"):
             value = getattr(self, name)
             if type(value) is not int or value <= 0:
                 raise ValueError(f"{name} must be a positive integer")

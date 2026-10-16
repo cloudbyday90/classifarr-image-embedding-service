@@ -14,6 +14,8 @@ import httpx
 import numpy as np
 from capacity_remote_fixture import remote_fixture
 
+from image_embedder.execution_cancellation import InferenceCancelled
+
 
 async def wait_for(predicate) -> None:
     async with asyncio.timeout(10):
@@ -70,7 +72,7 @@ async def check_mixed_capacity(workload) -> dict:
     protected = replace(settings, require_api_key=True, service_api_key=fixture_key)
     app = create_app(workload.embedder, protected)
     tasks = []
-    completed_batches, native_errors = [], []
+    completed_batches, cancelled_batches, native_errors = [], [], []
     original_batch = workload.embedder.embed_batch
 
     def checked_batch(spec, target_size, items):
@@ -92,6 +94,9 @@ async def check_mixed_capacity(workload) -> dict:
                 np.testing.assert_allclose(result[0], expected, rtol=1e-4, atol=1e-4)
             completed_batches.append(spec.name)
             return results
+        except InferenceCancelled:
+            cancelled_batches.append(spec.name)
+            raise
         except Exception as error:
             native_errors.append(type(error).__name__)
             raise
@@ -162,14 +167,17 @@ async def check_mixed_capacity(workload) -> dict:
                         settled[key] for key in ("in_flight", "waiting", "rw_readers")
                     ):
                         raise AssertionError("Mixed input ownership did not settle")
-                    if len(children) != 4 or any(
+                    if not 3 <= len(children) <= 4 or any(
                         child.poll() is None or not child.stdin.closed
                         for child in children
                     ):
                         raise AssertionError(
                             "Remote children were not completed and reaped"
                         )
-                    if native_errors or len(completed_batches) != 4:
+                    if (
+                        native_errors or len(cancelled_batches) > 1
+                        or len(completed_batches) + len(cancelled_batches) != 4
+                    ):
                         raise AssertionError(
                             "A mixed native computation failed after caller cancellation"
                         )
@@ -189,6 +197,7 @@ async def check_mixed_capacity(workload) -> dict:
         "child_count": len(children),
         "children_reaped": True,
         "validated_native_batches": len(completed_batches),
+        "cooperatively_cancelled_batches": len(cancelled_batches),
         "unauthenticated_status": unauthorized.status_code,
         "transport": "in-process ASGI with probe-only loopback child transport",
     }

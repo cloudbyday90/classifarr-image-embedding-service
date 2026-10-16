@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Cooperative inference checkpoints and bounded native forward chunks that retain active-call ownership and preserve live coalesced callers.
+- A native cancellation/recovery capacity scenario and focused cooperative-ownership guidance for the resource-contract AI skill.
 - Optional inference-owner observations and bounded representative-workload timelines for admission, locks, worker dispatch and native execution, with private result verification even after HTTP deadlines.
 - Execution-timing guidance for the capacity-calibration AI skill, with separate design and validation records.
 - Representative poster, landscape and PNG/JPEG/WebP capacity calibration with an isolated bounded HTTP client, native vector parity and separate client RSS evidence.
@@ -41,6 +43,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Raised the Setuptools minimum to the already locked 84.0.0 version through local PR 58 adoption, with unchanged wheel artifacts.
 - Adopt PR 57 locally: raise the Transformers minimum to 5.19.0 and migrate its reviewed wheel across all six affected Linux profiles without unrelated package changes.
 - Include representative images and concurrent callers in manual CPU/OpenVINO calibration while preserving production quotas, containment and direct Docker topology.
 - Document closure of eight completed, superseded or unsuitable PRs with their reviewed heads and decisions; no original PRs were merged.

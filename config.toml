@@ -28,6 +28,7 @@ device = "auto"             # "auto"            — selects cuda if available, e
                             # "openvino:GPU.0"  — first discrete Arc GPU only
 warmup_on_startup = true
 embed_cache_size = 1000     # max number of (image, model, size, normalize) tuples to cache in memory; 0 = disabled
+inference_batch_size = 8    # maximum images per native forward call; checkpoints between chunks
 
 [image]
 allow_remote_urls = false

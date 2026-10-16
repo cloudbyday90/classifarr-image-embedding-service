@@ -148,3 +148,25 @@ def test_native_outcome_cannot_be_recorded_outside_its_call():
     row = ExecutionTimeline("fixed", 0, lambda: 1)
     with pytest.raises(ValueError, match="Invalid native result"):
         row.verify_native_result(True)
+
+
+def test_cooperative_stop_retains_unknown_full_batch_parity():
+    row = ExecutionTimeline("fixed", 0, lambda: 1)
+    for phase in [
+        "request_started",
+        "submitted",
+        "native_started",
+        "native_cancelled",
+        "native_finished",
+        "owner_cancelled",
+        "owner_completed",
+        "request_completed",
+    ]:
+        row.note(phase)
+    result = row.snapshot()
+    assert result["native_cancelled"] and result["owner_cancelled"]
+    assert result["native_result_verified"] is None and not result["native_failed"]
+    timings = ExecutionTimings({"fixed"})
+    timings.records["fixed"] = row
+    with pytest.raises(AssertionError, match="lacks completed native timing"):
+        timings.report([{"label": "fixed", "passed": True}])

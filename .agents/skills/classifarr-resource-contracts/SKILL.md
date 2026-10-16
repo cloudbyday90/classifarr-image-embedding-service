@@ -15,6 +15,8 @@ For authentication/body-order changes, read [early authentication contracts](ref
 
 For quota-key or public-probe changes, read [quota identity contracts](references/quota-identities.md). Trace every unverified header form into storage and preserve the server's forwarding trust boundary.
 
+For cooperative inference cancellation or native chunking, read [cooperative ownership](references/cooperative-inference.md). Distinguish the last waiter leaving from active native completion, and validate completed chunks without counting skipped work as throughput.
+
 Record:
 
 - The resource owner, admission point and release condition, including failure cleanup.

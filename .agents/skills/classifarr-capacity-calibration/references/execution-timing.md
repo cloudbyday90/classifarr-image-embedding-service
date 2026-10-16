@@ -21,8 +21,11 @@ native start is not a zero-cost inference. A detached native tail is retained
 work, even if its HTTP response already reports 504.
 
 Require complete owner/native outcomes and settled queue/readers/ingress, even
-on failed calibrations. Require `native_result_verified` for completed native
-calls, including detached owners; unstarted work stays unknown. The probe facade
+on failed calibrations. Require `native_result_verified` for complete native
+batch results, including detached owners. Cooperatively stopped incomplete
+batches retain a cancellation marker and unknown full-batch verification;
+verify their completed chunk privately with `--scenario cooperative`. Unstarted
+work stays unknown. The probe facade
 checks native values privately without passing vectors into the generic observer;
 the HTTP client independently checks received values. A successful response without its complete
 timing chain invalidates timing evidence. Keep actual HTTP/vector failure as

@@ -445,7 +445,9 @@ Use `--scenario representative --clients 2 --repeats 1` with the same offline/co
 
 Calibration exits unsuccessfully on refusal or incorrect vectors and retains available failure evidence. The October 3 CPU two-caller full-size run reproduced a 45-second 504 for the second 32-image ViT-L-14 poster batch. One caller with 1/8/32 and two callers with `--batch-sizes 1 8` pass locally. Use those as target-host comparison profiles before changing production deadlines or concurrency.
 
-Representative journals also separate admission wait, model-read locking, worker dispatch and native-call wall time. Timelines follow native work after HTTP expiry and require settled owners; missing stages remain unknown. Native-call time includes image preparation, result construction and private probe verification. Native results are checked even after their HTTP waiter expires; journals retain only a verification boolean. October 15 runs reproduce CPU expiry with four 32-image callers, while four eight-image callers and two OpenVINO 32-image callers pass. See [timing design and outcomes](docs/execution-timing-calibration.md) before tuning deadlines or caller/batch pressure. The shipped application has no enabled timing observer or public trace endpoint.
+Representative journals also separate admission wait, model-read locking, worker dispatch and native-call wall time. Timelines follow native work after HTTP expiry and require settled owners; missing stages remain unknown. Native-call time includes image preparation, result construction and private probe verification. Complete native batch results are checked even after their HTTP waiter expires; deliberately stopped incomplete batches retain unknown full-batch verification and a separate cancellation marker. October 15 runs reproduce CPU expiry with four 32-image callers, while four eight-image callers and two OpenVINO 32-image callers pass. See [timing design and outcomes](docs/execution-timing-calibration.md) before tuning deadlines or caller/batch pressure. The shipped application has no enabled timing observer or public trace endpoint.
+
+Native forward calls process at most `EMBED_INFERENCE_BATCH_SIZE` images (default `8`, also `[model].inference_batch_size`). This is independent of API item and coalescing limits. When the last waiter leaves, cooperative checkpoints skip future input preparation/forward chunks. An active native call and its resources stay owned until completion and image closure; a live coalesced sibling keeps the shared work running. Incomplete cancelled batches publish no partial batch cache entries. These checkpoints do not detect a post-upload socket disconnect or forcibly stop a thread/kernel. The `--scenario cooperative` capacity probe privately verifies a committed real-model chunk, skipped later chunks and valid queued recovery using a controlled barrier; its elapsed time is not an unmodified throughput benchmark. See [cancellation design and outcomes](docs/cooperative-inference-cancellation.md).
 
 ## API
 ### GET /health
@@ -585,6 +587,7 @@ Sequential explicit and coalesced batches also share a 30-second fetch-phase dea
 - `IMAGE_EMBEDDER_MAX_WAIT_SECONDS` (default `60`)
 - `EMBED_BATCH_WINDOW_MS` (default `0` - disables coalescing; positive values collect compatible admitted requests)
 - `EMBED_BATCH_MAX_SIZE` (default `8` - maximum members per coalesced computation)
+- `EMBED_INFERENCE_BATCH_SIZE` (default `8` - positive maximum images per native forward call)
 - `EMBED_BATCH_API_MAX_ITEMS` (default `32` - maximum images per `/embed-batch` request)
 
 ### HTTP Server and Deployment
@@ -683,6 +686,9 @@ The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-re
 - [Representative poster/codec capacity design and outcomes](docs/representative-capacity.md)
 - [Representative-capacity AI skill extension](docs/project-representative-capacity-skill.md)
 - [Queue/native execution timing design and outcomes](docs/execution-timing-calibration.md)
+- [Cooperative inference cancellation design and outcomes](docs/cooperative-inference-cancellation.md)
+- [Cooperative inference AI skill extension](docs/project-cooperative-inference-skill.md)
+- [Local PR 58 Setuptools floor adoption](docs/pr-58-local-validation.md)
 - [Execution-timing AI skill extension](docs/project-execution-timing-skill.md)
 - [Local PR 57 Transformers migration](docs/pr-57-local-validation.md)
 - [Aging PR cleanup decisions and outcomes](docs/aging-pr-cleanup.md)

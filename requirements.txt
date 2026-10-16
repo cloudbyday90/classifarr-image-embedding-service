@@ -13,4 +13,4 @@ huggingface-hub>=1.33.0
 filelock>=3.32.3
 slowapi>=0.1.9
 # Torch's vendor index can supply older tooling; keep the packaged dependency patched.
-setuptools>=83.0.0
+setuptools>=84.0.0

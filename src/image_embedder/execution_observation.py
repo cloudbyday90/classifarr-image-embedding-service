@@ -15,6 +15,7 @@ ExecutionPhase = Literal[
     "dispatched",
     "native_started",
     "native_failed",
+    "native_cancelled",
     "native_finished",
     "waiter_detached",
     "owner_failed",

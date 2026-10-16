@@ -38,7 +38,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--scenario",
-        choices=["serial", "overlap", "detached", "api", "mixed", "socket", "representative"],
+        choices=["serial", "overlap", "detached", "api", "mixed", "socket", "representative", "cooperative"],
         default="serial",
     )
     parser.add_argument(
@@ -178,6 +178,7 @@ def main() -> None:
                     "runtimes": runtimes,
                     "worker_processes": 1,
                     "inference_concurrency": 1,
+                    "inference_batch_size": settings.inference_batch_size,
                     "embedding_timeout_seconds": settings.embedding_timeout_seconds,
                     "remote_hop_timeout_seconds": settings.request_timeout_seconds,
                     "load_pressure_concurrency": len(models)

@@ -8,13 +8,15 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
+from threading import Event
 from typing import Any, Generic, ParamSpec, TypeVar, cast
 
 from anyio.to_thread import run_sync
 
 from .admission import AdmissionTicket
+from .execution_cancellation import InferenceCancelled, cancellation_scope
 from .execution_observation import (
     ExecutionObserver,
     ExecutionTrace,
@@ -38,6 +40,7 @@ class _Work:
     dispatched: bool = False
     detached: bool = False
     trace: ExecutionTrace | None = None
+    stop: Event = field(default_factory=Event)
 
 
 @dataclass(frozen=True, slots=True)
@@ -107,6 +110,7 @@ class InferenceExecutor:
                 # bypassing _execute's cancellation-to-outcome conversion.
                 raise ExecutionClosedError("service is shutting down") from canceled
             work.detached = True
+            work.stop.set()
             mark_observation(work.trace, "waiter_detached")
             if not work.dispatched:
                 self._cancel_admission(task)
@@ -157,20 +161,21 @@ class InferenceExecutor:
             # After this point only this owner may release the permits.
             work.dispatched = True
             mark_observation(work.trace, "dispatched")
-            if work.trace is None:
-                return await run_sync(function)
-
             def observed_call():
                 mark_observation(work.trace, "native_started")
                 try:
                     return function()
+                except InferenceCancelled:
+                    mark_observation(work.trace, "native_cancelled")
+                    raise
                 except BaseException:
                     mark_observation(work.trace, "native_failed")
                     raise
                 finally:
                     mark_observation(work.trace, "native_finished")
 
-            return await run_sync(observed_call)
+            with cancellation_scope(work.stop):
+                return await run_sync(function if work.trace is None else observed_call)
         finally:
             if shared:
                 await self._queue.release_shared()
@@ -186,9 +191,11 @@ class InferenceExecutor:
             mark_observation(work.trace, "owner_cancelled")
         if not task.cancelled():
             error = task.result().error
-            if error is not None:
+            if isinstance(error, InferenceCancelled):
+                mark_observation(work.trace, "owner_cancelled")
+            elif error is not None:
                 mark_observation(work.trace, "owner_failed")
-            if error is not None and work.detached:
+            if error is not None and not isinstance(error, InferenceCancelled) and work.detached:
                 # Do not include callable arguments or potentially sensitive
                 # exception text from remote requests in detached-work logs.
                 logger.warning("Detached inference failed (%s)", type(error).__name__)

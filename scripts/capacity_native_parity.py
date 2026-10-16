@@ -6,6 +6,8 @@
 
 import numpy as np
 
+from image_embedder.execution_cancellation import InferenceCancelled
+
 
 class NativeBatchVerifier:
     def __init__(self, embedder, fixtures, references, timings):
@@ -50,6 +52,9 @@ class NativeBatchVerifier:
                     or not np.allclose(actual, expected, rtol=1e-4, atol=1e-4)
                 ):
                     raise ValueError
+        except InferenceCancelled:
+            # No complete batch result exists; do not claim parity or native failure.
+            raise
         except Exception:
             trace.verify_native_result(False)
             # Do not let numeric assertion helpers or native errors log private data.

@@ -11,6 +11,7 @@ All implementation paths below are relative to the repository root.
 | Native upload pressure | `scripts/capacity_socket.py` and its scoped body/server/receive/upload/mixed helpers | Server bytes held before EOF, header-only excess rejection, disconnect settlement, recovered vectors, actual children reaped; label direct HTTP/1 and shared client overhead |
 | Representative shapes/codecs | `scripts/capacity_representative.py` and its fixture/client/process helpers | Encoded-byte references, ordered finite vectors, observed receipt, bounded/reaped isolated client; separate process RSS and shared cgroup scope |
 | Queued execution timing | `scripts/capacity_execution_timing.py`, optional `src/image_embedder/execution_observation.py` | One server clock; admission/lock/worker/native scopes, detached tail and terminal owner; missing stages remain unknown; no callable payloads |
+| Cooperative native chunks | `scripts/capacity_cancellation.py`, `--scenario cooperative` | Controlled committed-forward barrier, private chunk parity, skipped later forwards, queued real recovery, closed images and settled permits/read locks; no kernel-interruption or disconnect claim |
 | Workload/CLI | `scripts/capacity_workload.py`, `scripts/capacity_probe.py` | Both resident models, cache disabled, bounded 1/internal/API batches, near-ceiling fixtures, offline assets; no CPU fallback labelled CUDA |
 | Delivery | `.github/workflows/capacity-calibration.yml` | Manual CPU/OpenVINO experiments; NVIDIA hardware is an explicit local/operator requirement |
 
