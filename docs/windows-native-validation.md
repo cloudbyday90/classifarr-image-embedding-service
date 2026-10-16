@@ -2,6 +2,11 @@
 
 Assessment: 2026-10-03. Baseline: `3b9573ba9ef156fa45c898e611ecc04a4d64bf09`. Implementation and local validation stay on master.
 
+October 16 follow-up: the [post-upload disconnect design](post-upload-disconnects.md)
+extends the mandatory socket gate to actual matched embedding routes and adds
+four reviewed middleware dependencies per native graph. Its results supersede
+the package/case counts below; the original dated outcomes remain historical.
+
 ## Problem and design
 
 Linux QA cannot establish Windows DACL publication, reparse-point refusal, native child termination or Proactor socket cleanup. Earlier one-off Windows runs also used an older framework graph. Add recurring Windows Server 2025 x64 validation on conventional CPython 3.13 and 3.14, with weekly, manual and relevant push/PR triggers. Production remains Linux CPython 3.12.

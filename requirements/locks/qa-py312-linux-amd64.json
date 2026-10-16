@@ -438,7 +438,7 @@
   },
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
-    "requirements-dev.txt": "c52c778efb6c9a54bdf4e7abe78411603cbc30d6140e66a9cafd37e3faa706d5",
+    "requirements-dev.txt": "54e92413e31be710233cfa0bcc0f712ef32837d81ce2110eed7daa43d3135218",
     "requirements-torch-cpu.txt": "1d7163adbadfe000aee8b7e40b84ad3c67e2cac42d6b1479319366a82f8c0e5e",
     "requirements.txt": "fc597a13b6b5ba397ff60a0687141ac966c8f058a859a73e7703c8cac7716219"
   },

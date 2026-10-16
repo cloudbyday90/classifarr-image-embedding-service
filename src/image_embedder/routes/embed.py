@@ -15,6 +15,7 @@ from ..execution import ExecutionClosedError, InferenceExecutor
 from ..input_limits import InputLimitExceeded, validate_inline_images
 from ..models import EmbedImageRequest, EmbedImageResponse
 from ..queue import EmbedQueue, QueueFullError, QueueWaitTimeoutError
+from ..request_disconnect import RequestDisconnected, await_connected
 
 
 def _queue_headers(queue: EmbedQueue, *, retry_after_seconds: int | None = None) -> dict[str, str]:
@@ -78,9 +79,11 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
 
         try:
             embedding, dims, provider, model_name, image_size = await asyncio.wait_for(
-                _do_embed(),
+                await_connected(request.receive, _do_embed),
                 timeout=settings.embedding_timeout_seconds,
             )
+        except RequestDisconnected:
+            return Response(status_code=499)
         except ExecutionClosedError as exc:
             raise HTTPException(
                 status_code=503, detail=str(exc), headers=_queue_headers(queue)

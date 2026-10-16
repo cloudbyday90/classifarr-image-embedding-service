@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Post-upload disconnect observation for embedding requests, with native socket regressions for retained worker ownership, queued cancellation and coalesced callers.
 - Cooperative inference checkpoints and bounded native forward chunks that retain active-call ownership and preserve live coalesced callers.
 - A native cancellation/recovery capacity scenario and focused cooperative-ownership guidance for the resource-contract AI skill.
 - Optional inference-owner observations and bounded representative-workload timelines for admission, locks, worker dispatch and native execution, with private result verification even after HTTP deadlines.
@@ -43,6 +44,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Extend the native Windows contract gate to matched embedding routes with complete, reviewed middleware dependencies.
+- Raise the Pygments development minimum to the already locked 2.21.0 version through local PR 61 adoption.
 - Raised the Setuptools minimum to the already locked 84.0.0 version through local PR 58 adoption, with unchanged wheel artifacts.
 - Adopt PR 57 locally: raise the Transformers minimum to 5.19.0 and migrate its reviewed wheel across all six affected Linux profiles without unrelated package changes.
 - Include representative images and concurrent callers in manual CPU/OpenVINO calibration while preserving production quotas, containment and direct Docker topology.

@@ -18,6 +18,7 @@ from ..models import (
     EmbedBatchResponse,
 )
 from ..queue import EmbedQueue, QueueFullError, QueueWaitTimeoutError
+from ..request_disconnect import RequestDisconnected, await_connected
 from .embed import _queue_headers
 
 
@@ -70,7 +71,10 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
         if batch_items:
             try:
                 embed_results = await asyncio.wait_for(
-                    executor.run(embedder_instance.embed_batch, spec, target_size, batch_items),
+                    await_connected(
+                        request.receive,
+                        lambda: executor.run(embedder_instance.embed_batch, spec, target_size, batch_items),
+                    ),
                     timeout=settings.embedding_timeout_seconds,
                 )
                 if len(embed_results) != len(batch_items):
@@ -78,6 +82,8 @@ def make_router(limiter, rate_limit_embed: str, auth) -> APIRouter:
                         "embed_batch returned "
                         f"{len(embed_results)} results for {len(batch_items)} items"
                     )
+            except RequestDisconnected:
+                return Response(status_code=499)
             except ExecutionClosedError as exc:
                 raise HTTPException(
                     status_code=503, detail=str(exc), headers=_queue_headers(queue)

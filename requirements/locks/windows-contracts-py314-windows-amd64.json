@@ -56,6 +56,12 @@
       "version": "50.0.2"
     },
     {
+      "name": "deprecated",
+      "sha256": "58204cf4a7f6270d547af5c278ee7a6bb56045a4b3d8441a1cd11660f41b7939",
+      "url": "https://files.pythonhosted.org/packages/83/ae/676feae8e4644a6d7169951a97f61c56f416c73f67bf1761f2461d75cc81/deprecated-3.0.0-py3-none-any.whl",
+      "version": "3.0.0"
+    },
+    {
       "name": "fastapi",
       "sha256": "bd5f4d81f1e93a88bcd77caf4dfe3c2dbffc3805407a0007e9a114c18b3a670b",
       "url": "https://files.pythonhosted.org/packages/a0/b6/78aaf9141fb46742928c113f3cf6ef2259d538cb02b604b7656c1dc9883c/fastapi-0.142.2-py3-none-any.whl",
@@ -90,6 +96,12 @@
       "sha256": "f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12",
       "url": "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl",
       "version": "2.3.0"
+    },
+    {
+      "name": "limits",
+      "sha256": "ae1b008a43eb43073c3c579398bd4eb4c795de60952532dc24720ab45e1ac6b8",
+      "url": "https://files.pythonhosted.org/packages/b9/98/cb5ca20618d205a09d5bec7591fbc4130369c7e6308d9a676a28ff3ab22c/limits-5.8.0-py3-none-any.whl",
+      "version": "5.8.0"
     },
     {
       "name": "numpy",
@@ -164,6 +176,12 @@
       "version": "2.34.2"
     },
     {
+      "name": "slowapi",
+      "sha256": "3acb61561dc9d687e3d3669362ff6a439de9ba44e2fed3a9c165da26b4b83e28",
+      "url": "https://files.pythonhosted.org/packages/c4/8b/1d359f38706b4097d9a943bf8bd22599f537de4cbaff1e622d3e3936e164/slowapi-0.1.10-py3-none-any.whl",
+      "version": "0.1.10"
+    },
+    {
       "name": "starlette",
       "sha256": "67f8e99895493dd2911a03f11314af6ceebeae4e704bb9f43dfc6a9db151c93e",
       "url": "https://files.pythonhosted.org/packages/4e/d6/1ec1b290f9e0fb067899b61e1d37a30c923068bad260b216dbe37a7d2967/starlette-1.7.0-py3-none-any.whl",
@@ -198,6 +216,12 @@
       "sha256": "505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf",
       "url": "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl",
       "version": "0.54.0"
+    },
+    {
+      "name": "wrapt",
+      "sha256": "1a3c4035d2026b87ef23dd8d165f1f8d3853ee2bd02791cfd22bd8c6226c41ce",
+      "url": "https://files.pythonhosted.org/packages/f0/15/32de0f1e6a46a82c773430672562d53203406df14a6d73c93abb59b679e9/wrapt-2.5.0-cp314-cp314-win_amd64.whl",
+      "version": "2.5.0"
     }
   ],
   "backend": "windows-contracts",
@@ -209,18 +233,18 @@
     "platform_python_implementation": "CPython",
     "platform_release": "11",
     "platform_system": "Windows",
-    "platform_version": "10.0.26200",
+    "platform_version": "10.0.26300",
     "python_full_version": "3.14.2",
     "python_version": "3.14",
     "sys_platform": "win32"
   },
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
-    "requirements-windows.txt": "ec2a22dd8a439332ce1e4e50b4dc723fd7e3a85ad783d5259667739ccb92f4ca"
+    "requirements-windows.txt": "5f64d6a7a7da560e4b2715f3df14643ef750eea78edddbbc7d0ea80125b39c7f"
   },
   "profile": "windows-contracts-py314-windows-amd64",
   "python": "3.14",
-  "requirements_sha256": "02f7287ce07d9b708321c948220242a4f6e08f6f15514e29d0f2125060cd47b0",
+  "requirements_sha256": "054dd1a8bb69f825f793c5ef2ee3cc0012b153d8870aaf8f8948cc05b6bd57ff",
   "resolver": "pip==26.2.1",
   "schema_version": 1
 }

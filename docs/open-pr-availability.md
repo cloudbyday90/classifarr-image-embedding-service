@@ -2,6 +2,18 @@
 
 ## Current assessment: 2026-10-16
 
+For the disconnect iteration, GitHub MCP returned six open proposals: #55,
+#56, #59, #60, #61 and #62. The first random draw selected #62; its base-only
+Ubuntu 26.04 patch conflicts with the current Linux CPython 3.12 contracts.
+A second draw from the fetched compatible floor-only proposals #56 and #61
+selected [PR #61](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/61),
+head `fb4e1f228e8ab3baa8b8cec8ad61aba5376797b6`. The
+[separate local adoption record](pr-61-local-validation.md) preserves the
+selection method, official sources, unchanged QA artifacts and validation.
+No original PR is merged by this task.
+
+## Earlier assessment: 2026-10-16, cooperative inference
+
 GitHub MCP search returned seven open proposals: #55, #56, #58, #59, #60, #61
 and #62. An unbiased local `secrets.choice` draw over that complete list selected
 [PR #58](https://github.com/cloudbyday90/classifarr-image-embedding-service/pull/58),

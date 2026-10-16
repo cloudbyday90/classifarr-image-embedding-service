@@ -13,6 +13,7 @@ SUITES = (
     "tests/test_remote_native_transport.py",
     "tests/test_remote_batch_process.py",
     "tests/test_response_http_protocol.py",
+    "tests/test_request_disconnect_transport.py",
 )
 
 # Minimum parametrized successes; collection alone never establishes execution.
@@ -52,6 +53,12 @@ REQUIRED = {
         "test_stream_gaps_trickle_and_disconnect_finish_owned_work": 6,
         "test_successful_terminal_response_bytes_and_keepalive_are_preserved": 2,
         "test_real_starlette_stream_cancels_and_cleans_before_owner_release": 2,
+    },
+    "test_request_disconnect_transport.py": {
+        "test_post_upload_disconnect_retains_active_owner_and_recovers": 8,
+        "test_post_upload_queued_disconnect_removes_admission": 4,
+        "test_coalesced_disconnect_preserves_live_member_and_stops_last": 4,
+        "test_slow_body_then_successful_keepalive_never_has_competing_receive": 2,
     },
 }
 

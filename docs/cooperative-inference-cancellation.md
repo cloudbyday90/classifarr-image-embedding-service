@@ -2,6 +2,11 @@
 
 Assessment: 2026-10-16. Baseline: `c38092c926c894c3b7da819b7f83dbf75000df9b`.
 
+Subsequent October 16 follow-up: [post-upload disconnect observation](post-upload-disconnects.md)
+now connects actual socket closes to these cooperative checkpoints. The
+controlled-barrier measurements below retain their original scope and are not
+retroactively treated as HTTP-disconnect measurements.
+
 ## Research and design
 
 The previous CPU experiment retained 14.957 seconds of native work after its
