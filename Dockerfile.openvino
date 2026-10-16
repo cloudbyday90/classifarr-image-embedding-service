@@ -58,7 +58,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 #   • Intel GPU firmware packages and required udev rules
 # We copy our venv on top and configure Python to prefer it.
 # This verified Intel manifest supports linux/amd64 only.
-FROM openvino/ubuntu24_runtime:2026.4.0@sha256:b326dcae9b91fa25f794a391d9953e65a65096597237e6de431116b184a01718
+FROM openvino/ubuntu24_runtime:2026.4.1@sha256:ef00731944b89db0148ff41bae9ef5f581dc9a1a2de90b1dd9a8ce1af69dc7b5
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
