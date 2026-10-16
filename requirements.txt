@@ -11,6 +11,6 @@ torch>=2.13
 transformers>=5.19.0
 huggingface-hub>=1.33.0
 filelock>=3.32.3
-slowapi>=0.1.9
+slowapi>=0.1.10
 # Torch's vendor index can supply older tooling; keep the packaged dependency patched.
 setuptools>=84.0.0
