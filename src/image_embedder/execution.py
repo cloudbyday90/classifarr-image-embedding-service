@@ -15,6 +15,12 @@ from typing import Any, Generic, ParamSpec, TypeVar, cast
 from anyio.to_thread import run_sync
 
 from .admission import AdmissionTicket
+from .execution_observation import (
+    ExecutionObserver,
+    ExecutionTrace,
+    begin_observation,
+    mark_observation,
+)
 from .logging_config import get_logger
 from .queue import EmbedQueue
 
@@ -31,6 +37,7 @@ class ExecutionClosedError(RuntimeError):
 class _Work:
     dispatched: bool = False
     detached: bool = False
+    trace: ExecutionTrace | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,8 +59,9 @@ class InferenceExecutor:
     leaves running owners and their queue permits intact.
     """
 
-    def __init__(self, queue: EmbedQueue) -> None:
+    def __init__(self, queue: EmbedQueue, *, observer: ExecutionObserver | None = None) -> None:
         self._queue = queue
+        self._observer = observer
         self._tasks: dict[asyncio.Task[_Outcome[Any]], _Work] = {}
         self._closing = False
 
@@ -76,7 +84,7 @@ class InferenceExecutor:
         if self._closing:
             raise ExecutionClosedError("service is shutting down")
 
-        work = _Work()
+        work = _Work(trace=begin_observation(self._observer))
         task = asyncio.create_task(
             self._execute(work, function, ticket),
             name="inference-owner",
@@ -99,6 +107,7 @@ class InferenceExecutor:
                 # bypassing _execute's cancellation-to-outcome conversion.
                 raise ExecutionClosedError("service is shutting down") from canceled
             work.detached = True
+            mark_observation(work.trace, "waiter_detached")
             if not work.dispatched:
                 self._cancel_admission(task)
                 # Settle admission and its partial acquisitions before the
@@ -131,20 +140,37 @@ class InferenceExecutor:
         acquired = False
         shared = False
         try:
+            mark_observation(work.trace, "admission_started")
             if ticket is None:
                 await self._queue.acquire()
             else:
                 await ticket.wait()
                 ticket.claim()
             acquired = True
+            mark_observation(work.trace, "admitted")
             await self._queue.acquire_shared()
             shared = True
+            mark_observation(work.trace, "read_lock_acquired")
             if ticket is not None:
                 function = function()
             # No suspension between committing dispatch and scheduling work.
             # After this point only this owner may release the permits.
             work.dispatched = True
-            return await run_sync(function)
+            mark_observation(work.trace, "dispatched")
+            if work.trace is None:
+                return await run_sync(function)
+
+            def observed_call():
+                mark_observation(work.trace, "native_started")
+                try:
+                    return function()
+                except BaseException:
+                    mark_observation(work.trace, "native_failed")
+                    raise
+                finally:
+                    mark_observation(work.trace, "native_finished")
+
+            return await run_sync(observed_call)
         finally:
             if shared:
                 await self._queue.release_shared()
@@ -156,12 +182,17 @@ class InferenceExecutor:
 
     def _completed(self, task: asyncio.Task[_Outcome[Any]]) -> None:
         work = self._tasks.pop(task)
+        if task.cancelled():
+            mark_observation(work.trace, "owner_cancelled")
         if not task.cancelled():
             error = task.result().error
+            if error is not None:
+                mark_observation(work.trace, "owner_failed")
             if error is not None and work.detached:
                 # Do not include callable arguments or potentially sensitive
                 # exception text from remote requests in detached-work logs.
                 logger.warning("Detached inference failed (%s)", type(error).__name__)
+        mark_observation(work.trace, "owner_completed")
 
     @staticmethod
     def _cancel_admission(task: asyncio.Task[_Outcome[Any]]) -> None:

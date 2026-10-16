@@ -7,14 +7,18 @@
 import asyncio
 import secrets
 from dataclasses import asdict, replace
+from typing import cast
 
 from capacity_client_process import ClientFailed, run_client
+from capacity_execution_timing import ExecutionTimings
 from capacity_image_fixtures import codec_versions, make_fixtures, validate_fixtures
+from capacity_native_parity import NativeBatchVerifier
 from capacity_receive_observer import ReceiveObserver
 from capacity_socket_server import header_only_status, socket_server, wait_until
 
 
 async def check_representative(workload, clients: int) -> dict:
+    from image_embedder.embedder import ImageEmbedder
     from image_embedder.main import create_app
 
     settings = workload.embedder.settings
@@ -49,8 +53,21 @@ async def check_representative(workload, clients: int) -> dict:
         allow_remote_urls=False,
         allowed_remote_hosts=[],
     )
-    app = create_app(workload.embedder, protected)
-    observer = ReceiveObserver(app)
+    timings = ExecutionTimings(
+        {
+            f"{model.name}/{fixture.name}/{size}/{repeat}/{caller}"
+            for model in models
+            for fixture in fixtures
+            for size in workload.sizes
+            for repeat in range(workload.repeats)
+            for caller in range(clients)
+        }
+    )
+    checked = NativeBatchVerifier(workload.embedder, fixtures, references, timings)
+    app = create_app(
+        cast(ImageEmbedder, checked), protected, execution_observer=timings
+    )
+    observer = ReceiveObserver(timings.wrap(app))
     async with socket_server(observer, protected) as port:
         unauthorized = await header_only_status(port, 1024, None, "unauthenticated")
         await wait_until(lambda: observer.records["unauthenticated"].completed)
@@ -120,6 +137,7 @@ async def check_representative(workload, clients: int) -> dict:
         "fixtures": [fixture.metadata for fixture in fixtures],
         "codec_versions": codec_versions(),
         "client": report,
+        "execution_timings": timings.report(records),
         "settled_ingress": ingress,
         "settled_queue": queue,
         "unauthenticated_status": unauthorized,

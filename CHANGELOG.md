@@ -6,6 +6,8 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- Optional inference-owner observations and bounded representative-workload timelines for admission, locks, worker dispatch and native execution, with private result verification even after HTTP deadlines.
+- Execution-timing guidance for the capacity-calibration AI skill, with separate design and validation records.
 - Representative poster, landscape and PNG/JPEG/WebP capacity calibration with an isolated bounded HTTP client, native vector parity and separate client RSS evidence.
 - Workload/accounting guidance for the capacity-calibration AI skill, with separate design and outcome records.
 - Explicit trusted proxy peers with forwarding disabled by default for direct Docker deployments, plus native parser regressions, published-port validation and separate design/outcome records.
@@ -39,6 +41,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Adopt PR 57 locally: raise the Transformers minimum to 5.19.0 and migrate its reviewed wheel across all six affected Linux profiles without unrelated package changes.
 - Include representative images and concurrent callers in manual CPU/OpenVINO calibration while preserving production quotas, containment and direct Docker topology.
 - Document closure of eight completed, superseded or unsuitable PRs with their reviewed heads and decisions; no original PRs were merged.
 - Separate credential verification and quota identity into small service modules; retain existing quota values, endpoint scopes and application-owned limiter state.

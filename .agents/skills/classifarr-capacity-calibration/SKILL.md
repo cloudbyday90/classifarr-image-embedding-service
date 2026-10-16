@@ -11,6 +11,8 @@ For native upload pressure, also read [socket upload experiments](references/soc
 
 For operator-selected shapes/codecs or separating client RSS, read [representative workloads](references/representative-workloads.md). Require encoded-byte references, bounded/reaped client processes and separate process versus whole-cgroup scopes; do not treat synthetic dimensions or finite bursts as production distributions or sustained throughput.
 
+For queued request timeouts, read [execution timing](references/execution-timing.md). Separate admission, read-lock, worker-dispatch and native-call wall durations; retain detached native tails instead of assigning the whole HTTP wait to inference.
+
 For direct-port or proxy questions, read [deployment transport](references/deployment-transport.md). Establish the actual topology before adding infrastructure. Verify effective-address trust through that transport and label Docker/NAT address collapse; never infer real client preservation from a loopback test.
 
 Establish the deployment question and tested configuration before choosing limits: backend/device, model revisions, workers/owners, byte/pixel ceilings, deadlines, thread settings and available hardware. Keep application behavior stable unless measurements justify a specific change.

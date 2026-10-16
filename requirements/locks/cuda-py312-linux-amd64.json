@@ -387,9 +387,9 @@
     },
     {
       "name": "transformers",
-      "sha256": "d79e5a515a572ee3deb33eb0d578be47d91e70c75d54cf21bf6eede6edef14a9",
-      "url": "https://files.pythonhosted.org/packages/2d/3b/f84d7d12886147c5267216ed6c57d1163e68d24a89b2ad29d835a7089463/transformers-5.18.0-py3-none-any.whl",
-      "version": "5.18.0"
+      "sha256": "afcd2dd5f603ed28c1e1fcb00a338ccbb4ef5f878ed289635df8b58187afb518",
+      "url": "https://files.pythonhosted.org/packages/b9/59/1e7f1212c215c73690ae6cab4678efe1555ff985953e145d88cc212859b0/transformers-5.19.0-py3-none-any.whl",
+      "version": "5.19.0"
     },
     {
       "name": "triton",
@@ -469,11 +469,11 @@
   "inputs": {
     "requirements-bootstrap.txt": "34055e91eeeb6cbaa1bfce1a13806324fba12ebd5a9411025c196cc040d50fba",
     "requirements-torch-cuda.txt": "f120a02250a61de446e936c89828c33d000e669d39179348b234662955ec284b",
-    "requirements.txt": "76490d6849c056f59ba7861938fc2d35d434b4aeb4bebc10d346d39e12517859"
+    "requirements.txt": "b83f0e729117f9be02ec2069eb4ac41c2ec06065f6f8d5551561eee02fb362c3"
   },
   "profile": "cuda-py312-linux-amd64",
   "python": "3.12",
-  "requirements_sha256": "8033d36c4c11d40e4bb54e841c584cb6cad3079fa4ecb43a823da1724dc65de4",
+  "requirements_sha256": "7928ddd78f2ecb56fdc7a41e8817d5bb9bcb25c00bce12e3f4ec4c9154ffd0f1",
   "resolver": "pip==26.2.1",
   "schema_version": 1
 }

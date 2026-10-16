@@ -16,6 +16,7 @@ from .batch import BatchWindow
 from .config import Settings
 from .embedder import ImageEmbedder
 from .execution import InferenceExecutor
+from .execution_observation import ExecutionObserver
 from .ingress import IngressAdmission
 from .ingress_middleware import IngressAdmissionMiddleware
 from .lifecycle import make_lifespan
@@ -31,7 +32,10 @@ from .routes import models as models_routes
 from .security import make_auth_dependency
 
 
-def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None = None) -> FastAPI:
+def create_app(
+    embedder: ImageEmbedder | None = None, settings: Settings | None = None,
+    *, execution_observer: ExecutionObserver | None = None,
+) -> FastAPI:
     settings = settings or Settings()
 
     logger = setup_logging(
@@ -49,7 +53,7 @@ def create_app(embedder: ImageEmbedder | None = None, settings: Settings | None 
         max_queue=settings.embed_max_queue,
         max_wait_seconds=settings.embed_max_wait_seconds,
     )
-    executor = InferenceExecutor(queue)
+    executor = InferenceExecutor(queue, observer=execution_observer)
     ingress = IngressAdmission(settings.max_http_requests)
 
     limiter = make_limiter(settings)

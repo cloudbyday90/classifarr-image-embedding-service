@@ -443,7 +443,9 @@ Run `serial`, `overlap`, `api`, `detached` and `mixed` in separate fresh contain
 
 Use `--scenario representative --clients 2 --repeats 1` with the same offline/container controls to exercise portrait posters, landscape and PNG/JPEG/WebP. This scenario uses fixed 500×750 JPEG/RGBA PNG, 750×500 WebP and 224×224 high-entropy PNG profiles; `--image-edge` applies only to square stress scenarios. The isolated HTTP client reports its own RSS, while whole-container memory still includes both processes. Every response must match encoded-byte native references, and the journal records server-observed receipt and settled ownership. The calibration-only embedding quota is `1000/minute`; production quotas stay unchanged. These synthetic finite bursts do not establish production distributions or sustained throughput. See [design, tradeoffs and outcomes](docs/representative-capacity.md) and the [skill extension](docs/project-representative-capacity-skill.md).
 
-Calibration exits unsuccessfully on refusal or incorrect vectors and retains available failure evidence. The local CPU two-caller full-size run reproduced a 45-second 504 for the second 32-image ViT-L-14 poster batch. One caller with 1/8/32 and two callers with `--batch-sizes 1 8` pass locally. Use those as target-host comparison profiles before changing production deadlines or concurrency.
+Calibration exits unsuccessfully on refusal or incorrect vectors and retains available failure evidence. The October 3 CPU two-caller full-size run reproduced a 45-second 504 for the second 32-image ViT-L-14 poster batch. One caller with 1/8/32 and two callers with `--batch-sizes 1 8` pass locally. Use those as target-host comparison profiles before changing production deadlines or concurrency.
+
+Representative journals also separate admission wait, model-read locking, worker dispatch and native-call wall time. Timelines follow native work after HTTP expiry and require settled owners; missing stages remain unknown. Native-call time includes image preparation, result construction and private probe verification. Native results are checked even after their HTTP waiter expires; journals retain only a verification boolean. October 15 runs reproduce CPU expiry with four 32-image callers, while four eight-image callers and two OpenVINO 32-image callers pass. See [timing design and outcomes](docs/execution-timing-calibration.md) before tuning deadlines or caller/batch pressure. The shipped application has no enabled timing observer or public trace endpoint.
 
 ## API
 ### GET /health
@@ -680,6 +682,9 @@ The checked-in [Classifarr resource-contract skill](.agents/skills/classifarr-re
 - [Socket-capacity AI skill extension](docs/project-socket-capacity-skill.md)
 - [Representative poster/codec capacity design and outcomes](docs/representative-capacity.md)
 - [Representative-capacity AI skill extension](docs/project-representative-capacity-skill.md)
+- [Queue/native execution timing design and outcomes](docs/execution-timing-calibration.md)
+- [Execution-timing AI skill extension](docs/project-execution-timing-skill.md)
+- [Local PR 57 Transformers migration](docs/pr-57-local-validation.md)
 - [Aging PR cleanup decisions and outcomes](docs/aging-pr-cleanup.md)
 - [Early API-key authentication design and outcomes](docs/early-api-key-authentication.md)
 - [Authentication AI skill extension](docs/project-early-auth-skill.md)

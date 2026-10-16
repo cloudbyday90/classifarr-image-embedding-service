@@ -164,6 +164,11 @@ def test_native_socket_child_uses_encoded_refs_and_settles_all_owners(monkeypatc
         result["settled_queue"]["waiting"] == result["settled_queue"]["rw_readers"] == 0
     )
     assert "ambient-private-value" not in str(result)
+    timings = result["execution_timings"]["records"]
+    assert len(timings) == 48
+    assert all(row["durations_seconds"]["native_call"] is not None for row in timings)
+    assert all(not row["waiter_detached"] for row in timings)
+    assert all(row["native_result_verified"] is True for row in timings)
 
 
 def test_child_parity_failure_is_not_counted_as_success(monkeypatch):
@@ -183,6 +188,10 @@ def test_child_parity_failure_is_not_counted_as_success(monkeypatch):
         asyncio.run(check_representative(subject, 2))
     result = events[-1]["result"]
     assert not result["client"]["passed"] and result["client"]["reaped"]
+    assert any(
+        row["native_result_verified"] is False
+        for row in result["execution_timings"]["records"]
+    )
     assert any(not record["passed"] for record in result["client"]["records"])
     assert (
         result["settled_ingress"]["active"] == result["settled_queue"]["in_flight"] == 0
@@ -220,6 +229,13 @@ def test_failed_deadline_records_status_and_settled_native_owner(monkeypatch):
     result = events[-1]["result"]
     assert result["client"]["reaped"] and not result["client"]["passed"]
     assert any(record["status"] == 504 for record in result["client"]["records"])
+    timings = result["execution_timings"]["records"]
+    assert any(row["waiter_detached"] for row in timings)
+    assert any((row["native_after_response_seconds"] or 0) > 0 for row in timings)
+    assert any(
+        row["waiter_detached"] and row["native_result_verified"] is True
+        for row in timings
+    )
     assert (
         result["settled_queue"]["in_flight"] == result["settled_queue"]["waiting"] == 0
     )
@@ -266,3 +282,83 @@ def test_http_failure_or_oversized_response_is_recorded(
     asyncio.run(scenario())
     assert records[0]["status"] == status and not records[0]["passed"]
     assert records[0]["response_bytes"] <= 1024
+
+
+def test_corrupt_native_result_after_http_deadline_remains_observable(monkeypatch):
+    import time
+
+    subject = representative_workload()
+    subject.sizes = [1]
+    subject.embedder.settings = replace(
+        subject.embedder.settings, embedding_timeout_seconds=0.05
+    )
+    original = subject.embedder.embed_batch
+
+    def slow_corrupt(*args):
+        time.sleep(0.2)
+        results = original(*args)
+        results[0][0][0] += 10
+        return results
+
+    monkeypatch.setattr(subject.embedder, "embed_batch", slow_corrupt)
+    events = []
+    subject.emit = events.append
+    with pytest.raises(RuntimeError, match="client failed"):
+        asyncio.run(check_representative(subject, 2))
+    result = events[-1]["result"]
+    assert any(
+        row["waiter_detached"]
+        and row["native_failed"]
+        and row["native_result_verified"] is False
+        for row in result["execution_timings"]["records"]
+    )
+    assert result["client"]["reaped"]
+    assert (
+        result["settled_queue"]["in_flight"]
+        == result["settled_queue"]["rw_readers"]
+        == 0
+    )
+
+
+def test_http_client_independently_rejects_corrupted_response_vectors():
+    import httpx
+
+    body = {
+        "total": 1,
+        "succeeded": 1,
+        "failed": 0,
+        "model": "ViT-B-16",
+        "image_size": 224,
+        "results": [
+            {
+                "index": 0,
+                "status": "ok",
+                "dims": 2,
+                "model": "ViT-B-16",
+                "image_size": 224,
+                "embedding": [30, 4],
+            }
+        ],
+    }
+    records = []
+
+    async def scenario():
+        async with httpx.AsyncClient(
+            transport=httpx.MockTransport(lambda _: httpx.Response(200, json=body)),
+            base_url="http://127.0.0.1:1234",
+        ) as client:
+            with pytest.raises(AssertionError):
+                await request_case(
+                    client,
+                    {"name": "ViT-B-16", "dims": 2, "image_size": 224},
+                    make_fixtures()[0],
+                    1,
+                    0,
+                    0,
+                    False,
+                    [[3, 4], [4, 3]],
+                    records,
+                )
+
+    asyncio.run(scenario())
+    assert not records[0]["passed"] and records[0]["error_type"] == "AssertionError"

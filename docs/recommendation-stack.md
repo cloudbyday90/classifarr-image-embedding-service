@@ -1,13 +1,14 @@
 # Reliability and security recommendation stack
 
-Assessment date: 2026-10-03. The current representative-workload/skill iteration starts from `b43272ba9f380f7488f1a70e5dafa70a91754b04` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records.
+Assessment date: 2026-10-15. The current execution-timing/PR 57 iteration starts from `e5b55d03ac61ce36c16bf611bc5017c8c01c4955` and is delivered directly on `master`. Python and direct Docker publishing are retained by user decision. Recommendations combine local code evidence, actual build/runtime measurements and official sources discovered through web/GitHub MCP, linked in the separate design records. Earlier delivery sections retain their dated evidence.
 
 ## Completed recommendations and tradeoffs
 
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
+| Optional execution phases and private native-result validation after HTTP expiry | Separates admission/native costs and checks detached results without publishing vectors | Trusted internal callbacks; synthetic finite bursts on a shared host; not kernel profiling | Implemented; [timing outcome](execution-timing-calibration.md), [skill](project-execution-timing-skill.md), random [PR 57](pr-57-local-validation.md) |
 | Representative poster/landscape/codec bursts with isolated HTTP client | Encoded-byte parity, observed receipt and separate client RSS | Synthetic fixtures; shared cgroup and model-owner probe overhead; finite bursts | Implemented; [workload design](representative-capacity.md), [skill extension](project-representative-capacity-skill.md) |
-| Close reviewed completed/superseded PRs | Clears obsolete proposals while preserving original commits and reopening | Requires a decision record; state alone does not explain local adoption | Eight closed unmerged; zero open remain; [cleanup record](aging-pr-cleanup.md) |
+| Close reviewed completed/superseded PRs | Clears obsolete proposals while preserving original commits and reopening | Requires a decision record; state alone does not explain local adoption | Eight closed unmerged on October 3; eight new October 9 proposals now exist; [cleanup record](aging-pr-cleanup.md), [current availability](open-pr-availability.md) |
 | Explicit forwarding trust, disabled for direct Docker deployment | Caller headers cannot rotate public quota identities; ambient wildcard trust is ignored | Intentional proxies must configure controlled peers; Docker/NAT may share address quotas | Implemented; [direct deployment design](direct-deployment-trust.md), [skill extension](project-deployment-transport-skill.md) |
 | Stable public-probe and verified embedding quota identities | Closes rotated/empty-header bypasses; removes raw credentials from storage/logs | NAT clients share probe limits; a shared service credential shares embedding quota | Implemented; [identity design](public-probe-rate-limits.md), [skill extension](project-quota-identity-skill.md) |
 | Track inference owners beyond HTTP deadlines; preserve server signals and drain work | Preserves accounting during cancellation; cleanup cannot race workers | Running Python threads cannot be forcibly killed; supervisor deadlines must align | Implemented; [execution design](inference-execution.md) |
@@ -46,10 +47,10 @@ Assessment date: 2026-10-03. The current representative-workload/skill iteration
 
 | Priority | Recommendation | Pros | Cons or decisions needed |
 |---|---|---|---|
-| Next 1 | Separate CPU queue-wait/native durations for maximum batches, then replay caller/batch profiles on the deployment host | Targets the reproduced second 32-image request timeout before deadline or concurrency tuning | One caller up to 32 and two up to 8 pass locally; host load matters and external-client addresses still need real traffic; no proxy is needed |
+| Next 1 | Design cooperative cancellation between native micro-batches; replay smaller caller/batch profiles on the deployment host | Targets the observed 14.957-second detached native tail without duplicating models | Keep active native work/read locks/images owned; coalesced live members need separate accounting; extra small requests consume quota; host load matters |
 | Next 2 | Observe hosted Windows jobs; extend target-hardware capacity and restore CUDA ARM after upstream metadata repair | Confirms actual hosted platforms and broader deployment headroom | Runner/hardware cost; cuSPARSELt ARM metadata currently fails strict pip check |
 
-The [quota identity fix](public-probe-rate-limits.md) closes rotating-header and empty-Bearer bypasses while retaining public access and separate counters. The [direct deployment follow-up](direct-deployment-trust.md) disables implicit forwarding trust after the operator confirmed that no proxy is used. The [representative calibration](representative-capacity.md) adds the requested portrait, landscape and codec coverage with separate client RSS. Next replay it on the operator host and measure address preservation through real external traffic before changing limits or owner counts. Use the [capacity-calibration skill](project-capacity-skill.md) for sizing and the [resource-contract skill](project-resource-skill.md) if measurements reveal lifetime changes. The [Windows matrix](windows-native-validation.md) still requires observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
+The [timing follow-up](execution-timing-calibration.md) now separates queue wait and native work and validates results after HTTP expiry. Next use the capacity skill for target-host replay and the resource-contract skill for cancellation design: skip only future chunks after all relevant waiters leave, with event-controlled regressions for active-owner settlement and shared live callers. Preserve the [quota identity](public-probe-rate-limits.md) and [direct deployment](direct-deployment-trust.md) boundaries. External-client address preservation still needs real traffic; the [Windows matrix](windows-native-validation.md) still needs observed hosted execution before claiming Server 2025/latest-patch results. Keep target-hardware gates and the upstream CUDA ARM metadata gate.
 
 ## Final recommendation stack
 
@@ -57,17 +58,22 @@ Keep the operator's direct Docker topology. The shipped launcher disables
 forwarding by default and accepts only explicit controlled IP peers/networks
 when a proxy is intentionally configured. Keep one worker, current admission
 budgets and backend memory containment. Use the representative poster/codec
-scenario with two bounded callers, encoded references and separate client RSS.
+scenario with bounded callers, encoded references and separate client RSS.
 Next measure target-host headroom and external-client address preservation;
 loopback Docker evidence does not establish either for every network. No proxy
 infrastructure is needed for the current deployment.
 
-The local CPU two-caller 32-image poster case returned 504 at the current
-45-second budget. One caller up to 32 and two callers up to 8 pass across the
-selected profiles; OpenVINO CPU passes two callers up to 32, with a 39.25-second
-slowest request. Keep these as measured comparison options and investigate
-queue-wait/native durations before changing deadlines or duplicating owners.
-Warm shared-page accounting does not replace earlier cold-memory evidence.
+The October 15 final CPU four-caller 32-image run fails: a timed-out request
+spends 28.784 seconds in admission and 31.167 seconds in native work, including
+14.957 seconds after response start. Its detached result is verified, while two
+queued owners never dispatch. Four eight-image callers pass all 32 cases with
+a 32.863-second slowest request; OpenVINO CPU passes all 16 two-caller 32-image
+cases with a 41.808-second slowest request. These are finite comparison profiles,
+not universal capacity or paired speedup results. Keep current deadlines and
+one owner, replay on the deployment host, then design cooperative checkpoints
+between micro-batches. Increasing deadlines retains ingress longer; adding
+owners duplicates models and needs fresh memory sizing. Warm shared-page
+accounting does not replace earlier cold-memory evidence.
 
 Keep Python/FastAPI/AnyIO with small authenticated-router, credential, quota-identity, ingress, admission, queue, execution, input, remote transport and model/artifact services. Keep public health/readiness and documentation behavior, explicit mandatory admin protection and constant-time byte comparison. Public probes use effective addresses; protected quotas use one verified nonsecret service principal or address fallback. Preserve separate counters, application-owned storage and server-owned proxy trust. Authentication remains within matched routing, before body parsing and inside existing ingress/response ownership. Native tensor libraries perform inference. A later language experiment must show measured benefit and equivalent model/API/backend contracts. Authored JavaScript uses ESM. The external CommonJS Gitleaks action accepted in PR 41 is now replaced by verified native scanning through small Python helpers.
 
@@ -85,7 +91,33 @@ Use a separate total 30-second HTTP/1 response-send budget through the shipped a
 
 Keep the reviewed NumPy 2.5.3 graphs with the adopted PR 48 minimum. Report cgroup tasks and temporary filesystem availability independently of process RSS, and CUDA live/reserved allocator peaks independently of device-wide availability. The manual probe uses generous 1024-task/128-MiB tmpfs experiment bounds; do not copy them into production without cold/warm target measurements and headroom.
 
-## Representative workload delivery outcome
+## Execution timing and PR 57 delivery outcome
+
+Full locked Linux QA passes **1,132 tests**, with seven existing skips and
+**20 new cases**. Coverage is **95.46% lines / 90.56% branches**, above unchanged
+floors. The optional observer is disabled in the shipped app; the bounded probe
+records phase offsets and a private native-verification boolean without vectors,
+images, keys or a public endpoint. Actual socket/model failures remain failures,
+and all final experiment owners, queues, readers, ingress and HTTP children
+settle. The separate [timing](execution-timing-calibration.md),
+[skill](project-execution-timing-skill.md) and
+[archive](validation/execution-timing-2026-10-15.json) records contain research,
+alternatives, exact metrics, setup failures and remaining hardware/host limits.
+
+Random **PR 57** is implemented locally as a one-artifact Transformers
+**5.18.0 → 5.19.0** migration across six complete Linux graphs. All 13 lock/input
+profiles validate, strict OSV checks cover five actual installed graphs and the
+29-package audit tooling with zero skipped packages or known vulnerabilities,
+and CPU ARM64's verified name/version graph matches audited CPU amd64. Both
+pinned models pass CPU/OpenVINO production contracts, new IR export/reload and
+16 cross-version CPU vector comparisons; old IR files remain intact. OpenAPI is
+byte-identical between baseline/current source under the same final graph.
+CodeQL Python security-extended retains two existing setup alerts, with no new
+findings or suppressions. The [PR record](pr-57-local-validation.md) separates
+local adoption from its unmerged original PR. Delivery stays on master with
+Unreleased changes and no release, tag, branch or version bump.
+
+## Representative workload delivery outcome (2026-10-03)
 
 The operator's poster/landscape PNG/JPEG/WebP cases now use fixed documented
 encoded fixtures and a separate bounded HTTP client process. CPU one-caller
