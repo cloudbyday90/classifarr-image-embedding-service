@@ -5,7 +5,7 @@ fastapi==0.142.2
 filelock==3.32.3
 httptools==0.8.0
 numpy==2.5.3
-pillow==12.3.0
+pillow==13.0.0
 pytest==9.1.1
 pydantic==2.13.5
 requests==2.34.2
