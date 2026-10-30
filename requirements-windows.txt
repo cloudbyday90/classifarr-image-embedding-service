@@ -1,6 +1,6 @@
 # Native boundary tests only; no production model/device support claim.
 anyio==4.15.1
-certifi==2026.7.22
+certifi==2026.10.23
 fastapi==0.142.2
 filelock==3.32.3
 httptools==0.8.0
