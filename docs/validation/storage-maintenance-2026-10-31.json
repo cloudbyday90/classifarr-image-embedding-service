@@ -2,6 +2,21 @@
   "assessment_date": "2026-10-31",
   "baseline": "c1caacc5cb341aaf2920de8fcd8199868a2c8081",
   "docker_context": "desktop-linux",
+  "github_push_notification": {
+    "dependency_alerts": 54,
+    "followup": "Refresh strict advisory audits and triage against actual locks before deployment-host calibration; inventory/pip check are not vulnerability audits.",
+    "observed_date": "2026-10-31",
+    "runtime_impact_established": false,
+    "severity": {
+      "critical": 6,
+      "high": 24,
+      "low": 2,
+      "moderate": 22
+    },
+    "source": "GitHub server response to maintenance push",
+    "triaged": false,
+    "url": "https://github.com/cloudbyday90/classifarr-image-embedding-service/security/dependabot"
+  },
   "kept": {
     "containers": [
       {

@@ -145,6 +145,14 @@ benchmark or proof of an unattended scheduler. No destructive schedule was added
 
 ## Resume development
 
+After the maintenance push, GitHub reported **54 dependency alerts** on the
+default branch: 6 critical, 24 high, 22 moderate and 2 low. This is an untriaged
+[GitHub notification](https://github.com/cloudbyday90/classifarr-image-embedding-service/security/dependabot),
+not a finding that all alerts affect the installed runtime. Exact inventory and
+`pip check` do not replace advisory audits. Before the next deployment-host run,
+refresh the existing strict audits and triage this notice against the actual
+locked environments. No dependency upgrades or advisory fixes are claimed here.
+
 The previous next step remains **deployment-host calibration of native chunk
 size and caller/batch pressure**. Use portrait posters plus landscape and
 PNG/JPEG/WebP cases, the verified models, isolated clients, and early disconnect
