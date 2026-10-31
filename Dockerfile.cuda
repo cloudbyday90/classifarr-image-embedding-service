@@ -48,6 +48,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # supplies libcuda through NVIDIA Container Toolkit; do not duplicate cuDNN here.
 FROM ${CUDA_BASE}
 
+LABEL org.classifarr.image-embedding.project="classifarr-image-embedding-service"
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1

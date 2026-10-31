@@ -1,0 +1,566 @@
+{
+  "assessment_date": "2026-10-31",
+  "baseline": "c1caacc5cb341aaf2920de8fcd8199868a2c8081",
+  "docker_context": "desktop-linux",
+  "kept": {
+    "containers": [
+      {
+        "health": "healthy",
+        "id": "e1918fee9457bff4e478de96ac0811b064440c73f71f0eaaf4a92d683593d557",
+        "image": "sha256:7009c6d3335b1b6a74c504acb4a2d1761bc7ab6c33c231b24264f5b0dff28f60",
+        "name": "harmoniarr-walkthrough-harmoniarr-1",
+        "status": "running"
+      },
+      {
+        "health": "healthy",
+        "id": "560a828dc2123f066acfee0d309731b9a405a7a086065ddf7310a49ca6830a2e",
+        "image": "sha256:82a6025389df3ebfddb4ff47f4ee7f375cd7281e0d66b8b903c0acd733154baa",
+        "name": "classifarr",
+        "status": "running"
+      },
+      {
+        "health": "unhealthy",
+        "id": "f439d7059f7dc6d35efc38e764bbbd54ef697c2752fd9e270a8fdb84af69e497",
+        "image": "sha256:3bb308dc35122dd3217436864a683d1975437b945fe3fcc6b37c202a6d81f4ab",
+        "name": "duskcue",
+        "status": "exited"
+      }
+    ],
+    "host_paths": [
+      ".env",
+      "config.toml",
+      ".git",
+      ".venv",
+      ".vscode/settings.json"
+    ],
+    "images": [
+      {
+        "id": "sha256:3c1455798a73466e82807a9a2b1135156a60faa26e4832c7b4300627ea845cbf",
+        "tag": "classifarr-validation:timing-tf519-cpu-arm64"
+      },
+      {
+        "id": "sha256:4adc908a75282f4269c7bbb285ced0134f311e380ba0ceeb1e05d9b16eace77d",
+        "tag": "classifarr-validation:timing-tf519-cuda-legacy"
+      },
+      {
+        "id": "sha256:46ab61296e7a27f9d3b1091bf7bf232c6c186437917c55a00ad4ad22c9a97280",
+        "tag": "classifarr-validation:timing-tf519-openvino"
+      },
+      {
+        "id": "sha256:020c6d4b3e1b291d64a3c809bb85fb19fccb12a1e08453737e54fde51d4c5272",
+        "tag": "classifarr-validation:timing-tf519-qa"
+      },
+      {
+        "id": "sha256:984e89cce4eb01b9dc6d61e95a08c168b7644702c4ad265c09f02bef8c450df1",
+        "tag": "classifarr-validation:timing-tf519-cpu"
+      },
+      {
+        "id": "sha256:af1a5d6dd1ccf15c8f072f1eec3e79921400c0d2b57f349f6f0d023226303970",
+        "tag": "classifarr-validation:timing-tf519-cuda"
+      },
+      {
+        "id": "sha256:be0862821045dfa383a2abae5a614e9d6afbd3e60092bb66de571f282190b469",
+        "tag": "classifarr-validation:gitleaks-node24"
+      }
+    ],
+    "model_volumes": [
+      {
+        "entries": [
+          "hub",
+          "ov_ir"
+        ],
+        "kib": 5305480,
+        "name": "classifarr-model-contracts-20261002"
+      },
+      {
+        "entries": [
+          "hub",
+          "xet"
+        ],
+        "kib": 1674788,
+        "name": "classifarr-image-embedding-service_model-cache"
+      }
+    ]
+  },
+  "limits": [
+    "No global prune, forced image/container removal, model volume deletion, registry mutation, Docker Desktop reset or WSL shutdown",
+    "Other container IDs/images/state/health were preserved; uptime changed during shared-host session without a stop/restart command from this cleanup",
+    "Three image-list rows could not be inspected and were excluded, not used as deletion candidates",
+    "Legacy host paths remain because execution policy blocked their deletion"
+  ],
+  "measurements": {
+    "after": [
+      {
+        "Active": "3",
+        "Reclaimable": "181.8GB (99%)",
+        "Size": "182.5GB",
+        "TotalCount": "460",
+        "Type": "Images"
+      },
+      {
+        "Active": "2",
+        "Reclaimable": "16.38kB (44%)",
+        "Size": "36.86kB",
+        "TotalCount": "3",
+        "Type": "Containers"
+      },
+      {
+        "Active": "2",
+        "Reclaimable": "21.4GB (96%)",
+        "Size": "22.12GB",
+        "TotalCount": "298",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "38.19GB",
+        "Size": "312.4GB",
+        "TotalCount": "6582",
+        "Type": "Build Cache"
+      }
+    ],
+    "before": [
+      {
+        "Active": "5",
+        "Reclaimable": "314.2GB (85%)",
+        "Size": "367.1GB",
+        "TotalCount": "722",
+        "Type": "Images"
+      },
+      {
+        "Active": "2",
+        "Reclaimable": "430.1kB (95%)",
+        "Size": "450.6kB",
+        "TotalCount": "18",
+        "Type": "Containers"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "21.8GB (77%)",
+        "Size": "27.96GB",
+        "TotalCount": "306",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "22.86GB",
+        "Size": "316.6GB",
+        "TotalCount": "6699",
+        "Type": "Build Cache"
+      }
+    ],
+    "docker_filesystem_after": {
+      "bytes": 1081101176832,
+      "free": 530009923584
+    },
+    "docker_filesystem_before": {
+      "bytes": 1081101176832,
+      "free": 339897470976
+    },
+    "host_file_bytes_deleted": 0,
+    "observed_vm_free_byte_change": 190112452608,
+    "scope": "Shared-host observations; image/cache totals overlap. No VHDX allocation-shrink or exclusive causal attribution claim."
+  },
+  "next_step": "Deployment-host calibration of native chunk size and caller/batch pressure with poster/landscape PNG/JPEG/WebP cases, verified models and disconnect recovery; preserve one owner and current limits until evidence supports change.",
+  "pending_host_cleanup": {
+    "alternate_venv": {
+      "logical_bytes": 831367964,
+      "path": ".venv-1"
+    },
+    "other_targets": "Archived embedding validation temp remnants and generated checkout caches remain. Unknown Classifarr application temp names were excluded.",
+    "reason": "Automatic approval review rejected both bulk and exact-path PowerShell deletion: blocked by policy; no further reason supplied. No alternate deletion mechanism used."
+  },
+  "schema_version": 1,
+  "skill_review": {
+    "mode": "Manual scenario review and observed cleanup, not independent agent benchmark",
+    "preserve_cases": [
+      "Unused model/IR volume with no container reference",
+      "Other project stopped container",
+      "Image with retained or unrelated tag",
+      "Reparse/outside-root or active Windows path",
+      "Unclassified shared-builder record"
+    ],
+    "routine": "Before heavy builds; at iteration close; weekly inventory during active development. No destructive schedule installed."
+  },
+  "source_checksums": {
+    ".agents/skills/classifarr-storage-maintenance/SKILL.md": "4772967ac3fb0e8d6955eb4a662419ebd12088b8b5d5a43f29fb2f4195eea9f3",
+    ".agents/skills/classifarr-storage-maintenance/agents/openai.yaml": "c0e61e48166396760aae466a180e01c7eb793528647a86a3483435271ff3fe11",
+    ".dockerignore": "12d8f3c6f77a8ff960a72a08f7bf4aabd778c0e8aa9924e0e190f6b5b1c76faa",
+    ".gitignore": "cf238d0be67432a804b8a6a2d034fb29a7b9cf4d3699b147eca3e2ea1dd2f322",
+    "Dockerfile": "eb585489c3e83c6383628fb83c527fefafcb0a02d379950c6042c77dca00a9d7",
+    "Dockerfile.cuda": "68a88a5f1f02d31044e1c88eb5e3dffb47bb59f1815fb8c58a26e4fce2ced279",
+    "Dockerfile.openvino": "e39775ee2f00619f997dc1c6c4071a8c11fc32d92f2ea39cfbe08f675414a8d2"
+  },
+  "successful_removals": {
+    "cache_records": [
+      {
+        "description": "[stage-1 6/7] COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/",
+        "exit_code": 0,
+        "id": "tg0gn85bi698zcll0sd6cno9a",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1 6/7] COPY scripts/backend_probe.py scripts/smoke_backend.py ./scripts/",
+        "exit_code": 0,
+        "id": "d4r32izevyuu97p7wjlmj3li4",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  6/11] COPY scripts/backend_probe.py scripts/smoke_backend.py scripts/production_model_probe.py ./scripts/",
+        "exit_code": 0,
+        "id": "m2l6z6qrdvz6f2y1w8d55kljz",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  6/11] COPY scripts/backend_probe.py scripts/smoke_backend.py scripts/production_model_probe.py ./scripts/",
+        "exit_code": 0,
+        "id": "mj8fp4g9lrvuza2xqfkw3srs2",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  8/11] COPY scripts/dependency_*.py scripts/install_dependencies.py ./scripts/",
+        "exit_code": 0,
+        "id": "2dta6ut6zdpy1yjqmuutif7yy",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  8/11] COPY scripts/dependency_*.py scripts/install_dependencies.py ./scripts/",
+        "exit_code": 0,
+        "id": "8rnjis0y4lpakvtd6syil979o",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  7/11] COPY scripts/capacity_metrics.py scripts/capacity_workload.py scripts/capacity_api.py scripts/capacity_probe.py ./scripts/",
+        "exit_code": 0,
+        "id": "2czhhbtpyztfdq7ru84yk4hok",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[stage-1  7/11] COPY scripts/capacity_metrics.py scripts/capacity_workload.py scripts/capacity_api.py scripts/capacity_probe.py ./scripts/",
+        "exit_code": 0,
+        "id": "n7pbdhd0aacr0sm7k3l9696nl",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "mount / from exec /bin/sh -c python scripts/install_dependencies.py --backend qa",
+        "exit_code": 0,
+        "id": "r3l9isuyh49place00em0qyoi",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "mount / from exec /bin/sh -c /opt/venv/bin/python /reviewed-source/scripts/install_dependencies.py --backend qa --root /reviewed-source",
+        "exit_code": 0,
+        "id": "tctzz05u5cr2ll59eib9yhkrs",
+        "reported_total": "Total:\t0B"
+      },
+      {
+        "description": "[1/1] COPY . /classifarr-embedding-cleanup-context",
+        "exit_code": 0,
+        "id": "zlkestq2sil3xa8dcbz4bd6zu",
+        "reported_total": "Total:\t1.143MB"
+      }
+    ],
+    "counts": {
+      "container": 15,
+      "image-tag": 31,
+      "volume": 8
+    },
+    "distinct_listed_image_ids": 30,
+    "empty_network": {
+      "exit_code": 0,
+      "id": "025813857c795cfc6ae52f9e95e2636f46a28bc22f22a89714f53a9ab3fd6164",
+      "name": "classifarr-image-embedding-service_default"
+    },
+    "image_tags": [
+      {
+        "id": "sha256:90384e69d6c5b548a42835358e5a60c0cbfdc0326d66e35f6bc0cc1538180803",
+        "tag": "classifarr-validation:httpx2-qa"
+      },
+      {
+        "id": "sha256:e1cd7e8672896df7fbc9cbc8f4e66fe5dc650090e597ff189274ebfe40ef3c61",
+        "tag": "classifarr-image-embedder:locked-cpu-arm64"
+      },
+      {
+        "id": "sha256:8708b2187761d1d4fc3d64a69381b92e6497ac760649b31588fb85f35ad06d00",
+        "tag": "classifarr-image-embedder:locked-cuda-legacy-amd64"
+      },
+      {
+        "id": "sha256:80a62b92db99e43b3ff9ecf7b00ee22efa1d5562c3cd8c78cdaf7d15e97c02ba",
+        "tag": "classifarr-image-embedder:locked-cuda-amd64"
+      },
+      {
+        "id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+        "tag": "classifarr-image-embedder:locked-qa-amd64"
+      },
+      {
+        "id": "sha256:c79f2bf0bcb878c9e84ab7da5652a3e0aeb84ae44f781b171a45f7ab3dbc9edf",
+        "tag": "classifarr-validation:httpx2-baseline"
+      },
+      {
+        "id": "sha256:5bbe5770bf60d1eaa126dbac4c2dc294432f71eb30b5e39f84dbb02780065bf7",
+        "tag": "classifarr-image-embedder:locked-cpu-amd64"
+      },
+      {
+        "id": "sha256:0ef0f8d15204c6c4ec64d91be464a0b73d84262f0f6b50b78c7be68928cce357",
+        "tag": "classifarr-image-embedder:locked-openvino-amd64"
+      },
+      {
+        "id": "sha256:00c862b627bc8423bcdc5e0a112627f024d10b447426b86a03aebd3572fa5540",
+        "tag": "classifarr-image-embedder:capacity-openvino"
+      },
+      {
+        "id": "sha256:4ec992c91b83d60e7d0960860126c4bbc432d5cf63a6876d7b39bdaecb4ec5ae",
+        "tag": "classifarr-image-embedder:capacity-cpu"
+      },
+      {
+        "id": "sha256:d78775a6d5cc49dea7797fda1dc3bea4e0c9178487ad23f772bf6a66065e0a0e",
+        "tag": "classifarr-image-embedder:model-contract-openvino"
+      },
+      {
+        "id": "sha256:1b3efbc642aefbc47c149754663d70cf3fc468d4e5e01b6a32ad5cb59771b030",
+        "tag": "classifarr-image-embedder:model-contract-cpu"
+      },
+      {
+        "id": "sha256:769d44caa989d5d8b9c6b85c8df6735cad1e2055e500a1fde14f53ed41a1d881",
+        "tag": "classifarr-image-embedder:model-contract-tests"
+      },
+      {
+        "id": "sha256:79dfce9e87d110f66a84d5acf40ddcbdbbd47e438868261d62ce7fc42d612f5e",
+        "tag": "classifarr-image-embedder:ingress-cpu"
+      },
+      {
+        "id": "sha256:0ddb0ad925f059e06b4d6362150df313723126f7526d449adb7a1d944c9d3d70",
+        "tag": "classifarr-image-embedder:remote-cpu"
+      },
+      {
+        "id": "sha256:53accdc6f4547cdb752b7e09e65e7a1d07a7b35f801b788a86f8a429729c37c5",
+        "tag": "classifarr-image-embedder:remote-tests"
+      },
+      {
+        "id": "sha256:888fc23b2750a15ea51f71a115cbf6b77723f75b1a453517438ee968d0d0fcf8",
+        "tag": "classifarr-image-embedder:input-budget-cpu"
+      },
+      {
+        "id": "sha256:7d96f408506b09f98b5e564e602c14dc9a7f388f41b0abe01f7c6ed1125488fc",
+        "tag": "classifarr-image-embedder:input-budget-starlette-min"
+      },
+      {
+        "id": "sha256:06ca2934047895db851c2fa8133109b26d16dc3581cdc458043704e8e2cf9dca",
+        "tag": "classifarr-image-embedder:input-budget-tests"
+      },
+      {
+        "id": "sha256:86cb402e50063669e4fa1049eb2bb0cd1b280dcc05ef3e12ebd9de007e94c183",
+        "tag": "classifarr-image-embedder:validated-openvino-amd64"
+      },
+      {
+        "id": "sha256:4e5ace03719f345396f433c9412a84594e0f5c5cd298b023ae82a8631748fdc8",
+        "tag": "classifarr-image-embedder:validated-cpu-amd64"
+      },
+      {
+        "id": "sha256:61de32a41209081a96f3127d683cc8125d4ffb573b09c83736d96f1446796c33",
+        "tag": "classifarr-image-embedder:validated-cuda-legacy-amd64"
+      },
+      {
+        "id": "sha256:fd7cef39d03301914222a91b4d66fef51472026ac8dce480210adb1d29f00c46",
+        "tag": "classifarr-image-embedder:validated-cuda-amd64"
+      },
+      {
+        "id": "sha256:f8c05ff2564a47275f52fc9aa3d136b38245a77b9ceae7948296b8b353235259",
+        "tag": "classifarr-image-embedder:validated-cpu-arm64"
+      },
+      {
+        "id": "sha256:ad143e44de469a557ca1559f540db1999cfff9c64987c78b1f1489b88924cf55",
+        "tag": "classifarr-image-embedder:backend-smoke-cpu-arm64"
+      },
+      {
+        "id": "sha256:f2ae34ffd13280439c20150dd4ad1319ed48b57a1b531c5d475d5a8758102d7e",
+        "tag": "classifarr-image-embedder:backend-smoke-cuda-amd64"
+      },
+      {
+        "id": "sha256:6e508e63c5e09ba5d12211f3d0b2d0623aec811d231f7cbae71658cbec1d9e06",
+        "tag": "classifarr-image-embedder:backend-smoke-cuda-final"
+      },
+      {
+        "id": "sha256:2696764ee3e0a32d0542c67b888e020e0cf8d902c95a8f87227175de8e0f22ff",
+        "tag": "classifarr-image-embedder:backend-smoke-cpu-final"
+      },
+      {
+        "id": "sha256:180d239102cf4350d19bb80fb8f5e9232c44887636db280bfb3c60d5723d6b8f",
+        "tag": "classifarr-image-embedder:backend-smoke-openvino-final"
+      },
+      {
+        "id": "sha256:0f39fb855ff51f00de0b1d6b5aae0deb7937aa5b02ada9d56111d1ce4efdc646",
+        "tag": "classifarr-image-embedder:backend-smoke-cuda"
+      },
+      {
+        "id": "sha256:7c0044963e3e1721612d8c51c702d79540373760bb7daaa147836ff98abe80ad",
+        "tag": "classifarr-image-embedder:backend-smoke-cpu"
+      }
+    ],
+    "scratch_volume_allocated_bytes": 6212055040,
+    "scratch_volumes": [
+      "classifarr-cancel-source-20261016",
+      "classifarr-cancel-static-20261016",
+      "classifarr-disconnect-source-20261016",
+      "classifarr-disconnect-source-final-20261016",
+      "classifarr-disconnect-static-20261016",
+      "classifarr-timing-source-20261015",
+      "classifarr-timing-static-20261015",
+      "classifarr-dependency-wheels-20261002"
+    ],
+    "stopped_containers": [
+      {
+        "id": "25627d006764e2732d9d73b48a88c27a1876426d259fec10ac59da277eccdf12",
+        "image": "sha256:00c862b627bc8423bcdc5e0a112627f024d10b447426b86a03aebd3572fa5540",
+        "name": "capacity-openvino-api-delivery"
+      },
+      {
+        "id": "a957487a12d4f5f6e43e47e0ae6129cac3d964550eb298695fc50a2a71ac805b",
+        "image": "sha256:4ec992c91b83d60e7d0960860126c4bbc432d5cf63a6876d7b39bdaecb4ec5ae",
+        "name": "capacity-cpu-api-delivery"
+      },
+      {
+        "id": "be46b9689e0191f4a4428db216e38bd2f6dbd99e3c52fdb5bbcb7d64bc1bcc14",
+        "image": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "name": "capacity-openvino-detached-final"
+      },
+      {
+        "id": "d6d3f312fe2c85257d54f399d20701509b93c69b5ed798a8a6f1ff05a9c801a4",
+        "image": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "name": "capacity-openvino-api-final"
+      },
+      {
+        "id": "eb55501539384815ba444df92ffd969da1a8b426a02160dc6b174a7c286bf0f9",
+        "image": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "name": "capacity-cpu-detached-final"
+      },
+      {
+        "id": "e4c59485814cf15bc4cdb0c76618fb97b1c49d7b3685d7fc684fee451578678e",
+        "image": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "name": "capacity-cpu-api-final"
+      },
+      {
+        "id": "9ecaf44c1c610259ef4dc32d9c649bd2031420981268ff30ad0ed5fa02eeec67",
+        "image": "sha256:f9e4f95589565a7ed26459f02dca3019cb4884b7b5252e8dad6a59a3725a3584",
+        "name": "capacity-cpu-overlap-final"
+      },
+      {
+        "id": "016060c80b11886709aca030e583adf1b6745790c51701b79745c2f7a37f9a88",
+        "image": "sha256:b65ab372c11dc2eabee552221a7d4604e537e5f9347b0ebc1ed88328743ba7c9",
+        "name": "capacity-ov-overlap-final"
+      },
+      {
+        "id": "c2a297e3148e46598eb4a605bf2b36c3a83303510804bc3119df0b0c1a8b063d",
+        "image": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "name": "classifarr-capacity-w22-openvino-overlap-baseline"
+      },
+      {
+        "id": "c82f242616dc841a1cc279d7cf1a3019d1c069c8675a38c53c67b87075368315",
+        "image": "sha256:12fd44c700589853ef7bfc6c73c87d1cf9f45b62dd59735c52c226c24dc2768e",
+        "name": "classifarr-capacity-w22-cpu-api-baseline"
+      },
+      {
+        "id": "cdda4028f09b45ba250434a55e6f3804f9c7dbcfba0194ad460d9518160e0cd6",
+        "image": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "name": "classifarr-capacity-w22-openvino-api"
+      },
+      {
+        "id": "21373cc288a780fb4fc0ec5f7974d8ad5dcda5549aa0c24be33d9aeb300661bf",
+        "image": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "name": "classifarr-capacity-w22-openvino-cold-verified"
+      },
+      {
+        "id": "f6c5c2bf4ba415ebfdda2b825ae99d5bacadf50bb55ac6af3319bb14683ed136",
+        "image": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "name": "classifarr-capacity-w22-openvino-cold"
+      },
+      {
+        "id": "5e1cd14cee3d2df7b5d5c8b7f945c65ecbf515c04b74faecbbe976de12bd83a2",
+        "image": "sha256:6692e659451e71359f8604094de24fc8489f8f7ec3e5aeaaf65bda45cfc698c9",
+        "name": "classifarr-capacity-w22-openvino-warm"
+      },
+      {
+        "id": "286cdd5c3d8a2b06708d56e60af9fae3efa602234c2cf36b0057b7267226bb9d",
+        "image": "sha256:12fd44c700589853ef7bfc6c73c87d1cf9f45b62dd59735c52c226c24dc2768e",
+        "name": "classifarr-capacity-w22-cpu-detached"
+      }
+    ]
+  },
+  "validation": {
+    "context_export": {
+      "all_python_and_dependency_inputs_preserved_byte_identically": 132,
+      "bytes": 752833,
+      "excluded": [
+        ".env",
+        ".venv",
+        ".venv-1",
+        ".vscode",
+        ".git",
+        ".agents",
+        ".kilo",
+        ".pytest_cache",
+        ".ruff_cache",
+        "docs",
+        "tests",
+        "coverage.xml"
+      ],
+      "files": 149,
+      "nested_bytecode_files": 0,
+      "passed": true,
+      "required_preserved": [
+        "src/image_embedder/main.py",
+        "scripts/install_dependencies.py",
+        "requirements.txt",
+        "requirements/locks/qa-py312-linux-amd64.txt"
+      ]
+    },
+    "copyright_valid": true,
+    "dockerfiles_check": {
+      "Dockerfile": 0,
+      "Dockerfile.cuda": 0,
+      "Dockerfile.openvino": 0
+    },
+    "full_api_qa_rerun": false,
+    "lock_profiles_valid": 13,
+    "reason": "No runtime Python or dependency artifact change; real context export, Docker build checks and retained-image native contracts are the affected evidence.",
+    "retained_native_images": [
+      {
+        "backend": "cpu-arm64",
+        "exit_code": 0,
+        "image": "sha256:3c1455798a73466e82807a9a2b1135156a60faa26e4832c7b4300627ea845cbf",
+        "output": "No broken requirements found.\nVerified dependency profile cpu-py312-linux-arm64: 56 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      },
+      {
+        "backend": "cuda-legacy",
+        "exit_code": 0,
+        "image": "sha256:4adc908a75282f4269c7bbb285ced0134f311e380ba0ceeb1e05d9b16eace77d",
+        "output": "No broken requirements found.\nVerified dependency profile cuda-legacy-py312-linux-amd64: 75 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      },
+      {
+        "backend": "openvino",
+        "exit_code": 0,
+        "image": "sha256:46ab61296e7a27f9d3b1091bf7bf232c6c186437917c55a00ad4ad22c9a97280",
+        "output": "No broken requirements found.\nVerified dependency profile openvino-py312-linux-amd64: 58 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/openvino/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/openvino/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      },
+      {
+        "backend": "qa",
+        "exit_code": 0,
+        "image": "sha256:020c6d4b3e1b291d64a3c809bb85fb19fccb12a1e08453737e54fde51d4c5272",
+        "output": "No broken requirements found.\nVerified dependency profile qa-py312-linux-amd64: 70 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      },
+      {
+        "backend": "cpu",
+        "exit_code": 0,
+        "image": "sha256:984e89cce4eb01b9dc6d61e95a08c168b7644702c4ad265c09f02bef8c450df1",
+        "output": "No broken requirements found.\nVerified dependency profile cpu-py312-linux-amd64: 56 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      },
+      {
+        "backend": "cuda",
+        "exit_code": 0,
+        "image": "sha256:af1a5d6dd1ccf15c8f072f1eec3e79921400c0d2b57f349f6f0d023226303970",
+        "output": "No broken requirements found.\nVerified dependency profile cuda-py312-linux-amd64: 75 hashed wheels\nNo broken requirements found.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nWARNING: The directory '/home/appuser/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\n"
+      }
+    ],
+    "skill_metadata_valid": true
+  }
+}

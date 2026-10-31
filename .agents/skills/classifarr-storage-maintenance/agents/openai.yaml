@@ -1,0 +1,4 @@
+interface:
+  display_name: "Classifarr Storage Maintenance"
+  short_description: "Clean embedding artifacts while preserving live resources"
+  default_prompt: "Use $classifarr-storage-maintenance to review disk use and clean verified stale embedding-service artifacts."

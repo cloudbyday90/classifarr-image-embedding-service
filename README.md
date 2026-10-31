@@ -648,6 +648,8 @@ pytest
 
 ## Engineering Decisions
 
+Use the checked-in [storage-maintenance skill](.agents/skills/classifarr-storage-maintenance/SKILL.md), `$classifarr-storage-maintenance`, before large builds and when closing validation iterations. The [storage policy and cleanup outcome](docs/storage-maintenance.md) cover project ownership, bounded retention, protected model caches and shared Docker builders.
+
 Use the checked-in [dependency-migration skill](.agents/skills/classifarr-dependency-migrations/SKILL.md), `$classifarr-dependency-migrations`, for dependency PR adoption or client/framework compatibility changes. Its [design/evaluation record](docs/project-dependency-migration-skill.md) explains native graph ownership and evidence limits.
 
 - [HTTPX2 API test-client migration](docs/httpx2-test-clients.md)

@@ -21,6 +21,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # ── Runtime stage: minimal image, no build tools, non-root user ──────────────
 FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
 
+LABEL org.classifarr.image-embedding.project="classifarr-image-embedding-service"
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1

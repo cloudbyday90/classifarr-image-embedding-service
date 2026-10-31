@@ -4,6 +4,12 @@ Assessment date: 2026-10-16. The current disconnect/PR 61 iteration starts from 
 
 ## Completed recommendations and tradeoffs
 
+Maintenance interlude, 2026-10-31: [scoped storage cleanup](storage-maintenance.md)
+removes obsolete local validation resources and adds a routine maintenance skill,
+image ownership labels and tighter build contexts. Host-directory deletion was
+blocked by execution policy and remains explicitly pending. The next development
+item below is unchanged: target-host chunk-size and caller-pressure calibration.
+
 | Recommendation | Pros | Cons or limits | Outcome |
 |---|---|---|---|
 | Matched post-upload embedding disconnect observation | Cancels abandoned queued waiters; signals cooperative owners; preserves live coalesced callers and response ownership | Cannot interrupt a stuck active native call; adds two bounded helper tasks | Implemented; [design and outcomes](post-upload-disconnects.md), local [PR 61](pr-61-local-validation.md) |

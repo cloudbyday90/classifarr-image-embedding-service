@@ -60,6 +60,8 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # This verified Intel manifest supports linux/amd64 only.
 FROM openvino/ubuntu24_runtime:2026.4.0@sha256:b326dcae9b91fa25f794a391d9953e65a65096597237e6de431116b184a01718
 
+LABEL org.classifarr.image-embedding.project="classifarr-image-embedding-service"
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
 ENV PIP_NO_CACHE_DIR=1

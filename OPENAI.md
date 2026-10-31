@@ -21,6 +21,14 @@ This repository contains the standalone image embedding service for Classifarr. 
 
 Use deterministic code for data processing. Prefer adding tests for behavior changes.
 
+## Storage Maintenance
+
+Before storage-heavy builds and after validation iterations, use the repository
+`classifarr-storage-maintenance` skill in `.agents/skills` to inventory disk use,
+archive concise evidence and clean verified stale project artifacts within the
+authorized scope. Keep current validation images and persistent model caches;
+the Docker daemon also hosts other projects. See `docs/storage-maintenance.md`.
+
 ## Summary
 
 Be pragmatic. Be reliable. Keep the service minimal and predictable.

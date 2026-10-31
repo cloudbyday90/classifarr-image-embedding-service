@@ -6,6 +6,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 ## Unreleased
 
 ### Added
+- A project storage-maintenance skill and routine retention guidance for local validation artifacts and Docker resources.
 - Post-upload disconnect observation for embedding requests, with native socket regressions for retained worker ownership, queued cancellation and coalesced callers.
 - Cooperative inference checkpoints and bounded native forward chunks that retain active-call ownership and preserve live coalesced callers.
 - A native cancellation/recovery capacity scenario and focused cooperative-ownership guidance for the resource-contract AI skill.
@@ -44,6 +45,7 @@ Release notes (`RELEASE_NOTES.md`) are high-level and user-facing.
 - Event-controlled regression tests and design records for execution ownership, shutdown, and local PR validation.
 
 ### Changed
+- Label embedding runtime images for scoped maintenance and exclude secrets, alternate environments and generated artifacts from Docker build contexts.
 - Extend the native Windows contract gate to matched embedding routes with complete, reviewed middleware dependencies.
 - Raise the Pygments development minimum to the already locked 2.21.0 version through local PR 61 adoption.
 - Raised the Setuptools minimum to the already locked 84.0.0 version through local PR 58 adoption, with unchanged wheel artifacts.
